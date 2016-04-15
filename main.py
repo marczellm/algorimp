@@ -1,7 +1,8 @@
 import copy
 import midi
 import enum
-from itertools import tee
+from markov import Markov
+from utils import nwise
 
 
 class ABCNote(enum.Enum):
@@ -50,34 +51,56 @@ class Chord:
 
 
 class Note:
+    resolution = 0
+
     def __init__(self):
         self.tick_abs = 0
         self.tick_rel = 0
         self.duration = 0
         self.pitch = 0
         self.velocity = 0
-        self.measure_no = 0
-        self.beat_no = 0
-        self.ticks_since_beat = 0
-        self.ticks_since_measure = 0
         self.ticks_since_chord = 0
         self.ticks_since_last_note_start = 0
         self.ticks_since_last_note_end = 0
+
+    def rhythmtuple(self):
+        return self.ticks_since_measure_quantised, self.duration_quantised
 
     @property
     def beat_in_measure(self):
         return self.beat_no % 4
 
     @property
+    def beat_no(self):
+        return self.tick_abs // self.resolution
+
+    @property
+    def ticks_since_beat(self):
+        return self.tick_abs % self.resolution
+
+    @property
+    def measure_no(self):
+        return self.tick_abs // (4 * self.resolution)
+
+    @property
+    def ticks_since_measure(self):
+        return self.tick_abs % (4 * self.resolution)
+
+    @property
     def abcnote(self):
         return ABCNote(self.pitch % 12)
 
+    @property
+    def ticks_since_measure_quantised(self):
+        return round(self.ticks_since_measure / 10)
 
-def pairwise(iterable):
-    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
+    @property
+    def duration_quantised(self):
+        return max(round(self.duration / 10), 384)
+
+    @property
+    def velocity_quantised(self):
+        return round(self.velocity / 6.4)
 
 
 def main():
@@ -86,9 +109,11 @@ def main():
     midifile_abs.make_ticks_abs()
     notes = []
     active_notes = {}
-    # tempos = list(filter(lambda x: isinstance(x, midi.SetTempoEvent), midifile_rel[0]))
-    # assert len(tempos) == 1, "This code does not handle tempo changes"
-    resolution = midifile_rel.resolution
+
+    tempos = list(filter(lambda x: isinstance(x, midi.SetTempoEvent), midifile_rel[0]))
+    assert len(tempos) == 1, "This code does not handle tempo changes"
+
+    Note.resolution = midifile_rel.resolution
     for ev_rel, ev_abs in zip(midifile_rel[1], midifile_abs[1]):
         if isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1]:
             n = Note()
@@ -96,19 +121,21 @@ def main():
             n.tick_rel = ev_rel.tick
             n.pitch = ev_rel.data[0]
             n.velocity = ev_rel.data[1]
-            n.beat_no = n.tick_abs // resolution
-            n.ticks_since_beat = n.tick_abs % resolution
-            n.measure_no = n.tick_abs // (4 * resolution)
-            n.ticks_since_measure = n.tick_abs % (4 * resolution)
             active_notes[n.pitch] = n
         elif isinstance(ev_rel, midi.NoteOffEvent) or (isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1] == 0):
             n = active_notes.pop(ev_rel.data[0])
             n.duration = ev_abs.tick - n.tick_abs
             notes.append(n)
     assert not active_notes, "Some notes were not released"
-    for n, m in pairwise(notes):
+    for n, m in nwise(notes, 2):
         m.ticks_since_last_note_start = m.tick_abs - n.tick_abs
         m.ticks_since_last_note_end = m.tick_abs - n.tick_abs + n.duration
+
+    m = max(n.duration_quantised for n in notes)
+    np = next(n for n in notes if n.duration_quantised == m)
+
+    markov = Markov()
+    markov.learn([n.rhythmtuple() for n in notes])
 
 
 if __name__ == "__main__":
