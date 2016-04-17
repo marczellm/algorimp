@@ -37,14 +37,14 @@ class Markov:
             self.tr_matrix[np1gram] += 1
 
         # now to divide all counts
-        indexrange = None  # TODO do it with np.indices
-        # I need a cartesian product of these ranges
-        I = next(indexrange)
-        print(I, shape)
-        return
+        indexrange = np.indices(subshape * self.order)
+        submatrix = None
+        i = 0
         for I in indexrange:
             submatrix = self.tr_matrix[I]
             submatrix /= submatrix.sum()
+            i += 1
+        print(submatrix.shape, submatrix.sum(), i)
         
 
     def sparseness(self):
