@@ -63,9 +63,6 @@ class Note:
         self.ticks_since_last_note_start = 0
         self.ticks_since_last_note_end = 0
 
-    def rhythmtuple(self):
-        return self.ticks_since_last_note_end, self.duration_quantised
-
     @property
     def beat_in_measure(self):
         return self.beat_no % 4
@@ -135,11 +132,12 @@ def main():
     np = next(n for n in notes if n.duration_quantised == m)
 
     markov = Markov()
-    # markov.learn([n.rhythmtuple() for n in notes])
     markov.learn([n.pitch for n in notes])
-    # print(markov.sparseness())
+
 
 b = __name__ == "__main__"
 if b:
     print("Running...")
     main()
+
+    

@@ -25,10 +25,11 @@ class Markov:
         # determine the minimum possible value for each dimension
         self.mins = [min(x[i] for x in seq) for i in range(self.dim)]
         # which, together with the order, gives us the shape of the transition matrix
-        subshape = [max(x[i] for x in seq) - self.mins[i] + 1 for i in range(self.dim)]
+        subshape = tuple(max(x[i] for x in seq) - self.mins[i] + 1 for i in range(self.dim))
         shape = subshape * (self.order + 1)
-        print("Attempting to allocate transition matrix of shape", shape)
+        print("Attempting to allocate transition matrix of shape", shape, end="... ")
         self.tr_matrix = np.zeros(shape)
+        print("successful!")
 
         # count occurrences of transitions
         for np1gram in nwise(seq, self.order + 1):
@@ -37,15 +38,9 @@ class Markov:
             self.tr_matrix[np1gram] += 1
 
         # now to divide all counts
-        indexrange = np.indices(subshape * self.order)
-        submatrix = None
-        i = 0
-        for I in indexrange:
-            submatrix = self.tr_matrix[I]
-            submatrix /= submatrix.sum()
-            i += 1
-        print(submatrix.shape, submatrix.sum(), i)
-        
+        for I in np.ndindex(subshape * self.order):
+            submatrix = self.tr_matrix[I]  # here's a potential bug if submatrix becomes a copy instead of a view
+            submatrix /= submatrix.sum() or 1
 
     def sparseness(self):
         """ zeros, nonzeros = markov.sparseness() """
@@ -60,7 +55,3 @@ class Markov:
         submat = self.tr_matrix[self.state]
         options = submat.nonzero()
         p = submat[options]
-        
-        
-
-
