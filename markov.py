@@ -14,8 +14,11 @@ class Markov:
         self.dim = 1
         self.state = None        
 
-    def val2index(self, val):
+    def val2ind(self, val):
         return tuple(val[i] - self.mins[i] for i in range(self.dim))
+
+    def ind2val(self, val):
+        return tuple(val[i] + self.mins[i] for i in range(self.dim))
 
     def learn(self, seq: Sequence):
         print("Learning...")
@@ -33,7 +36,7 @@ class Markov:
 
         # count occurrences of transitions
         for np1gram in nwise(seq, self.order + 1):
-            np1gram = tuple(self.val2index(val) for val in np1gram)
+            np1gram = tuple(self.val2ind(val) for val in np1gram)
             np1gram = tuple(chain.from_iterable(np1gram))  # flatten
             self.tr_matrix[np1gram] += 1
 
@@ -48,20 +51,23 @@ class Markov:
         z = self.tr_matrix.size - nz
         return z, nz
 
-    def start(self, state):
-        self.state = state if isinstance(state, Sequence) else [state]
-        assert len(self.state) == self.order, "Not enough state to satisfy Markov order"
+    def start(self, state: Sequence):
+        """ :param state: a list of states the same length as the order """
+        if not isinstance(state[0], Sequence):
+            state = [[x] for x in state]
+        self.state = [self.val2ind(x) for x in state]
 
     def next(self):
-        state = tuple(chain.from_iterable(self.state)) \
+        state = chain.from_iterable(self.state) \
             if isinstance(self.state[0], Sequence) \
-            else tuple(self.state)
-        submat = self.tr_matrix[state]
+            else self.state
+        submat = self.tr_matrix[tuple(state)]
         options = submat.nonzero()
         p = submat[options]
         # ret = np.random.choice(np.transpose(options), p=p)
         # this would not work because random.choice only accepts 1D arrays
         options = np.transpose(options)
+        assert options.any(), "No future for state " + str(state)
         ret = options[np.random.choice(len(options), p=p)].tolist()
-        self.state = self.state[1:] + ret
-        return ret
+        self.state = self.state[1:] + ret if self.order > 1 else ret
+        return self.ind2val(ret)
