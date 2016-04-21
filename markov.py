@@ -49,9 +49,19 @@ class Markov:
         return z, nz
 
     def start(self, state):
-        self.state = state
+        self.state = state if isinstance(state, Sequence) else [state]
+        assert len(self.state) == self.order, "Not enough state to satisfy Markov order"
 
     def next(self):
-        submat = self.tr_matrix[self.state]
+        state = tuple(chain.from_iterable(self.state)) \
+            if isinstance(self.state[0], Sequence) \
+            else tuple(self.state)
+        submat = self.tr_matrix[state]
         options = submat.nonzero()
         p = submat[options]
+        # ret = np.random.choice(np.transpose(options), p=p)
+        # this would not work because random.choice only accepts 1D arrays
+        options = np.transpose(options)
+        ret = options[np.random.choice(len(options), p=p)].tolist()
+        self.state = self.state[1:] + ret
+        return ret

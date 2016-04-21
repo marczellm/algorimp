@@ -5,6 +5,7 @@ import enum
 from markov import Markov
 from utils import nwise
 
+
 class ABCNote(enum.Enum):
     C = 0
     Db = 1
@@ -128,16 +129,16 @@ def main():
         m.ticks_since_last_note_start = m.tick_abs - n.tick_abs
         m.ticks_since_last_note_end = m.tick_abs - n.tick_abs + n.duration
 
-    m = max(n.duration_quantised for n in notes)
-    np = next(n for n in notes if n.duration_quantised == m)
-
     markov = Markov()
     markov.learn([n.pitch for n in notes])
+    markov.start(notes[0].pitch)
+    for i in range(30):
+        n = Note()
+        n.pitch = markov.next()[0]
+        print(n.abcnote)
 
 
 b = __name__ == "__main__"
 if b:
     print("Running...")
     main()
-
-    
