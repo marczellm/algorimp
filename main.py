@@ -43,10 +43,21 @@ def main():
     m2.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
     m2.start([(notes[0].ticks_since_beat_quantised, notes[0].duration_quantised)])
 
+    gen = []
+    beat = 0
     for i in range(500):
         p = m1.next()
         tsbq, dq = m2.next()
-        print(dq)
+        n = Note()
+        tsbq *= 10
+        dq *= 10
+        n.pitch = p
+        if gen and gen[:-1].ticks_since_beat > tsbq:
+            beat += 1
+        n.tick_abs = beat * Note.resolution + tsbq
+        n.duration = dq
+        gen.append(n)
+        
 
 if __name__ == "__main__":
     main()
