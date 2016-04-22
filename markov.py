@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from bidict import bidict, inverted
 import numpy as np
 from utils import nwise
 from itertools import chain
@@ -10,25 +11,27 @@ class Markov:
     def __init__(self, order=1):
         self.order = order
         self.tr_matrix = None
-        self.mins = []
+        self.ind_maps = []
         self.dim = 1
         self.state = None        
 
     def val2ind(self, val):
-        return tuple(val[i] - self.mins[i] for i in range(self.dim))
+        return tuple(self.ind_maps[i][val[i]] for i in range(self.dim))
 
     def ind2val(self, val):
-        return tuple(val[i] + self.mins[i] for i in range(self.dim))
+        return tuple(self.ind_maps[i].inv[val[i]] for i in range(self.dim))
 
     def learn(self, seq: Sequence):
         print("Learning...")
         self.dim = len(seq[0]) if isinstance(seq[0], Sequence) else 1
         if not isinstance(seq[0], Sequence):
             seq = [[x] for x in seq]
-        # determine the minimum possible value for each dimension
-        self.mins = [min(x[i] for x in seq) for i in range(self.dim)]
+        # determine the set of possible values for each dimension
+        val_sets = [{x[i] for x in seq} for i in range(self.dim)]
+        # create a mapping from values to indices
+        self.ind_maps = [bidict(inverted(enumerate(sorted(s)))) for s in val_sets]
         # which, together with the order, gives us the shape of the transition matrix
-        subshape = tuple(max(x[i] for x in seq) - self.mins[i] + 1 for i in range(self.dim))
+        subshape = tuple(len(im) for im in self.ind_maps)
         shape = subshape * (self.order + 1)
         print("Attempting to allocate transition matrix of shape", shape, end="... ")
         self.tr_matrix = np.zeros(shape)
@@ -64,8 +67,6 @@ class Markov:
         submat = self.tr_matrix[tuple(state)]
         options = submat.nonzero()
         p = submat[options]
-        # ret = np.random.choice(np.transpose(options), p=p)
-        # this would not work because random.choice only accepts 1D arrays
         options = np.transpose(options)
         assert options.any(), "No future for state " + str(state)
         ret = options[np.random.choice(len(options), p=p)].tolist()
