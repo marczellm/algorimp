@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import midi
+import midiutil.MidiFile3
 from markov import Markov
 from music import Note
 from utils import nwise
@@ -59,22 +60,12 @@ def main():
         n.duration = dq
         gen.append(n)
 
-    kf = midi.Pattern()
-    kf.append(midifile_rel[0])
-    track = midi.Track()
-    for ev in midifile_abs[1]:
-        if ev.tick == 0 and not isinstance(ev, midi.NoteOnEvent):
-            track.append(ev)
-    last_tick = 0
+    kf = midiutil.MidiFile3.MIDIFile(1)
+    kf.addTrackName(0, 0, "Track 1")
     for n in gen:
-        on = midi.NoteOnEvent(tick=n.tick_abs - last_tick, pitch=n.pitch, velocity=100)
-        off = midi.NoteOnEvent(tick=n.duration, pitch=n.pitch, velocity=0)
-        track.append(on)
-        track.append(off)
-        last_tick = n.tick_abs + n.duration
-    track.append(midi.EndOfTrackEvent(tick=1))  # gen[-1].tick_abs + gen[-1].duration + 1))
-    kf.append(track)
-    midi.write_midifile("output.mid", kf)
+        kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)
+    with open("output.mid", 'wb') as f:
+        kf.writeFile(f)
         
 
 if __name__ == "__main__":
