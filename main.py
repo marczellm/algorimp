@@ -8,7 +8,7 @@ from utils import nwise
 
 
 def main():
-    filename = r"D:\Marci\Google Drive\PPKE\Önlab\MSc\bluesscale.mid"
+    filename = r"D:\Marci\Google Drive\PPKE\Önlab\MSc\MIDI\bluesscale.mid"
     print("Reading file " + filename)
     midifile_rel = midi.read_midifile(filename)
     midifile_abs = copy.deepcopy(midifile_rel)
