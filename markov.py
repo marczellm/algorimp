@@ -19,7 +19,8 @@ class Markov:
         return tuple(self.ind_maps[i][val[i]] for i in range(self.dim))
 
     def ind2val(self, val):
-        return tuple(self.ind_maps[i].inv[val[i]] for i in range(self.dim))
+        ret = tuple(self.ind_maps[i].inv[val[i]] for i in range(self.dim))
+        return ret if len(ret) > 1 else ret[0]
 
     def learn(self, seq: Sequence):
         print("Learning...")

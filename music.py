@@ -61,10 +61,10 @@ class Note:
 
     @property
     def beat_in_measure(self):
-        return self.beat_no % 4
+        return self.beat % 4
 
     @property
-    def beat_no(self):
+    def beat(self):
         return self.tick_abs // self.resolution
 
     @property
@@ -72,7 +72,7 @@ class Note:
         return self.tick_abs % self.resolution
 
     @property
-    def measure_no(self):
+    def measure(self):
         return self.tick_abs // (4 * self.resolution)
 
     @property

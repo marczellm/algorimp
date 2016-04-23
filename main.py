@@ -7,8 +7,9 @@ from utils import nwise
 
 
 def main():
-    print("Reading file " + r"D:\Marci\Google Drive\PPKE\Önlab\MSc\bluesscale.mid")
-    midifile_rel = midi.read_midifile(r"D:\Marci\Google Drive\PPKE\Önlab\MSc\bluesscale.mid")
+    filename = r"D:\Marci\Google Drive\PPKE\Önlab\MSc\bluesscale.mid"
+    print("Reading file " + filename)
+    midifile_rel = midi.read_midifile(filename)
     midifile_abs = copy.deepcopy(midifile_rel)
     midifile_abs.make_ticks_abs()
     notes = []
@@ -43,8 +44,8 @@ def main():
     m2.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
     m2.start([(notes[0].ticks_since_beat_quantised, notes[0].duration_quantised)])
 
-    gen = []
-    beat = 0
+    gen = [notes[0]]
+    beat = notes[0].beat
     for i in range(500):
         p = m1.next()
         tsbq, dq = m2.next()
@@ -52,11 +53,28 @@ def main():
         tsbq *= 10
         dq *= 10
         n.pitch = p
-        if gen and gen[:-1].ticks_since_beat > tsbq:
+        if gen and gen[-1].ticks_since_beat > tsbq:
             beat += 1
         n.tick_abs = beat * Note.resolution + tsbq
         n.duration = dq
         gen.append(n)
+
+    kf = midi.Pattern()
+    kf.append(midifile_rel[0])
+    track = midi.Track()
+    for ev in midifile_abs[1]:
+        if ev.tick == 0 and not isinstance(ev, midi.NoteOnEvent):
+            track.append(ev)
+    last_tick = 0
+    for n in gen:
+        on = midi.NoteOnEvent(tick=n.tick_abs - last_tick, pitch=n.pitch, velocity=100)
+        off = midi.NoteOnEvent(tick=n.duration, pitch=n.pitch, velocity=0)
+        track.append(on)
+        track.append(off)
+        last_tick = n.tick_abs + n.duration
+    track.append(midi.EndOfTrackEvent(tick=1))  # gen[-1].tick_abs + gen[-1].duration + 1))
+    kf.append(track)
+    midi.write_midifile("output.mid", kf)
         
 
 if __name__ == "__main__":
