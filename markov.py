@@ -65,11 +65,12 @@ class Markov:
         state = chain.from_iterable(self.state) \
             if isinstance(self.state[0], Sequence) \
             else self.state
-        submat = self.tr_matrix[tuple(state)]
+        state = tuple(state)
+        submat = self.tr_matrix[state]
         options = submat.nonzero()
         p = submat[options]
         options = np.transpose(options)
         assert options.any(), "No future for state " + str(state)
         ret = options[np.random.choice(len(options), p=p)].tolist()
-        self.state = self.state[1:] + ret if self.order > 1 else ret
+        self.state = self.state[1:] + [ret] if self.order > 1 else ret
         return self.ind2val(ret)
