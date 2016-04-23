@@ -39,15 +39,15 @@ def main():
 
     m1 = Markov(3)
     m1.learn([n.pitch for n in notes])
-    m1.start([notes[0].pitch, notes[1].pitch, notes[2].pitch])
+    m1.start([n.pitch for n in notes[:m1.order]])
 
     m2 = Markov()
     m2.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
-    m2.start([(notes[2].ticks_since_beat_quantised, notes[2].duration_quantised)])
+    m2.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:m2.order]])
 
     print("Generating notes...")
-    gen = [notes[0], notes[1], notes[2]]
-    beat = notes[2].beat
+    gen = notes[:max(m1.order, m2.order)]
+    beat = gen[-1].beat
     for i in range(500):
         p = m1.next()
         tsbq, dq = m2.next()
