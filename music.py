@@ -48,6 +48,7 @@ class Chord:
 
 class Note:
     resolution = 0
+    meter = 4
 
     def __init__(self):
         self.tick_abs = 0
@@ -61,7 +62,7 @@ class Note:
 
     @property
     def beat_in_measure(self):
-        return self.beat % 4
+        return self.beat % self.meter
 
     @property
     def beat(self):
@@ -73,11 +74,11 @@ class Note:
 
     @property
     def measure(self):
-        return self.tick_abs // (4 * self.resolution)
+        return self.tick_abs // (self.meter * self.resolution)
 
     @property
     def ticks_since_measure(self):
-        return self.tick_abs % (4 * self.resolution)
+        return self.tick_abs % (self.meter * self.resolution)
 
     @property
     def abcnote(self):
