@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import midi
-import midiutil.MidiFile3
+import midiutil.MidiFile
 from markov import Markov
 from music import Note
 from utils import nwise
@@ -62,7 +62,7 @@ def main():
         gen.append(n)
 
     print("Writing to file...", end=' ')
-    kf = midiutil.MidiFile3.MIDIFile(1)
+    kf = midiutil.MidiFile.MIDIFile(1, adjust_origin=False)
     kf.addTrackName(0, 0, "Track 1")
     for n in gen:
         kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)

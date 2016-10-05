@@ -15,29 +15,32 @@ class ABCNote(enum.Enum):
     Bb = 10
     B = 11
 
+    __mapping = {'cb': 'B', 'ces': 'B', 'c#': 'Db', 'cis': 'Db', 'c': 'C',
+                 'db': 'Db', 'des': 'Db', 'd#': 'Eb', 'dis': 'Eb', 'd': 'D',
+                 'eb': 'Eb', 'es': 'Eb', 'e#': 'F', 'eis': 'F', 'e': 'E',
+                 'fb': 'E', 'fes': 'E', 'f#': 'Gb', 'fis': 'Gb', 'f': 'F',
+                 'gb': 'Gb', 'ges': 'Gb', 'g#': 'Ab', 'gis': 'Ab', 'g': 'G',
+                 'ab': 'Ab', 'as': 'Ab', 'a#': 'Bb', 'ais': 'Bb', 'a': 'A',
+                 'bb': 'Bb', 'bes': 'Bb', 'b#': 'C', 'bis': 'C', 'b': 'B',
+                 'h': 'B', 'his': 'C', 'h#': 'C'}
+
     @classmethod
-    def from_string(cls, s):  # not using enum aliases because # is not allowed in an identifier
-        mapping = {'cb': 'B', 'ces': 'B', 'c#': 'Db', 'cis': 'Db', 'c': 'C',
-                   'db': 'Db', 'des': 'Db', 'd#': 'Eb', 'dis': 'Eb', 'd': 'D',
-                   'eb': 'Eb', 'es': 'Eb', 'e#': 'F', 'eis': 'F', 'e': 'E',
-                   'fb': 'E', 'fes': 'E', 'f#': 'Gb', 'fis': 'Gb', 'f': 'F',
-                   'gb': 'Gb', 'ges': 'Gb', 'g#': 'Ab', 'gis': 'Ab', 'g': 'G',
-                   'ab': 'Ab', 'as': 'Ab', 'a#': 'Bb', 'ais': 'Bb', 'a': 'A',
-                   'bb': 'Bb', 'bes': 'Bb', 'b#': 'C', 'bis': 'C', 'b': 'B'}
+    def from_string(cls, s: str):  # not using enum aliases because # is not allowed in an identifier
         s = s.lower()
-        assert s in mapping, "Invalid note name"
+        assert s in cls.__mapping, "Invalid note name"
         return cls[mapping[s]]
 
 
 class ChordType(enum.Enum):
     dim = 0
     m7b5 = 1
-    m7 = 2
-    mmaj = 3
-    _7 = 4
-    maj = 5
-    aug = 6
-    augmaj = 7
+    dimmaj = 2
+    m7 = 3
+    mmaj = 4
+    _7 = 5
+    maj = 6
+    aug7 = 7
+    augmaj = 8
 
 
 class Chord:
