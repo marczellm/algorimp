@@ -3,12 +3,17 @@ import copy
 import midi
 import midiutil.MidiFile
 from markov import Markov
-from music import Note
+from music import Note, ChordProgression, ABCNote
 from utils import nwise
 
 
 def main():
-    filename = r"D:\Marci\Google Drive\PPKE\Önlab\MSc\MIDI\bluesscale.mid"
+    songname = "A_bluesscale"
+    filename_changes = r"changes\{}.txt".format(songname)
+    bf = open(filename_changes)
+    changes = ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
+    bf.close()   
+    filename = r"input\{}.mid".format(songname)
     print("Reading file " + filename)
     midifile_rel = midi.read_midifile(filename)
     midifile_abs = copy.deepcopy(midifile_rel)
@@ -58,6 +63,7 @@ def main():
         if gen and gen[-1].ticks_since_beat > tsbq:
             beat += 1
         n.tick_abs = beat * Note.resolution + tsbq
+        chord = changes[(beat - 1) % len(changes)]
         n.duration = dq
         gen.append(n)
 

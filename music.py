@@ -47,6 +47,9 @@ class Chord:
     def __str__(self):
         return self.root.name + self.type.name
 
+    def __eq__(self, other):
+        return self.root == other.root and self.type == other.type
+
 
 class ChordProgression(list):
     """ A chord progression with absolute base notes. """
@@ -89,6 +92,9 @@ class ChordProgression(list):
             else:
                 ret += str(chord) + ' '
         return ret
+
+    def number_of_measures(self):
+        return len(self) / 4
 
 
 class Note:
