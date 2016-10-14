@@ -1,100 +1,7 @@
 import enum
 import re
-
-
-class ABCNote(enum.Enum):
-    C = 0
-    Db = 1
-    D = 2
-    Eb = 3
-    E = 4
-    F = 5
-    Gb = 6
-    G = 7
-    Ab = 8
-    A = 9
-    Bb = 10
-    B = 11
-
-    @classmethod
-    def mapping(cls):
-        return {'cb': 'B', 'ces': 'B', 'c#': 'Db', 'cis': 'Db', 'c': 'C',
-                'db': 'Db', 'des': 'Db', 'd#': 'Eb', 'dis': 'Eb', 'd': 'D',
-                'eb': 'Eb', 'es': 'Eb', 'e#': 'F', 'eis': 'F', 'e': 'E',
-                'fb': 'E', 'fes': 'E', 'f#': 'Gb', 'fis': 'Gb', 'f': 'F',
-                'gb': 'Gb', 'ges': 'Gb', 'g#': 'Ab', 'gis': 'Ab', 'g': 'G',
-                'ab': 'Ab', 'as': 'Ab', 'a#': 'Bb', 'ais': 'Bb', 'a': 'A',
-                'bb': 'Bb', 'bes': 'Bb', 'b#': 'C', 'bis': 'C', 'b': 'B',
-                'h': 'B', 'his': 'C', 'h#': 'C'}
-
-    @classmethod
-    def from_string(cls, s: str):  # not using enum aliases because # is not allowed in an identifier
-        mapping = cls.mapping()
-        s = s.lower()
-        assert s in mapping, "Invalid note name"
-        return cls[mapping[s]]
-
-
-# Define this dynamically to be able to have a member named 7
-ChordType = enum.Enum('ChordType', 'dim m7b5 dimmaj m7 mmaj 7 maj aug7 augmaj')
-
-
-class Chord:
-    def __init__(self, root: ABCNote, typ: ChordType):
-        self.root = root
-        self.type = typ
-
-    def __str__(self):
-        return self.root.name + self.type.name
-
-    def __eq__(self, other):
-        return self.root == other.root and self.type == other.type
-
-
-class ChordProgression(list):
-    """ A chord progression with absolute base notes. """
-    def __init__(self, base: ABCNote, string=None):
-        """
-        :param base: The tonic note
-        :param string: The chord progression in string format
-        """
-        super(ChordProgression, self).__init__()
-        self.base = base
-        if string:
-            self.__parse(string.lower())
-
-    def transpose(self, new_base: ABCNote) -> 'ChordProgression':
-        """ :param new_base: The new tonic """
-        ret = ChordProgression(new_base)
-        diff = new_base.value - self.base.value
-        if not diff:
-            return self
-        for chord in self:
-            ret.append(Chord(ABCNote((chord.root.value + diff) % 12), chord.type))
-        return ret
-
-    def __parse(self, string: str):
-        s_roots = '|'.join(ABCNote.mapping().keys())
-        s_types = '|'.join(x.name for x in ChordType)
-        s_regex = "(({})({})|-)".format(s_roots, s_types)
-        regex = re.compile(s_regex.lower())
-        for match in regex.finditer(string):
-            if match.group(0) == '-':
-                self.append(self[-1])
-            else:
-                self.append(Chord(ABCNote.from_string(match.group(2)), ChordType[match.group(3)]))
-
-    def __str__(self):
-        ret = ""
-        for i, chord in enumerate(self):
-            if i > 0 and chord == self[i-1]:
-                ret += '- '
-            else:
-                ret += str(chord) + ' '
-        return ret
-
-    def number_of_measures(self):
-        return len(self) / 4
+import numpy as np
+from typing import List
 
 
 class Note:
@@ -151,3 +58,137 @@ class Note:
     def velocity_quantised(self):
         return round(self.velocity / 6.4)
 
+
+class ABCNote(enum.Enum):
+    C = 0
+    Db = 1
+    D = 2
+    Eb = 3
+    E = 4
+    F = 5
+    Gb = 6
+    G = 7
+    Ab = 8
+    A = 9
+    Bb = 10
+    B = 11
+
+    @classmethod
+    def mapping(cls):
+        return {'cb': 'B', 'ces': 'B', 'c#': 'Db', 'cis': 'Db', 'c': 'C',
+                'db': 'Db', 'des': 'Db', 'd#': 'Eb', 'dis': 'Eb', 'd': 'D',
+                'eb': 'Eb', 'es': 'Eb', 'e#': 'F', 'eis': 'F', 'e': 'E',
+                'fb': 'E', 'fes': 'E', 'f#': 'Gb', 'fis': 'Gb', 'f': 'F',
+                'gb': 'Gb', 'ges': 'Gb', 'g#': 'Ab', 'gis': 'Ab', 'g': 'G',
+                'ab': 'Ab', 'as': 'Ab', 'a#': 'Bb', 'ais': 'Bb', 'a': 'A',
+                'bb': 'Bb', 'bes': 'Bb', 'b#': 'C', 'bis': 'C', 'b': 'B',
+                'h': 'B', 'his': 'C', 'h#': 'C'}
+
+    @classmethod
+    def from_string(cls, s: str):  # not using enum aliases because # is not allowed in an identifier
+        mapping = cls.mapping()
+        s = s.lower()
+        assert s in mapping, "Invalid note name"
+        return cls[mapping[s]]
+
+    def __add__(self, other: int) -> 'ABCNote':
+        return ABCNote((self.value + other) % 12)
+
+
+# Define this dynamically to be able to have a member named 7
+ChordType = enum.Enum('ChordType', 'dimmaj dim m7b5 m7 mmaj 7 maj aug7 augmaj', start=2)
+
+
+class Chord:
+    def __init__(self, root: ABCNote, typ: ChordType):
+        self.root = root
+        self.type = typ
+
+    def __str__(self):
+        return self.root.name + self.type.name
+
+    def __eq__(self, other):
+        return self.root == other.root and self.type == other.type
+
+    __roots = '|'.join(ABCNote.mapping().keys())
+    __types = '|'.join(x.name for x in ChordType)
+    s_regex = "({})({})".format(__roots, __types)
+    __compiled = re.compile(s_regex.lower())
+
+    @classmethod
+    def parse(cls, string: str) -> 'Chord':
+        match = cls.__compiled.match(string.lower())
+        if match:
+            return Chord(ABCNote.from_string(match.group(1)), ChordType[match.group(2)])
+
+    def notes(self) -> List[ABCNote]:
+        shapes = {  # Chord shapes given with thirds
+            ChordType.dim: [3, 3, 3],
+            ChordType.m7b5: [3, 3, 4],
+            ChordType.dimmaj: [3, 3, 5],
+            ChordType.m7: [3, 4, 3],
+            ChordType.mmaj: [3, 4, 4],
+            ChordType(7): [4, 3, 3],
+            ChordType.maj: [4, 3, 4],
+            ChordType.aug7: [4, 4, 2],
+            ChordType.augmaj: [4, 4, 3]
+        }
+        return [self.root] + [self.root + interval for interval in np.cumsum(shapes[self.type])]
+
+    def voicing137(self) -> List[Note]:
+        """ :return: a basic 1-3-7 voicing of the chord """
+        abcnotes = self.notes()
+        midinotes = []
+        oct_shift = 0
+        for i, note in enumerate(abcnotes):
+            if i > 0 and abcnotes[i - 1].value > note.value:
+                oct_shift += 12
+            mnote = Note()
+            mnote.pitch = note.value + oct_shift + 48
+            mnote.duration = Note.resolution
+            mnote.velocity = 80
+            midinotes.append(mnote)
+        return midinotes
+
+
+class ChordProgression(list):
+    """ A chord progression with absolute base notes. """
+    def __init__(self, base: ABCNote, string=None):
+        """
+        :param base: The tonic note
+        :param string: The chord progression in string format
+        """
+        super(ChordProgression, self).__init__()
+        self.base = base
+        if string:
+            self.__parse(string.lower())
+
+    def transpose(self, new_base: ABCNote) -> 'ChordProgression':
+        """ :param new_base: The new tonic """
+        ret = ChordProgression(new_base)
+        diff = new_base.value - self.base.value
+        if not diff:
+            return self
+        for chord in self:
+            ret.append(Chord(chord.root + diff, chord.type))
+        return ret
+
+    def __parse(self, string: str):
+        regex = re.compile("({}|-)".format(Chord.s_regex).lower())
+        for match in regex.finditer(string):
+            if match.group(0) == '-':
+                self.append(self[-1])
+            else:
+                self.append(Chord.parse(match.group(0)))
+
+    def __str__(self):
+        ret = ""
+        for i, chord in enumerate(self):
+            if i > 0 and chord == self[i-1]:
+                ret += '- '
+            else:
+                ret += str(chord) + ' '
+        return ret
+
+    def number_of_measures(self):
+        return len(self) / 4

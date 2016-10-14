@@ -8,23 +8,29 @@ from utils import nwise
 
 
 def main():
-    songname = "A_bluesscale"
+    songname = "C_blues"
+
+    # Read the chord changes from a text file
     filename_changes = r"changes\{}.txt".format(songname)
     bf = open(filename_changes)
     changes = ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
     bf.close()   
+
+    # Read the training set from a MIDI file
     filename = r"input\{}.mid".format(songname)
     print("Reading file " + filename)
     midifile_rel = midi.read_midifile(filename)
     midifile_abs = copy.deepcopy(midifile_rel)
     midifile_abs.make_ticks_abs()
-    notes = []
-    active_notes = {}
 
     tempos = list(filter(lambda x: isinstance(x, midi.SetTempoEvent), midifile_rel[0]))
     assert len(tempos) == 1, "This code does not handle tempo changes"
 
+    # Convert MIDI events to our music representation: a list of Note objects
+    notes = []
+    active_notes = {}
     Note.resolution = midifile_rel.resolution
+
     for ev_rel, ev_abs in zip(midifile_rel[1], midifile_abs[1]):
         if isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1]:
             n = Note()
@@ -42,6 +48,7 @@ def main():
         m.ticks_since_last_note_start = m.tick_abs - n.tick_abs
         m.ticks_since_last_note_end = m.tick_abs - n.tick_abs + n.duration
 
+    # Train the Markov chains
     m1 = Markov(3)
     m1.learn([n.pitch for n in notes])
     m1.start([n.pitch for n in notes[:m1.order]])
@@ -50,9 +57,12 @@ def main():
     m2.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
     m2.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:m2.order]])
 
+    # Generate output
     print("Generating notes...")
-    gen = notes[:max(m1.order, m2.order)]
-    beat = gen[-1].beat
+    melody = notes[:max(m1.order, m2.order)]
+    withchords = copy.deepcopy(melody)
+    beat = melody[-1].beat
+    chord = changes[(beat - 1) % len(changes)]
     for i in range(500):
         p = m1.next()
         tsbq, dq = m2.next()
@@ -60,17 +70,27 @@ def main():
         tsbq *= 10
         dq *= 10
         n.pitch = p
-        if gen and gen[-1].ticks_since_beat > tsbq:
+        if melody and melody[-1].ticks_since_beat > tsbq:
             beat += 1
         n.tick_abs = beat * Note.resolution + tsbq
-        chord = changes[(beat - 1) % len(changes)]
         n.duration = dq
-        gen.append(n)
+        melody.append(n)
+        withchords.append(n)
 
+        # If the chord changed, add a voicing to the MIDI file
+        newchord = changes[(beat - 1) % len(changes)]
+        if newchord != chord:
+            chord = newchord
+            voicing = chord.voicing137()
+            for v in voicing:
+                v.tick_abs = beat * Note.resolution
+                withchords.append(v)
+
+    # Write output file
     print("Writing to file...", end=' ')
     kf = midiutil.MidiFile.MIDIFile(1, adjust_origin=False)
     kf.addTrackName(0, 0, "Track 1")
-    for n in gen:
+    for n in withchords:
         kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)
     with open("output.mid", 'wb') as f:
         kf.writeFile(f)
