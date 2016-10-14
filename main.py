@@ -71,20 +71,21 @@ def main():
         dq *= 10
         n.pitch = p
         if melody and melody[-1].ticks_since_beat > tsbq:
-            beat += 1
-        n.tick_abs = beat * Note.resolution + tsbq
+            beat_diff = 1 + melody[-1].duration // Note.resolution
+            for _ in range(beat_diff):
+                beat += 1
+                # If the chord changed, add a voicing to the MIDI file
+                newchord = changes[(beat - 1) % len(changes)]
+                if newchord != chord:
+                    chord = newchord
+                    voicing = chord.voicing137()
+                    for v in voicing:
+                        v.tick_abs = beat * Note.resolution
+                        withchords.append(v)
+        n.tick_abs = max(beat * Note.resolution + tsbq, melody[-1].tick_abs + melody[-1].duration)
         n.duration = dq
         melody.append(n)
         withchords.append(n)
-
-        # If the chord changed, add a voicing to the MIDI file
-        newchord = changes[(beat - 1) % len(changes)]
-        if newchord != chord:
-            chord = newchord
-            voicing = chord.voicing137()
-            for v in voicing:
-                v.tick_abs = beat * Note.resolution
-                withchords.append(v)
 
     # Write output file
     print("Writing to file...", end=' ')
