@@ -14,7 +14,6 @@ class Note:
         self.duration = 0
         self.pitch = 0
         self.velocity = 0
-        self.ticks_since_chord = 0
         self.ticks_since_last_note_start = 0
         self.ticks_since_last_note_end = 0
 
@@ -109,6 +108,9 @@ class Chord:
 
     def __eq__(self, other):
         return self.root == other.root and self.type == other.type
+
+    def __hash__(self):
+        return hash((self.root, self.type))
 
     __roots = '|'.join(ABCNote.mapping().keys())
     __types = '|'.join(x.name for x in ChordType)
