@@ -1,30 +1,24 @@
 # -*- coding: utf-8 -*-
 import copy
+import math
 import midi
 import midiutil.MidiFile
 from markov import Markov
 from music import Note, ChordProgression, ABCNote
 from utils import nwise
+from typing import List
 
 
-def main():
-    songname = "C_blues"
+def changes_from_file(songname: str) -> ChordProgression:
+    with open(r"changes\{}.txt".format(songname)) as bf:
+        return ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
 
-    # Read the chord changes from a text file
-    filename_changes = r"changes\{}.txt".format(songname)
-    bf = open(filename_changes)
-    changes = ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
-    bf.close()   
 
-    # Read the training set from a MIDI file
+def notes_from_file(songname: str) -> List[Note]:
     filename = r"input\{}.mid".format(songname)
-    print("Reading file " + filename)
     midifile_rel = midi.read_midifile(filename)
     midifile_abs = copy.deepcopy(midifile_rel)
     midifile_abs.make_ticks_abs()
-
-    tempos = list(filter(lambda x: isinstance(x, midi.SetTempoEvent), midifile_rel[0]))
-    assert len(tempos) == 1, "This code does not handle tempo changes"
 
     # Convert MIDI events to our music representation: a list of Note objects
     notes = []
@@ -47,6 +41,24 @@ def main():
     for n, m in nwise(notes, 2):
         m.ticks_since_last_note_start = m.tick_abs - n.tick_abs
         m.ticks_since_last_note_end = m.tick_abs - n.tick_abs + n.duration
+    return notes
+
+
+def notes_to_file(notes: List[Note]):
+    kf = midiutil.MidiFile.MIDIFile(1, adjust_origin=False)
+    kf.addTrackName(0, 0, "Track 1")
+    for n in notes:
+        kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)
+    with open("output.mid", 'wb') as f:
+        kf.writeFile(f)
+
+
+def main():
+    songname = "C_blues"
+    # Read the chord changes from a text file
+    changes = changes_from_file(songname)
+    # Read the training set from a MIDI file
+    notes = notes_from_file(songname)
 
     # Train the Markov chains
     m1 = Markov(3)
@@ -78,25 +90,20 @@ def main():
                 newchord = changes[(beat - 1) % len(changes)]
                 if newchord != chord:
                     chord = newchord
-                    voicing = chord.voicing137()
+                    voicing = chord.voicing1357()
                     for v in voicing:
                         v.tick_abs = beat * Note.resolution
                         withchords.append(v)
-        n.tick_abs = max(beat * Note.resolution + tsbq, melody[-1].tick_abs + melody[-1].duration)
+        # Prevent overlapping notes
+        n.tick_abs = tsbq + Note.resolution * \
+            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
         n.duration = dq
         melody.append(n)
         withchords.append(n)
 
     # Write output file
-    print("Writing to file...", end=' ')
-    kf = midiutil.MidiFile.MIDIFile(1, adjust_origin=False)
-    kf.addTrackName(0, 0, "Track 1")
-    for n in withchords:
-        kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)
-    with open("output.mid", 'wb') as f:
-        kf.writeFile(f)
-    print("Done.")
-        
+    notes_to_file(withchords)
+
 
 if __name__ == "__main__":
     main()

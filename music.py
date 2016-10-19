@@ -135,8 +135,8 @@ class Chord:
         }
         return [self.root] + [self.root + interval for interval in np.cumsum(shapes[self.type])]
 
-    def voicing137(self) -> List[Note]:
-        """ :return: a basic 1-3-7 voicing of the chord """
+    def voicing1357(self) -> List[Note]:
+        """ :return: a basic 1-3-5-7 voicing of the chord """
         abcnotes = self.notes()
         midinotes = []
         oct_shift = 0
