@@ -96,8 +96,8 @@ class Markov:
 
 
 class MarkovRhythmGenerator:
-    def __init__(self):
-        self.markov = Markov()
+    def __init__(self, order=1):
+        self.markov = Markov(order)
 
     def learn(self, notes: List[Note]):
         self.markov.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
@@ -112,8 +112,8 @@ class MarkovRhythmGenerator:
 
 
 class ChordAgnosticMarkovMelodyGenerator:
-    def __init__(self):
-        self.markov = Markov(3)
+    def __init__(self, order=3):
+        self.markov = Markov(order)
 
     def learn(self, notes: List[Note]):
         self.markov.learn([n.pitch for n in notes])
@@ -134,8 +134,8 @@ class ChordAgnosticMarkovMelodyGenerator:
 
 
 class StaticChordMarkovMelodyGenerator:
-    def __init__(self, changes: ChordProgression):
-        self.order = 3
+    def __init__(self, changes: ChordProgression, order=3):
+        self.order = order
         self.notes_by_chord = {chord: [] for chord in changes}
         self.markovs_by_chord = {}
         self.current_markov = None  # type: Markov

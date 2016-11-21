@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 import copy
 import math
+from typing import List, Tuple
+
 import midi
 import midiutil.MidiFile
-from markov import StaticChordMarkovMelodyGenerator, ChordAgnosticMarkovMelodyGenerator, MarkovRhythmGenerator
-from music import Note, Chord, ChordProgression, ABCNote
+
+from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
+from music import Note, ChordProgression, ABCNote
 from utils import nwise
-from typing import List, Tuple
 
 
 def changes_from_file(songname: str) -> ChordProgression:
@@ -55,7 +57,8 @@ def notes_to_file(notes: List[Note]):
     print("Done.")
 
 
-def generate(notes: List[Note], changes: ChordProgression, melody_generator, rhythm_generator) -> Tuple[List[Note], List[Note]]:
+def generate(notes: List[Note], changes: ChordProgression,
+             melody_generator, rhythm_generator) -> Tuple[List[Note], List[Note]]:
     """ Improvise a melody using independent learners for the melody and the rhythm
         :param notes: the training set
         :param changes: the chord progression.
