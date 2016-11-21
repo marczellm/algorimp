@@ -42,6 +42,10 @@ class Note:
         return ABCNote(self.pitch % 12)
 
     @property
+    def octave(self):
+        return self.pitch // 12
+
+    @property
     def ticks_since_measure_quantised(self):
         return round(self.ticks_since_measure / 10)
 
@@ -56,6 +60,12 @@ class Note:
     @property
     def velocity_quantised(self):
         return round(self.velocity / 6.4)
+
+    @property
+    def encoded1of12(self):
+        v = [0]*12
+        v[self.pitch % 12] = 1
+        return tuple(v)
 
 
 class ABCNote(enum.Enum):

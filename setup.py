@@ -8,5 +8,5 @@ setup(
     license='',
     author='Márton Marczell',
     author_email='',
-    description='', requires=['bidict', 'numpy', 'midi', 'midiutil']
+    description='', requires=['bidict', 'numpy', 'midi', 'midiutil', 'theano', 'lasagne']
 )

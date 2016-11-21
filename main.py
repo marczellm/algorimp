@@ -3,7 +3,7 @@ import copy
 import math
 import midi
 import midiutil.MidiFile
-from markov import Markov
+from markov import StaticChordMarkovMelodyGenerator, ChordAgnosticMarkovMelodyGenerator, MarkovRhythmGenerator
 from music import Note, Chord, ChordProgression, ABCNote
 from utils import nwise
 from typing import List, Tuple
@@ -55,45 +55,36 @@ def notes_to_file(notes: List[Note]):
     print("Done.")
 
 
-def chord_agnostic_markov(notes: List[Note], changes: ChordProgression) -> Tuple[List[Note], List[Note]]:
-    """ Improvise a melody using one Markov chain for the pitches and an independent one for the rhythm.
-    Chord changes are ignored.
-
-    Usage: ``melody, withchords = chord_agnostic_markov(notes, changes)``
-
-    Here ``melody`` is the generated melody on its own, while ``withchords`` will also contain chord voicings.
-
-    :param notes: the training set
-    :param changes: the chord progression. It is only used when generating the accompaniment voicings.
-    """
-    # Train the Markov chains
-    m1 = Markov(3)
-    m1.learn([n.pitch for n in notes])
-    m1.start([n.pitch for n in notes[:m1.order]])
-
-    m2 = Markov()
-    m2.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
-    m2.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:m2.order]])
+def generate(notes: List[Note], changes: ChordProgression, melody_generator, rhythm_generator) -> Tuple[List[Note], List[Note]]:
+    """ Improvise a melody using independent learners for the melody and the rhythm
+        :param notes: the training set
+        :param changes: the chord progression.
+        :param melody_generator:
+        :param rhythm_generator:
+        """
+    melody_generator.learn(notes)
+    rhythm_generator.learn(notes)
 
     # Generate output
     print("Generating notes...")
-    melody = notes[:max(m1.order, m2.order)]
+    melody = notes[:max(melody_generator.order, rhythm_generator.order)]
     withchords = copy.deepcopy(melody)
     beat = melody[-1].beat
     chord = changes[(beat - 1) % len(changes)]
+    melody_generator.start(chord)
     for i in range(500):
         n = Note()
-        n.pitch = m1.next()
-        tsbq, dq = m2.next()
+        tsbq, dq = rhythm_generator.next()
         tsbq *= 10
         n.duration = dq * 10
         if melody and melody[-1].ticks_since_beat > tsbq:
             beat_diff = 1 + melody[-1].duration // Note.resolution
             for _ in range(beat_diff):
                 beat += 1
-                # If the chord changed, add a voicing to the MIDI file
+                # If the chord changed, add a voicing to the MIDI file, and inform the melody generator
                 newchord = changes[(beat - 1) % len(changes)]
                 if newchord != chord:
+                    melody_generator.start(newchord)
                     chord = newchord
                     voicing = chord.voicing1357()
                     for v in voicing:
@@ -102,62 +93,7 @@ def chord_agnostic_markov(notes: List[Note], changes: ChordProgression) -> Tuple
         # Prevent overlapping notes
         n.tick_abs = tsbq + Note.resolution * \
                             max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
-        melody.append(n)
-        withchords.append(n)
-    return melody, withchords
-
-
-def static_chord_markov(notes: List[Note], changes: ChordProgression) -> Tuple[List[Note], List[Note]]:
-    """ Improvise a melody using one Markov chain for the rhythm and one for each chord.
-    :param notes: the training set
-    :param changes: the chord progression.
-    """
-    def chord_of(n: Note) -> Chord:
-        return changes[(n.beat - 1) % len(changes)]
-
-    order = 3
-    notes_by_chord = {chord: [] for chord in changes}
-    for note in notes:
-        notes_by_chord[chord_of(note)].append(note.pitch)
-    markovs_by_chord = {chord: Markov(order) for chord in changes}
-    for chord, markov in markovs_by_chord.items():
-        markov.learn(notes_by_chord[chord])
-
-    mr = Markov()
-    mr.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
-    mr.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:mr.order]])
-
-    # Generate output
-    print("Generating notes...")
-    melody = notes[:max(order, mr.order)]
-    withchords = copy.deepcopy(melody)
-    beat = melody[-1].beat
-    chord = changes[(beat - 1) % len(changes)]
-    current_markov = markovs_by_chord[chord]
-    current_markov.start([n.pitch for n in notes[:current_markov.order]])
-    for i in range(500):
-        n = Note()
-        tsbq, dq = mr.next()
-        tsbq *= 10
-        n.duration = dq * 10
-        if melody and melody[-1].ticks_since_beat > tsbq:
-            beat_diff = 1 + melody[-1].duration // Note.resolution
-            for _ in range(beat_diff):
-                beat += 1
-                # If the chord changed, add a voicing to the MIDI file, and restart the associated Markov chain
-                newchord = changes[(beat - 1) % len(changes)]
-                if newchord != chord:
-                    current_markov = markovs_by_chord[newchord]
-                    current_markov.start([n.pitch for n in melody[:current_markov.order]])
-                    chord = newchord
-                    voicing = chord.voicing1357()
-                    for v in voicing:
-                        v.tick_abs = beat * Note.resolution
-                        withchords.append(v)
-        # Prevent overlapping notes
-        n.tick_abs = tsbq + Note.resolution * \
-                            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
-        n.pitch = current_markov.next()
+        n.pitch = melody_generator.next()
         melody.append(n)
         withchords.append(n)
     return melody, withchords
@@ -170,7 +106,7 @@ def main():
     # Read the training set from a MIDI file
     notes = notes_from_file(songname)
     # Learn and generate
-    melody, withchords = static_chord_markov(notes, changes)
+    melody, withchords = generate(notes, changes, StaticChordMarkovMelodyGenerator(changes), MarkovRhythmGenerator())
     # Write output file
     notes_to_file(withchords)
 

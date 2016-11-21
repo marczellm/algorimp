@@ -1,8 +1,9 @@
-from typing import Tuple, Union, Sequence
+from typing import Tuple, Union, Sequence, List
 from bidict import bidict, inverted
 import numpy as np
 from utils import nwise
 from itertools import chain
+from music import Note, Chord, ChordProgression
 
 # Type aliases (typedefs)
 State = Union[int, Sequence[int]]  # A scalar or a vector
@@ -92,3 +93,71 @@ class Markov:
         ret = options[np.random.choice(len(options), p=p)].tolist()
         self.state = self.state[1:] + [ret] if self.order > 1 else ret
         return self.__ind2val(ret)
+
+
+class MarkovRhythmGenerator:
+    def __init__(self):
+        self.markov = Markov()
+
+    def learn(self, notes: List[Note]):
+        self.markov.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
+        self.markov.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:self.markov.order]])
+
+    def next(self):
+        return self.markov.next()
+
+    @property
+    def order(self):
+        return self.markov.order
+
+
+class ChordAgnosticMarkovMelodyGenerator:
+    def __init__(self):
+        self.markov = Markov(3)
+
+    def learn(self, notes: List[Note]):
+        self.markov.learn([n.pitch for n in notes])
+        self.markov.start([n.pitch for n in notes[:self.markov.order]])
+
+    def start(self, chord: Chord):
+        pass
+
+    def next(self):
+        return self.markov.next()
+
+    def set_chord(self, chord: Chord):
+        pass
+
+    @property
+    def order(self):
+        return self.markov.order
+
+
+class StaticChordMarkovMelodyGenerator:
+    def __init__(self, changes: ChordProgression):
+        self.order = 3
+        self.notes_by_chord = {chord: [] for chord in changes}
+        self.markovs_by_chord = {}
+        self.current_markov = None  # type: Markov
+        self.notes = []
+        self.changes = changes
+        self.past = []
+
+    def learn(self, notes: List[Note]):
+        self.notes = notes
+        for note in notes:
+            self.notes_by_chord[self.changes[(note.beat - 1) % len(self.changes)]].append(note.pitch)
+        self.markovs_by_chord = {chord: Markov(self.order) for chord in self.changes}
+        for chord, markov in self.markovs_by_chord.items():
+            markov.learn(self.notes_by_chord[chord])
+        self.past = [n.pitch for n in notes[:self.order]]
+
+    def start(self, chord: Chord):
+        self.current_markov = self.markovs_by_chord[chord]
+        self.current_markov.start(self.past)
+
+    def next(self):
+        ret = self.current_markov.next()
+        self.past.append(ret)
+        self.past = self.past[-self.order:]
+        return ret
