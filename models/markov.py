@@ -14,7 +14,7 @@ Sequence.register(np.ndarray)
 
 class Markov:
     """ Class for generating Markov chains. It supports multidimensional values and higher-order chains as well. """
-    def __init__(self, order: int = 1):
+    def __init__(self, order=1):
         """ :param order: the order of the Markov chain """
         self.order = order
         self.tr_matrix = None
@@ -107,7 +107,7 @@ class MarkovRhythmGenerator:
         return self.markov.next()
 
     @property
-    def order(self):
+    def order(self) -> int:
         return self.markov.order
 
 
@@ -125,11 +125,8 @@ class ChordAgnosticMarkovMelodyGenerator:
     def next(self):
         return self.markov.next()
 
-    def set_chord(self, chord: Chord):
-        pass
-
     @property
-    def order(self):
+    def order(self) -> int:
         return self.markov.order
 
 

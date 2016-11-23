@@ -61,12 +61,6 @@ class Note:
     def velocity_quantised(self):
         return round(self.velocity / 6.4)
 
-    @property
-    def encoded1of12(self):
-        v = [0]*12
-        v[self.pitch % 12] = 1
-        return tuple(v)
-
 
 class ABCNote(enum.Enum):
     C = 0
@@ -105,7 +99,7 @@ class ABCNote(enum.Enum):
 
 
 # Define this dynamically to be able to have a member named 7
-ChordType = enum.Enum('ChordType', 'dimmaj dim m7b5 m7 mmaj 7 maj aug7 augmaj', start=2)
+ChordType = enum.Enum('ChordType', 'dimmaj dim m7b5 m7 mmaj maj aug7 7 augmaj', start=0)
 
 
 class Chord:
