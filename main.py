@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import copy
 import math
 from typing import List, Tuple
@@ -8,6 +9,7 @@ import midiutil.MidiFile
 
 from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
 #from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
+from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
 from music import Note, ChordProgression, ABCNote
 from utils import nwise
 
@@ -106,18 +108,25 @@ def generate(notes: List[Note], changes: ChordProgression,
     return melody, withchords
 
 
-def main():
+def main(*args):
     songname = "C_blues"
     # Read the chord changes from a text file
     changes = changes_from_file(songname)
     # Read the training set from a MIDI file
     notes = notes_from_file(songname)
     # Learn and generate
-    #generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
-    melody, withchords = generate(notes, changes, StaticChordMarkovMelodyGenerator(changes), MarkovRhythmGenerator())
+    melody_generator = None
+    rhythm_generator = None
+    if 'markov' in args:
+        melody_generator = StaticChordMarkovMelodyGenerator(changes)
+        rhythm_generator = MarkovRhythmGenerator()
+    elif 'neural' in args:
+        melody_generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
+        rhythm_generator = melody_generator
+    melody, withchords = generate(notes, changes, melody_generator, rhythm_generator)
     # Write output file
     notes_to_file(withchords)
 
 
 if __name__ == "__main__":
-    main()
+    main(*sys.argv)
