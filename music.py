@@ -18,48 +18,48 @@ class Note:
         self.ticks_since_last_note_end = 0
 
     @property
-    def beat_in_measure(self):
+    def beat_in_measure(self) -> int:
         return self.beat % self.meter
 
     @property
-    def beat(self):
+    def beat(self) -> int:
         return self.tick_abs // self.resolution
 
     @property
-    def ticks_since_beat(self):
+    def ticks_since_beat(self) -> int:
         return self.tick_abs % self.resolution
 
     @property
-    def measure(self):
+    def measure(self) -> int:
         return self.tick_abs // (self.meter * self.resolution)
 
     @property
-    def ticks_since_measure(self):
+    def ticks_since_measure(self) -> int:
         return self.tick_abs % (self.meter * self.resolution)
 
     @property
-    def abcnote(self):
+    def abcnote(self) -> 'ABCNote':
         return ABCNote(self.pitch % 12)
 
     @property
-    def octave(self):
+    def octave(self) -> int:
         return self.pitch // 12
 
     @property
-    def ticks_since_measure_quantised(self):
-        return round(self.ticks_since_measure / 10)
+    def ticks_since_measure_quantised(self) -> int:
+        return int(round(self.ticks_since_measure / 10))
 
     @property
-    def ticks_since_beat_quantised(self):
-        return round(self.ticks_since_beat / 10)
+    def ticks_since_beat_quantised(self) -> int:
+        return int(round(self.ticks_since_beat / 10))
 
     @property
-    def duration_quantised(self):
-        return min(round(self.duration / 10), 384)
+    def duration_quantised(self) -> int:
+        return min(int(round(self.duration / 10)), 384)
 
     @property
-    def velocity_quantised(self):
-        return round(self.velocity / 6.4)
+    def velocity_quantised(self) -> int:
+        return int(round(self.velocity / 6.4))
 
 
 class ABCNote(enum.Enum):

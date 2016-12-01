@@ -99,7 +99,7 @@ class OneHiddenLayerMelodyGenerator:
     def start(self, chord: Chord):
         self.current_chord = chord
 
-    def next_pitch(self):
+    def next_pitch(self) -> int:
         n = Note()
         n.pitch = numpy.argmax(self.net_fn([self._encode_network_input(self.past, self.current_chord)]))
         self.past.append(n)
@@ -129,8 +129,8 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         net = lasagne.layers.InputLayer(shape=(None, inputshape), input_var=self.input_var)
         net = lasagne.layers.DenseLayer(net, num_units=800, nonlinearity=lasagne.nonlinearities.rectify)
         pitch_layer = lasagne.layers.DenseLayer(net, num_units=127, nonlinearity=lasagne.nonlinearities.softmax)
-        tsbq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxtsbq, nonlinearity=lasagne.nonlinearities.softmax)
-        dq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxdq, nonlinearity=lasagne.nonlinearities.softmax)
+        tsbq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxtsbq + 1, nonlinearity=lasagne.nonlinearities.softmax)
+        dq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxdq + 1, nonlinearity=lasagne.nonlinearities.softmax)
         self.output_layers = [pitch_layer, tsbq_layer, dq_layer]
 
     def _encode_network_input(self, past: List[Note], current_chord: Chord) -> List[int]:
@@ -170,7 +170,6 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
             for batch in _iterate_minibatches(x, y, batchsize=128, shuffle=True):
                 inputs, targets = batch
                 p, t, d = targets.transpose()
-                print(p.max(), t.max(), d.max(), self.maxtsbq, self.maxdq)
                 train_fn(inputs, p, t, d)
 
         self.net_fns = [theano.function([self.input_var], out_var, name='net_fn{}'.format(i))
@@ -180,10 +179,10 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
     def start(self, chord: Chord):
         self.current_chord = chord
 
-    def next_pitch(self):
+    def next_pitch(self) -> int:
         return numpy.argmax(self.net_fns[self.PITCH]([self._encode_network_input(self.past, self.current_chord)]))
 
-    def next_rhythm(self):
+    def next_rhythm(self) -> Tuple[int, int]:
         encoded_network_input = [self._encode_network_input(self.past, self.current_chord)]
         dq = numpy.argmax(self.net_fns[self.DQ](encoded_network_input))
         tsbq = numpy.argmax(self.net_fns[self.TSBQ](encoded_network_input))
