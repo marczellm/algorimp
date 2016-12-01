@@ -36,31 +36,58 @@ class Markov:
         return ret if len(ret) > 1 else ret[0]
 
     def learn(self, seq: Sequence[State]):
+        """ High-level interface to train the Markov-chain.
+
+        :param seq: The complete sequence on which to train.
+        """
         print("Learning...")
-        self.dim = len(seq[0]) if isinstance(seq[0], Sequence) else 1
-        if not isinstance(seq[0], Sequence):
-            seq = [[x] for x in seq]
-        # determine the set of possible values for each dimension
+        seq = self._ensure_seq(seq)
+        self.training_prep(seq)
+
+        for np1gram in nwise(seq, self.order + 1):
+            self.training_step(np1gram)
+
+        self.training_finish_normalize()
+
+    def training_prep(self, seq: Sequence[State]):
+        """ Preparation for training the chain on a sequence. """
+        seq = self._ensure_seq(seq)
+        self.dim = len(seq[0])
+        # Determine the set of possible values for each dimension
         val_sets = [{x[i] for x in seq} for i in range(self.dim)]
-        # create a mapping from values to indices
+        # Create a mapping from values to indices
         self.ind_maps = [bidict(inverted(enumerate(sorted(s)))) for s in val_sets]
         # which, together with the order, gives us the shape of the transition matrix
-        subshape = tuple(len(im) for im in self.ind_maps)
-        shape = subshape * (self.order + 1)
+        shape = self._subshape * (self.order + 1)
         print("Attempting to allocate transition matrix of shape", shape, end="... ")
         self.tr_matrix = np.zeros(shape)
         print("successful!")
 
-        # count occurrences of transitions
-        for np1gram in nwise(seq, self.order + 1):
-            np1gram = tuple(self.__val2ind(val) for val in np1gram)
-            np1gram = tuple(chain.from_iterable(np1gram))  # flatten
-            self.tr_matrix[np1gram] += 1
+    def training_step(self, np1gram: Sequence[State]):
+        """ One training step of a Markov chain
 
-        # now to divide all counts
-        for I in np.ndindex(subshape * self.order):
+        :param np1gram: A sequence of length self.order + 1, containing the past and current values of the chain
+        """
+        np1gram = self._ensure_seq(np1gram)
+        np1gram = tuple(self.__val2ind(val) for val in np1gram)
+        np1gram = tuple(chain.from_iterable(np1gram))  # flatten
+        self.tr_matrix[np1gram] += 1
+
+    def training_finish_normalize(self):
+        """ Normalize the appropriate submatrices so that they sum to 1. """
+        for I in np.ndindex(self._subshape * self.order):
             submatrix = self.tr_matrix[I]  # here's a potential bug if submatrix becomes a copy instead of a view
             submatrix /= submatrix.sum() or 1
+
+    @property
+    def _subshape(self) -> Tuple[int, ...]:
+        return tuple(len(im) for im in self.ind_maps)
+
+    @staticmethod
+    def _ensure_seq(seq: Sequence[State]) -> Sequence[StateInternal]:
+        if not isinstance(seq[0], Sequence):
+            seq = [[x] for x in seq]
+        return seq
 
     def sparseness(self) -> Tuple[int, int]:
         """ Returns the number of zeros and nonzeros in the transition matrix.
@@ -75,8 +102,7 @@ class Markov:
         """ Sets the initial state(s) of the Markov chain.
 
         :param state: a list of states the same length as the order """
-        if not isinstance(state[0], Sequence):
-            state = [[x] for x in state]
+        state = self._ensure_seq(state)
         self.state = [self.__val2ind(x) for x in state]
 
     def next(self) -> State:
@@ -140,11 +166,14 @@ class StaticChordMarkovMelodyGenerator:
         self.past = []  # type: List[int]
 
     def learn(self, notes: List[Note]):
-        for note in notes:
-            self.notes_by_chord[self.changes[(note.beat - 1) % len(self.changes)]].append(note.pitch)
         self.markovs_by_chord = {chord: Markov(self.order) for chord in self.changes}
-        for chord, markov in self.markovs_by_chord.items():
-            markov.learn(self.notes_by_chord[chord])
+        for markov in self.markovs_by_chord.values():
+            markov.training_prep([n.pitch for n in notes])
+        for np1gram in nwise(notes, self.order + 1):
+            chord = self.changes[(np1gram[-1].beat - 1) % len(self.changes)]
+            self.markovs_by_chord[chord].training_step([n.pitch for n in np1gram])
+        for markov in self.markovs_by_chord.values():
+            markov.training_finish_normalize()
         self.past = [n.pitch for n in notes[:self.order]]
 
     def start(self, chord: Chord):

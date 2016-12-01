@@ -6,8 +6,8 @@ from typing import List, Tuple
 import midi
 import midiutil.MidiFile
 
-from models.markov import MarkovRhythmGenerator
-from models.neural import OneHiddenLayerMelodyGenerator, OneHiddenLayerMelodyAndRhythmGenerator
+from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
+#from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
 from music import Note, ChordProgression, ABCNote
 from utils import nwise
 
@@ -113,8 +113,8 @@ def main():
     # Read the training set from a MIDI file
     notes = notes_from_file(songname)
     # Learn and generate
-    generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
-    melody, withchords = generate(notes, changes, generator, generator)
+    #generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
+    melody, withchords = generate(notes, changes, StaticChordMarkovMelodyGenerator(changes), MarkovRhythmGenerator())
     # Write output file
     notes_to_file(withchords)
 

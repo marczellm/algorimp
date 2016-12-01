@@ -180,12 +180,14 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.current_chord = chord
 
     def next_pitch(self) -> int:
-        return numpy.argmax(self.net_fns[self.PITCH]([self._encode_network_input(self.past, self.current_chord)]))
+        p = numpy.argmax(self.net_fns[self.PITCH](
+            [self._encode_network_input(self.past, self.current_chord)]))  # type: int
+        return p
 
     def next_rhythm(self) -> Tuple[int, int]:
         encoded_network_input = [self._encode_network_input(self.past, self.current_chord)]
-        dq = numpy.argmax(self.net_fns[self.DQ](encoded_network_input))
-        tsbq = numpy.argmax(self.net_fns[self.TSBQ](encoded_network_input))
+        dq = numpy.argmax(self.net_fns[self.DQ](encoded_network_input))  # type: int
+        tsbq = numpy.argmax(self.net_fns[self.TSBQ](encoded_network_input))  # type: int
         return tsbq, dq
 
     def add_past(self, note: Note):
