@@ -103,7 +103,7 @@ class MarkovRhythmGenerator:
         self.markov.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
         self.markov.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:self.markov.order]])
 
-    def next(self):
+    def next_rhythm(self):
         return self.markov.next()
 
     @property
@@ -119,15 +119,15 @@ class ChordAgnosticMarkovMelodyGenerator:
         self.markov.learn([n.pitch for n in notes])
         self.markov.start([n.pitch for n in notes[:self.markov.order]])
 
-    def start(self, chord: Chord):
-        pass
-
-    def next(self):
+    def next_pitch(self):
         return self.markov.next()
 
     @property
     def order(self) -> int:
         return self.markov.order
+
+    def start(self, chord: Chord):
+        pass
 
 
 class StaticChordMarkovMelodyGenerator:
@@ -136,12 +136,10 @@ class StaticChordMarkovMelodyGenerator:
         self.notes_by_chord = {chord: [] for chord in changes}
         self.markovs_by_chord = {}
         self.current_markov = None  # type: Markov
-        self.notes = []
         self.changes = changes
-        self.past = []
+        self.past = []  # type: List[int]
 
     def learn(self, notes: List[Note]):
-        self.notes = notes
         for note in notes:
             self.notes_by_chord[self.changes[(note.beat - 1) % len(self.changes)]].append(note.pitch)
         self.markovs_by_chord = {chord: Markov(self.order) for chord in self.changes}
@@ -153,7 +151,7 @@ class StaticChordMarkovMelodyGenerator:
         self.current_markov = self.markovs_by_chord[chord]
         self.current_markov.start(self.past)
 
-    def next(self):
+    def next_pitch(self):
         ret = self.current_markov.next()
         self.past.append(ret)
         self.past = self.past[-self.order:]

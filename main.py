@@ -7,7 +7,7 @@ import midi
 import midiutil.MidiFile
 
 from models.markov import MarkovRhythmGenerator
-from models.neural import OneHiddenLayerMelodyGenerator
+from models.neural import OneHiddenLayerMelodyGenerator, OneHiddenLayerMelodyAndRhythmGenerator
 from music import Note, ChordProgression, ABCNote
 from utils import nwise
 
@@ -60,14 +60,15 @@ def notes_to_file(notes: List[Note]):
 
 def generate(notes: List[Note], changes: ChordProgression,
              melody_generator, rhythm_generator) -> Tuple[List[Note], List[Note]]:
-    """ Improvise a melody using independent learners for the melody and the rhythm
+    """ Improvise a melody using two learners for the melody and the rhythm. They can be the same though.
         :param notes: the training set
         :param changes: the chord progression.
         :param melody_generator:
         :param rhythm_generator:
         """
     melody_generator.learn(notes)
-    rhythm_generator.learn(notes)
+    if rhythm_generator != melody_generator:
+        rhythm_generator.learn(notes)
 
     # Generate output
     print("Generating notes...")
@@ -78,7 +79,7 @@ def generate(notes: List[Note], changes: ChordProgression,
     melody_generator.start(chord)
     for i in range(500):
         n = Note()
-        tsbq, dq = rhythm_generator.next()
+        tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
         n.duration = dq * 10
         if melody and melody[-1].ticks_since_beat > tsbq:
@@ -96,10 +97,12 @@ def generate(notes: List[Note], changes: ChordProgression,
                         withchords.append(v)
         # Prevent overlapping notes
         n.tick_abs = tsbq + Note.resolution * \
-                            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
-        n.pitch = melody_generator.next()
+            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
+        n.pitch = melody_generator.next_pitch()
         melody.append(n)
         withchords.append(n)
+        if melody_generator == rhythm_generator:
+            melody_generator.add_past(n)
     return melody, withchords
 
 
@@ -110,7 +113,8 @@ def main():
     # Read the training set from a MIDI file
     notes = notes_from_file(songname)
     # Learn and generate
-    melody, withchords = generate(notes, changes, OneHiddenLayerMelodyGenerator(changes), MarkovRhythmGenerator())
+    generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
+    melody, withchords = generate(notes, changes, generator, generator)
     # Write output file
     notes_to_file(withchords)
 
