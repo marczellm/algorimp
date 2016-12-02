@@ -84,7 +84,7 @@ def generate(notes: List[Note], changes: ChordProgression,
         tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
         n.duration = dq * 10
-        if melody and melody[-1].ticks_since_beat > tsbq:
+        if melody and melody[-1].ticks_since_beat > tsbq:  # New beat: might be a chord change
             beat_diff = 1 + melody[-1].duration // Note.resolution
             for _ in range(beat_diff):
                 beat += 1

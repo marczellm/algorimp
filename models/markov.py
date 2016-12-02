@@ -40,7 +40,6 @@ class Markov:
 
         :param seq: The complete sequence on which to train.
         """
-        print("Learning...")
         seq = self._ensure_seq(seq)
         self.training_prep(seq)
 
@@ -51,6 +50,7 @@ class Markov:
 
     def training_prep(self, seq: Sequence[State]):
         """ Preparation for training the chain on a sequence. """
+        print("Learning...")
         seq = self._ensure_seq(seq)
         self.dim = len(seq[0])
         # Determine the set of possible values for each dimension
