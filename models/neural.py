@@ -192,6 +192,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
 
     def add_past(self, note: Note):
         """ Construction of the next note involves external corrections after the neural output has been obtained.
+        Therefore the method that drives the generator has to pass it back the fully constructed note.
 
         :param note: the last note generated and corrected
         """

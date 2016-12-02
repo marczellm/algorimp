@@ -8,7 +8,6 @@ import midi
 import midiutil.MidiFile
 
 from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
-#from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
 from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
 from music import Note, ChordProgression, ABCNote
 from utils import nwise
