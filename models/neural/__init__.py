@@ -1,0 +1,2 @@
+from .lasagne import OneHiddenLayerMelodyGenerator
+from .keras import OneHiddenLayerMelodyAndRhythmGenerator

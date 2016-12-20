@@ -1,56 +1,12 @@
+from typing import Tuple, List
+
+import lasagne
 import numpy
 import theano
-import lasagne
-from music import Note, Chord, ChordType, ChordProgression, ABCNote
+
+from ._helpers import NUM_OCTAVES, iterate_minibatches, encode_pitch, encode_chord, encode_int
+from music import Note, Chord, ChordProgression, ABCNote, ChordType
 from utils import nwise
-from typing import List, Tuple
-from enum import Enum
-
-
-NUM_OCTAVES = 16
-
-
-def _encode_int(i: int, n: int) -> List[int]:
-    """ 1-of-N binary encoding
-
-    :param i: the integer to encode
-    :param n: the length of the desired binary vector. Should be greater than i.
-    :return: a sequence of zeros with the i-th set to one
-    """
-    assert 0 <= i < n, "0 <= {} < {} doesn't hold".format(i, n)
-    ret = [0] * n
-    ret[i] = 1
-    return ret
-
-
-def _encode_enum(e: Enum) -> List[int]:
-    """ 1-of-N binary encoding of an enum value """
-    return _encode_int(e.value, len(type(e)))
-
-
-def _encode_pitch(note: Note) -> List[int]:
-    """ 1-of N binary encoding of both the pitch and the octave """
-    return _encode_enum(note.abcnote) + _encode_int(note.octave, NUM_OCTAVES)
-
-
-def _encode_chord(chord: Chord) -> List[int]:
-    """ 1-of-N binary encoding of the chord root and chord type """
-    return _encode_enum(chord.root) + _encode_enum(chord.type)
-
-
-# Taken directly from the Lasagne tutorial
-def _iterate_minibatches(inputs, targets, batchsize, shuffle=False):
-    assert len(inputs) == len(targets)
-    indices = None
-    if shuffle:
-        indices = numpy.arange(len(inputs))
-        numpy.random.shuffle(indices)
-    for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
-        if shuffle:
-            excerpt = indices[start_idx:start_idx + batchsize]
-        else:
-            excerpt = slice(start_idx, start_idx + batchsize)
-        yield inputs[excerpt], targets[excerpt]
 
 
 class OneHiddenLayerMelodyGenerator:
@@ -70,7 +26,7 @@ class OneHiddenLayerMelodyGenerator:
     @staticmethod
     def _encode_network_input(past: List[Note], current_chord: Chord) -> List[int]:
         """ 1-of-N binary encoding of a number of past notes together with the current chord """
-        return sum((_encode_pitch(note) for note in past), _encode_chord(current_chord))
+        return sum((encode_pitch(note) for note in past), encode_chord(current_chord))
 
     def _all_training_pairs(self, notes: List[Note]) -> Tuple[numpy.ndarray, numpy.ndarray]:
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
@@ -90,7 +46,7 @@ class OneHiddenLayerMelodyGenerator:
         train_fn = theano.function([self.input_var, target_var], loss_fn, updates=updates, allow_input_downcast=True)
         x, y = self._all_training_pairs(notes)
         for epoch in range(20):
-            for batch in _iterate_minibatches(x, y, batchsize=128, shuffle=True):
+            for batch in iterate_minibatches(x, y, batchsize=128, shuffle=True):
                 inputs, targets = batch
                 train_fn(inputs, targets)
         self.net_fn = theano.function([self.input_var], net_output_var)
@@ -135,10 +91,10 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
 
     def _encode_network_input(self, past: List[Note], current_chord: Chord) -> List[int]:
         """ 1-of-N binary encoding of a number of past notes together with the current chord """
-        return sum((_encode_pitch(note)
-                    + _encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
-                    + _encode_int(note.duration_quantised, self.maxdq + 1)
-                    for note in past), _encode_chord(current_chord))
+        return sum((encode_pitch(note)
+                    + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
+                    + encode_int(note.duration_quantised, self.maxdq + 1)
+                    for note in past), encode_chord(current_chord))
 
     def _all_training_pairs(self, notes: List[Note]) -> Tuple[numpy.ndarray, numpy.ndarray]:
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
@@ -167,7 +123,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
                                    loss_fn, updates=updates, allow_input_downcast=True, name='train_fn')
         x, y = self._all_training_pairs(notes)
         for epoch in range(20):
-            for batch in _iterate_minibatches(x, y, batchsize=128, shuffle=True):
+            for batch in iterate_minibatches(x, y, batchsize=128, shuffle=True):
                 inputs, targets = batch
                 p, t, d = targets.transpose()
                 train_fn(inputs, p, t, d)
@@ -198,4 +154,3 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         """
         self.past.append(note)
         self.past = self.past[-self.order:]
-
