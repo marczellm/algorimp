@@ -78,11 +78,15 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.current_chord = chord
 
     def next_pitch(self) -> int:
-        return self.pitch_model.predict(self._encode_network_input(self.past, self.current_chord).transpose())
+        encoded_input = numpy.array([self._encode_network_input(self.past, self.current_chord)])
+        ret = numpy.argmax(self.pitch_model.predict(encoded_input))  # type: int
+        return ret
 
     def next_rhythm(self) -> Tuple[int, int]:
-        encoded_input = self._encode_network_input(self.past, self.current_chord).transpose()
-        return self.tsbq_model.predict(encoded_input), self.dq_model.predict(encoded_input)
+        encoded_input = numpy.array([self._encode_network_input(self.past, self.current_chord)])
+        tsbq = numpy.argmax(self.tsbq_model.predict(encoded_input))  # type: int
+        dq = numpy.argmax(self.dq_model.predict(encoded_input))  # type: int
+        return tsbq, dq
 
     def add_past(self, note: Note):
         """ Construction of the next note involves external corrections after the neural output has been obtained.
