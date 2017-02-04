@@ -10,6 +10,12 @@ from utils import nwise
 
 
 class OneHiddenLayerMelodyGenerator:
+    """ The first implementation of the neural network based algorithmic improviser, built on Theano and Lasagne.
+    I later reimplemented it in Keras which I found more convenient and it also required less code.
+    This implementation is now frozen, it only has one hidden layer and no chord lookahead.
+    I'll leave it here because it might be useful for comparison.
+    """
+
     def __init__(self, changes: ChordProgression, order=3):
         self.order = order
         self.changes = changes
@@ -33,7 +39,7 @@ class OneHiddenLayerMelodyGenerator:
         on the training set """
         x, y = [], []
         for v in nwise(notes, self.order + 1):
-            x.append(self._encode_network_input(v[:self.order], self.changes[(v[-1].beat - 1) % len(self.changes)]))
+            x.append(self._encode_network_input(v[:self.order], self.changes[v[-1].beat - 1]))
             y.append(v[-1].pitch)
         return numpy.array(x), numpy.array(y)
 
@@ -52,8 +58,8 @@ class OneHiddenLayerMelodyGenerator:
         self.net_fn = theano.function([self.input_var], net_output_var)
         self.past = notes[:self.order]
 
-    def start(self, chord: Chord):
-        self.current_chord = chord
+    def start(self, beat: int):
+        self.current_chord = self.changes[beat]
 
     def next_pitch(self) -> int:
         n = Note()
@@ -101,7 +107,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         on the training set """
         x, y = [], []
         for v in nwise(notes, self.order + 1):
-            x.append(self._encode_network_input(v[:self.order], self.changes[(v[-1].beat - 1) % len(self.changes)]))
+            x.append(self._encode_network_input(v[:self.order], self.changes[v[-1].beat - 1]))
             y.append((v[-1].pitch, v[-1].ticks_since_beat_quantised, v[-1].duration_quantised))
         return numpy.array(x), numpy.array(y)
 
@@ -132,8 +138,8 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
                         for i, out_var in enumerate(output_vars)]
         self.past = notes[:self.order]
 
-    def start(self, chord: Chord):
-        self.current_chord = chord
+    def start(self, beat: int):
+        self.current_chord = self.changes[beat]
 
     def next_pitch(self) -> int:
         p = numpy.argmax(self.net_fns[self.PITCH](

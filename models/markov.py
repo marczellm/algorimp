@@ -152,7 +152,7 @@ class ChordAgnosticMarkovMelodyGenerator:
     def order(self) -> int:
         return self.markov.order
 
-    def start(self, chord: Chord):
+    def start(self, _):
         pass
 
 
@@ -170,13 +170,14 @@ class StaticChordMarkovMelodyGenerator:
         for markov in self.markovs_by_chord.values():
             markov.training_prep([n.pitch for n in notes])
         for np1gram in nwise(notes, self.order + 1):
-            chord = self.changes[(np1gram[-1].beat - 1) % len(self.changes)]
+            chord = self.changes[np1gram[-1].beat - 1]
             self.markovs_by_chord[chord].training_step([n.pitch for n in np1gram])
         for markov in self.markovs_by_chord.values():
             markov.training_finish_normalize()
         self.past = [n.pitch for n in notes[:self.order]]
 
-    def start(self, chord: Chord):
+    def start(self, beat: int):
+        chord = self.changes[beat]
         self.current_markov = self.markovs_by_chord[chord]
         self.current_markov.start(self.past)
 

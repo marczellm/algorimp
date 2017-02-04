@@ -1,7 +1,7 @@
 import enum
 import re
 import numpy as np
-from typing import List
+from typing import List, Union
 
 
 class Note:
@@ -198,3 +198,27 @@ class ChordProgression(list):
 
     def number_of_measures(self):
         return len(self) / 4
+
+    def _foldback(self, key: Union[int, slice]):
+        m = len(self)
+        if isinstance(key, int):
+            key %= m
+        elif isinstance(key, slice):
+            key = slice(key.start % m, key.stop % m, key.step)
+        return key
+    
+    def __getitem__(self, key):
+        key = self._foldback(key)
+        if isinstance(key, slice) and key.start > key.stop:
+            slice1 = slice(key.stop)
+            slice2 = slice(key.start, len(self))
+            return super().__getitem__(slice1) + super().__getitem__(slice2)
+        return super().__getitem__(key)
+    
+    def __setitem__(self, key, value):
+        key = self._foldback(key)
+        super().__setitem__(key, value)
+
+    def __delitem__(self, key):
+        key = self._foldback(key)
+        super().__delitem__(key)

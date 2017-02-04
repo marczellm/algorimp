@@ -76,8 +76,8 @@ def generate(notes: List[Note], changes: ChordProgression,
     melody = notes[:max(melody_generator.order, rhythm_generator.order)]
     withchords = copy.deepcopy(melody)
     beat = melody[-1].beat
-    chord = changes[(beat - 1) % len(changes)]
-    melody_generator.start(chord)
+    chord = changes[beat - 1]
+    melody_generator.start(beat - 1)
     for i in range(500):
         n = Note()
         tsbq, dq = rhythm_generator.next_rhythm()
@@ -88,9 +88,9 @@ def generate(notes: List[Note], changes: ChordProgression,
             for _ in range(beat_diff):
                 beat += 1
                 # If the chord changed, add a voicing to the MIDI file, and inform the melody generator
-                newchord = changes[(beat - 1) % len(changes)]
+                newchord = changes[beat - 1]
                 if newchord != chord:
-                    melody_generator.start(newchord)
+                    melody_generator.start(beat - 1)
                     chord = newchord
                     voicing = chord.voicing1357()
                     for v in voicing:
@@ -108,7 +108,7 @@ def generate(notes: List[Note], changes: ChordProgression,
 
 
 def main(*args):
-    songname = "C_blues"
+    songname = "Eb_therewill"
     # Read the chord changes from a text file
     changes = changes_from_file(songname)
     # Read the training set from a MIDI file
