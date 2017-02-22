@@ -1,12 +1,11 @@
 from typing import List, Tuple
 
-import numpy
+import numpy as np
 import keras
 import itertools
+
 from ._helpers import encode_int, encode_chord, encode_pitch
-from music import Chord
-from music import ChordProgression
-from music import Note
+from music import Chord, ChordProgression, Note
 from utils import nwise
 
 
@@ -15,6 +14,22 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
     PITCH = 0
     TSBQ = 1
     DQ = 2
+
+    @staticmethod
+    def weighted_choice(p) -> int:
+        return np.random.choice(len(p), p=p)
+
+    @staticmethod
+    def random_nlargest(p) -> int:
+        ind_nlargest = np.argpartition(p, -5)[-5:]
+        return np.random.choice(ind_nlargest)
+
+    @staticmethod
+    def weighted_nlargest(p) -> int:
+        nlargest = np.partition(p, -5)[-5:]
+        ind_nlargest = np.argpartition(p, -5)[-5:]
+        nlargest /= np.sum(nlargest)
+        return np.random.choice(ind_nlargest, p=nlargest)
 
     def __init__(self, changes: ChordProgression, order=3):
         self.order = order
@@ -28,6 +43,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
+        self.outfun = self.weighted_nlargest  # choice function for the output of the output layers
 
     @property
     def chord_order(self):
@@ -52,7 +68,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.tsbq_model = keras.models.Model(input=input_tensor, output=tsbq_layer.output)
         self.dq_model = keras.models.Model(input=input_tensor, output=dq_layer.output)
 
-    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> numpy.ndarray:
+    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> np.ndarray:
         """ 1-of-N binary encoding of a complete input to the network: past notes, present and future chords """
         assert len(past) == self.order
         assert len(chords) == self.chord_order
@@ -60,11 +76,11 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         def lsum(x):
             return list(itertools.chain(*x))
 
-        return numpy.array(lsum((encode_pitch(note)
-                                 + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
-                                 + encode_int(note.duration_quantised, self.maxdq + 1)
-                                 for note in past))
-                           + lsum(encode_chord(chord) for chord in chords))
+        return np.array(lsum((encode_pitch(note)
+                              + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
+                              + encode_int(note.duration_quantised, self.maxdq + 1)
+                              for note in past))
+                        + lsum(encode_chord(chord) for chord in chords))
 
     def inputshape(self) -> Tuple[int]:
         """ Generates a dummy input matrix for the network and returns its shape.
@@ -72,8 +88,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         Don't remove the comma! """
         return len(self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)),
 
-    def _all_training_data(self, notes: List[Note]) -> Tuple[
-        numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]:
+    def _all_training_data(self, notes: List[Note]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
         on the training set """
         x, p, t, d = [], [], [], []
@@ -84,7 +99,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
             p.append(encode_int(v[-1].pitch, 127))
             t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
             d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
-        return numpy.array(x), numpy.array(p), numpy.array(t), numpy.array(d)
+        return np.array(x), np.array(p), np.array(t), np.array(d)
 
     def learn(self, notes: List[Note]):
         self.maxtsbq = max(n.ticks_since_beat_quantised for n in notes)
@@ -100,16 +115,16 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
     def next_pitch(self) -> int:
         i = self.current_beat
         j = i + self.chord_order
-        encoded_input = numpy.array([self._encode_network_input(self.past, self.changes[i:j])])
-        ret = numpy.argmax(self.pitch_model.predict(encoded_input))  # type: int
+        encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
+        ret = self.outfun(self.pitch_model.predict(encoded_input).ravel())  # type: int
         return ret
 
     def next_rhythm(self) -> Tuple[int, int]:
         i = self.current_beat
         j = i + self.chord_order
-        encoded_input = numpy.array([self._encode_network_input(self.past, self.changes[i:j])])
-        tsbq = numpy.argmax(self.tsbq_model.predict(encoded_input))  # type: int
-        dq = numpy.argmax(self.dq_model.predict(encoded_input))  # type: int
+        encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
+        tsbq = self.outfun(self.tsbq_model.predict(encoded_input).ravel())  # type: int
+        dq = self.outfun(self.dq_model.predict(encoded_input).ravel())  # type: int
         return tsbq, dq
 
     def add_past(self, note: Note):
