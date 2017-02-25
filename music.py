@@ -196,7 +196,7 @@ class ChordProgression(list):
                 ret += str(chord) + ' '
         return ret
 
-    def number_of_measures(self):
+    def measures(self) -> int:
         return len(self) / 4
 
     def _foldback(self, key: Union[int, slice]):
@@ -209,10 +209,11 @@ class ChordProgression(list):
     
     def __getitem__(self, key):
         key = self._foldback(key)
-        if isinstance(key, slice) and key.start > key.stop:
-            slice1 = slice(key.stop)
-            slice2 = slice(key.start, len(self))
-            return super().__getitem__(slice1) + super().__getitem__(slice2)
+        if isinstance(key, slice):
+            if key.start > key.stop:
+                slice1 = slice(key.stop)
+                slice2 = slice(key.start, len(self))
+                return super().__getitem__(slice1) + super().__getitem__(slice2)
         return super().__getitem__(key)
     
     def __setitem__(self, key, value):

@@ -59,13 +59,14 @@ def notes_to_file(notes: List[Note]):
     print("Done.")
 
 
-def generate(notes: List[Note], changes: ChordProgression,
-             melody_generator, rhythm_generator) -> Tuple[List[Note], List[Note]]:
-    """ Improvise a melody using two learners for the melody and the rhythm. They can be the same though.
+def generate(notes: List[Note], changes: ChordProgression, melody_generator, rhythm_generator, measures: int) -> Tuple[
+    List[Note], List[Note]]:
+    """ Improvise a melody using two models for the melody and the rhythm.
         :param notes: the training set
         :param changes: the chord progression.
-        :param melody_generator:
-        :param rhythm_generator:
+        :param melody_generator: An object that conforms to the implicit melody generator interface
+        :param rhythm_generator: An object that conforms to the implicit rhythm generator interface. It can be the same as the melody generator
+        :param measures: The number of measures to generate
         """
     melody_generator.learn(notes)
     if rhythm_generator != melody_generator:
@@ -78,7 +79,7 @@ def generate(notes: List[Note], changes: ChordProgression,
     beat = melody[-1].beat
     chord = changes[beat - 1]
     melody_generator.start(beat - 1)
-    for i in range(500):
+    while beat < measures * 4:
         n = Note()
         tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
@@ -98,7 +99,7 @@ def generate(notes: List[Note], changes: ChordProgression,
                         withchords.append(v)
         # Prevent overlapping notes
         n.tick_abs = tsbq + Note.resolution * \
-            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
+                            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
         n.pitch = melody_generator.next_pitch()
         melody.append(n)
         withchords.append(n)
@@ -108,7 +109,9 @@ def generate(notes: List[Note], changes: ChordProgression,
 
 
 def main(*args):
-    songname = "Eb_therewill"
+    modelname = args[1]
+    songname = args[2]
+    choruses = int(args[3])
     # Read the chord changes from a text file
     changes = changes_from_file(songname)
     # Read the training set from a MIDI file
@@ -116,13 +119,13 @@ def main(*args):
     # Learn and generate
     melody_generator = None
     rhythm_generator = None
-    if 'markov' in args:
+    if modelname == 'markov':
         melody_generator = StaticChordMarkovMelodyGenerator(changes)
         rhythm_generator = MarkovRhythmGenerator()
-    elif 'neural' in args:
+    elif modelname == 'neural':
         melody_generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
         rhythm_generator = melody_generator
-    melody, withchords = generate(notes, changes, melody_generator, rhythm_generator)
+    melody, withchords = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
     # Write output file
     notes_to_file(withchords)
 
