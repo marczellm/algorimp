@@ -9,5 +9,5 @@ setup(
     author='Márton Marczell',
     author_email='',
     description='',
-    requires=['bidict', 'numpy', 'midi', 'midiutil', 'theano', 'lasagne', 'keras']
+    requires=['bidict', 'numpy', 'midi', 'midiutil', 'theano', 'lasagne', 'keras', 'fire']
 )

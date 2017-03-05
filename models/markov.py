@@ -1,7 +1,7 @@
 from typing import Tuple, Union, Sequence, List
 from bidict import bidict, inverted
 import numpy as np
-from utils import nwise
+from helpers import nwise
 from itertools import chain
 from music import Note, Chord, ChordProgression
 
@@ -141,7 +141,7 @@ class ChordAgnosticMarkovMelodyGenerator:
     def __init__(self, order=3):
         self.markov = Markov(order)
 
-    def learn(self, notes: List[Note]):
+    def learn(self, notes: List[Note], _):
         self.markov.learn([n.pitch for n in notes])
         self.markov.start([n.pitch for n in notes[:self.markov.order]])
 
@@ -165,7 +165,7 @@ class StaticChordMarkovMelodyGenerator:
         self.changes = changes
         self.past = []  # type: List[int]
 
-    def learn(self, notes: List[Note]):
+    def learn(self, notes: List[Note], _):
         self.markovs_by_chord = {chord: Markov(self.order) for chord in self.changes}
         for markov in self.markovs_by_chord.values():
             markov.training_prep([n.pitch for n in notes])

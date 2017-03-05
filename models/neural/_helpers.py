@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-import numpy
+import numpy as np
 
 from music import Note, Chord
 
@@ -41,12 +41,31 @@ def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
     assert len(inputs) == len(targets)
     indices = None
     if shuffle:
-        indices = numpy.arange(len(inputs))
-        numpy.random.shuffle(indices)
+        indices = np.arange(len(inputs))
+        np.random.shuffle(indices)
     for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
         if shuffle:
             excerpt = indices[start_idx:start_idx + batchsize]
         else:
             excerpt = slice(start_idx, start_idx + batchsize)
         yield inputs[excerpt], targets[excerpt]
+
+
+# Choice functions for the output of a softmax layer
+
+
+def weighted_choice(p) -> int:
+    return np.random.choice(len(p), p=p)
+
+
+def random_nlargest(p) -> int:
+    ind_nlargest = np.argpartition(p, -5)[-5:]
+    return np.random.choice(ind_nlargest)
+
+
+def weighted_nlargest(p) -> int:
+    nlargest = np.partition(p, -5)[-5:]
+    ind_nlargest = np.argpartition(p, -5)[-5:]
+    nlargest /= np.sum(nlargest)
+    return np.random.choice(ind_nlargest, p=nlargest)
 

@@ -4,37 +4,26 @@ import numpy as np
 import keras
 import itertools
 
-from ._helpers import encode_int, encode_chord, encode_pitch
+from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
-from utils import nwise
+from helpers import nwise, nwise_disjoint
 
 
 class OneHiddenLayerMelodyAndRhythmGenerator:
-    """ Algorithmic improviser built on Keras. """
+    """ Algorithmic improviser built on Keras.
+    The implementation is a feedforward neural network with two hidden layers.
+    It allows for training on multiple different solos with potentially different chord progressions
+    and then generate improvisation for yet another progression.
+    """
     PITCH = 0
     TSBQ = 1
     DQ = 2
 
-    @staticmethod
-    def weighted_choice(p) -> int:
-        return np.random.choice(len(p), p=p)
-
-    @staticmethod
-    def random_nlargest(p) -> int:
-        ind_nlargest = np.argpartition(p, -5)[-5:]
-        return np.random.choice(ind_nlargest)
-
-    @staticmethod
-    def weighted_nlargest(p) -> int:
-        nlargest = np.partition(p, -5)[-5:]
-        ind_nlargest = np.argpartition(p, -5)[-5:]
-        nlargest /= np.sum(nlargest)
-        return np.random.choice(ind_nlargest, p=nlargest)
-
     def __init__(self, changes: ChordProgression, order=3):
+        """ :param changes: the chord progression to use when generating the output melody """
         self.order = order
-        self.chord_lookahead = 2
         self.changes = changes
+        self.chord_lookahead = 2
         self.model = None  # type: keras.models.Model
         self.pitch_model = None  # type: keras.models.Model
         self.tsbq_model = None  # type: keras.models.Model
@@ -43,7 +32,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
-        self.outfun = self.weighted_nlargest  # choice function for the output of the output layers
+        self.outfun = weighted_nlargest  # choice function for the output of the output layers
 
     @property
     def chord_order(self):
@@ -51,15 +40,16 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
 
     def _build_net(self):
         input_tensor = keras.layers.Input(shape=self.inputshape())
-        hidden_tensor = keras.layers.Dense(800, activation='relu')(input_tensor)
+        hidden_tensor1 = keras.layers.Dense(800, activation='relu')(input_tensor)
+        hidden_tensor2 = keras.layers.Dense(800, activation='relu')(hidden_tensor1)
 
         pitch_layer = keras.layers.Dense(127, activation='softmax')
         tsbq_layer = keras.layers.Dense(self.maxtsbq + 1, activation='softmax')
         dq_layer = keras.layers.Dense(self.maxdq + 1, activation='softmax')
 
-        pitch_tensor = pitch_layer(hidden_tensor)
-        tsbq_tensor = tsbq_layer(hidden_tensor)
-        dq_tensor = dq_layer(hidden_tensor)
+        pitch_tensor = pitch_layer(hidden_tensor2)
+        tsbq_tensor = tsbq_layer(hidden_tensor2)
+        dq_tensor = dq_layer(hidden_tensor2)
 
         self.model = keras.models.Model(input=input_tensor, output=[pitch_tensor, tsbq_tensor, dq_tensor])
         self.model.compile(optimizer='adagrad', loss='categorical_crossentropy')
@@ -88,26 +78,28 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         Don't remove the comma! """
         return len(self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)),
 
-    def _all_training_data(self, notes: List[Note]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def _all_training_data(self, *args) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
         on the training set """
         x, p, t, d = [], [], [], []
-        for v in nwise(notes, self.order + 1):
-            i = v[-1].beat - 1
-            j = i + self.chord_order
-            x.append(self._encode_network_input(v[:self.order], self.changes[i:j]))
-            p.append(encode_int(v[-1].pitch, 127))
-            t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
-            d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
+        for notes, changes in nwise_disjoint(args, 2):
+            for v in nwise(notes, self.order + 1):
+                i = v[-1].beat - 1
+                j = i + self.chord_order
+                x.append(self._encode_network_input(v[:self.order], changes[i:j]))
+                p.append(encode_int(v[-1].pitch, 127))
+                t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
+                d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
         return np.array(x), np.array(p), np.array(t), np.array(d)
 
-    def learn(self, notes: List[Note]):
-        self.maxtsbq = max(n.ticks_since_beat_quantised for n in notes)
-        self.maxdq = max(n.duration_quantised for n in notes)
+    def learn(self, *args):
+        """ :param args: [notes1, changes1, notes2, changes2, ...] """
+        self.maxtsbq = max(n.tick_since_beat_quantised for notes in args[::2] for n in notes)
+        self.maxdq = max(n.duration_quantised for notes in args[::2] for n in notes)
         self._build_net()
-        x, p, t, d = self._all_training_data(notes)
+        x, p, t, d = self._all_training_data(*args)
         self.model.fit(x, [p, t, d])
-        self.past = notes[:self.order]
+        #TODO figure out how to best obtain past notes to start generating
 
     def start(self, beat: int):
         self.current_beat = beat

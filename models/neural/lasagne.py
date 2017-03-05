@@ -6,7 +6,7 @@ import theano
 
 from ._helpers import NUM_OCTAVES, iterate_minibatches, encode_pitch, encode_chord, encode_int
 from music import Note, Chord, ChordProgression, ABCNote, ChordType
-from utils import nwise
+from helpers import nwise
 
 
 class OneHiddenLayerMelodyGenerator:
@@ -43,7 +43,7 @@ class OneHiddenLayerMelodyGenerator:
             y.append(v[-1].pitch)
         return numpy.array(x), numpy.array(y)
 
-    def learn(self, notes: List[Note]):
+    def learn(self, notes: List[Note], _):
         target_var = theano.tensor.ivector()
         net_output_var = lasagne.layers.get_output(self.net)
         loss_fn = lasagne.objectives.categorical_crossentropy(net_output_var, target_var).mean()
@@ -111,7 +111,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
             y.append((v[-1].pitch, v[-1].ticks_since_beat_quantised, v[-1].duration_quantised))
         return numpy.array(x), numpy.array(y)
 
-    def learn(self, notes: List[Note]):
+    def learn(self, notes: List[Note], _):
         self.maxtsbq = max(n.ticks_since_beat_quantised for n in notes)
         self.maxdq = max(n.duration_quantised for n in notes)
         self._build_net()

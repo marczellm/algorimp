@@ -91,7 +91,7 @@ class ABCNote(enum.Enum):
     def from_string(cls, s: str):  # not using enum aliases because # is not allowed in an identifier
         mapping = cls.mapping()
         s = s.lower()
-        assert s in mapping, "Invalid note name"
+        assert s in mapping, "Invalid note name " + s
         return cls[mapping[s]]
 
     def __add__(self, other: int) -> 'ABCNote':
@@ -116,14 +116,15 @@ class Chord:
     def __hash__(self):
         return hash((self.root, self.type))
 
-    __roots = '|'.join(ABCNote.mapping().keys())
-    __types = '|'.join(x.name for x in ChordType)
-    s_regex = "({})({})".format(__roots, __types)
-    __compiled = re.compile(s_regex.lower())
+    __sre_roots = '|'.join(ABCNote.mapping().keys())
+    __sre_types = '|'.join(x.name for x in ChordType)
+    sre = "({})({})".format(__sre_roots, __sre_types)
+    __re = re.compile(sre.lower())
 
     @classmethod
     def parse(cls, string: str) -> 'Chord':
-        match = cls.__compiled.match(string.lower())
+        """ Parse a chord in algorimp format """
+        match = cls.__re.match(string.lower())
         if match:
             return Chord(ABCNote.from_string(match.group(1)), ChordType[match.group(2)])
 
@@ -180,7 +181,7 @@ class ChordProgression(list):
         return ret
 
     def __parse(self, string: str):
-        regex = re.compile("({}|-)".format(Chord.s_regex).lower())
+        regex = re.compile("({}|-)".format(Chord.sre).lower())
         for match in regex.finditer(string):
             if match.group(0) == '-':
                 self.append(self[-1])
