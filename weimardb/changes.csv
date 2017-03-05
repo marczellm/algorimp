@@ -1,0 +1,593 @@
+id;key;chord_changes
+ArtPepper_Anthropology_FINAL.sv;Bb-maj;"A1: ||Bb6 G7 |C-7 F7 |Bb G-7 |C-7 F7 |F-7 Bb7 |Eb7 Ab7 |D-7 G7 |C-7 F7 ||
+A2: ||Bb6 G7 |C-7 F7 |Bb G-7 |C-7 F7 |F-7 Bb7 |Eb7 Ab7 |C-7 F7 |Bb6   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bb G7 |C-7 F7 |Bb G-7 |C-7 F7 |F-7 Bb7 |Eb7 Ab7 |C-7 F7 |Bb6   ||"
+ArtPepper_BluesforBlanche_FINAL.sv;Eb-blues;A1: ||Eb7   |Ab7   |Eb7   |Eb7   |Ab7   |Ab7   |Eb7   |Eb7   |F-7   |Bb7   |Eb7   |Bb7   ||
+ArtPepper_InAMellowTone_FINAL.sv;Eb-maj;"A1: ||F7   |Bb7   |Eb6   |Eb6   |Bb-7   |Eb7   |Abj7   |Abj7   |Ab6   |Db7   |Eb6   |C7   |F7   |F7   |Bb7   |C7   ||
+B1: ||F7   |Bb7   |Eb6   |Eb6   |Bb-7   |Eb7   |Abj7   |Abj7   |Ab7   |Ao7   |Eb6   |C7   |F7   |Bb7   |Eb6   |Eb6   ||"
+BennyCarter_It'sAWonderfulWorld-1_FINAL.sv;C-maj;"A1: ||Cj7   |E-7 A7 |D-7 G7 |Cj7   ||
+A2: ||Cj7   |E-7 A7 |D-7   |G7   ||
+B1: ||C7   |C7   |F7   |Bb7   ||
+A3: ||Cj7   |E-7 A7 |D-7 G7 |Cj7   ||"
+BennyCarter_It'sAWonderfulWorld-2_FINAL.sv;C-maj;"A1: ||Cj7   |E-7 A7 |D- G7 |Cj7 G7 ||
+A2: ||Cj7   |E-7 A7 |D-7   |G7   ||
+B1: ||C7   |C7   |F7   |Bb7   ||
+A3: ||Cj7   |E-7 A7 |D-7 G7 |Cj7   ||"
+BennyCarter_LongAgoAndFarAway-1_FINAL.sv;F-maj;"A1: ||F6 D-7 |G-7 C7 |Fj7   |G-7 C7 |F6   |G-7 C7 |A-7 D7 |G-7 C7 ||
+B1: ||Ab6   |Bb-7 Eb7 |Abj7   |G7   |Cj7   |A-7  D7|G-7   |C7   ||
+A2: ||F6 D-7 |G-7 C7 |Fj7   |G-7 C7 |F6   |G-7 C7 |A-7 D7 |G-7 C7 ||
+C1: ||C-7   |F7   |Bbj7   |Eb7   |F6 D-7 |G-7 C7 |F6   |G-7 C7 |C7   ||"
+BennyCarter_SweetLorraine_FINAL.sv;G-maj;"A1: ||Gj7F7E7 |A-7 D7Ebo|E-7 D-7G7|C7 B7 |E7 A7 |A-7 D7 |Gj7F7E7 |A7 D7 ||
+A2: ||Gj7F7E7 |A-7 D7Ebo|E-7 D-7G7|C7 B7 |E7 A7 |A-7 D7 |G6 C7Dbo|G6/D G7Db7||
+B1: ||Cj7 Bm7b5E7|A-7Ab7G-7C7|F7 E7 |A-7Ab7G-7C7|F7 E7 |Eb7911# D7 |F7 E7 |Eb7911# D7 ||
+A3: ||Gj7F7E7 |A-7 D7Ebo|E-7 D-7G7|C7 B7 |E7 A7 |A-7 D7 |G6F7E7 |A7 D7 ||"
+BennyGoodman_Avalon_FINAL.sv;Eb-maj;"A1: ||Bb7   |Bb7   |Bb7   |Bb7   |Eb   |Eb   |Eb   |Eb   |Bb7   |Bb7   |Bb7   |Bb7   |Eb   |Eb   |Eb   |Eb   ||
+B1: ||C7   |C7   |C7   |C7   |F-7   |F-7   |Ab-7   |Ab-7   |Eb   |Eb   |C7   |C7   |F-7   |Bb7   |Eb   |Eb   ||"
+BennyGoodman_HandfulOfKeys_FINAL.sv;Eb-maj;"A1: ||Eb F-7 |Eb6 Gbo |F- F-7 |F-6 Gbo |F- F-7 |F-6 Bb7 |Eb C-7 |F-7 Bb7 ||
+A2: ||Eb F-7 |Eb6 Gbo |F- F-7 |F-6 Gbo |F- F-7 |F-6 Bb7 |Eb Bbm7b5 |Eb D7 ||
+I1: "
+BennyGoodman_Nobody'sSweetheart_FINAL.sv;Ab-maj;"A1: ||Ab   |Ab   |F7   |F7   |F-7   |F-7   |Bb7   |Bb7   |Eb   |Eb   |C7   |C7   |Ab   |Ab   |Eb7   |Eb7   ||
+B1: ||Ab   |Ab   |F7   |F7   |Bb7   |Bb7   |Bb7   |Bb7   |F-   |F-   |Eo   |Eo   |Ab   |Ab   |Bb-   |Eb7   |Ab   |Ab C7 |F7   |F7   |Bb7   |Eb7   |Ab   |Ab   |Ab   |Ab   ||"
+BennyGoodman_Runnin'Wild_FINAL.sv;Bb-maj;"A1: ||Bb   |Bb   |Bb7   |Bb7   |Eb   |Eb   |Bb   |Bb   |F7   |C-6 D7 |G-   |Bb-6   |F   |C7   |F7   |F7   ||
+B1: ||Bb   |Bb   |Bb7   |Bb7   |Eb   |Eb   |D7   |D7 G7 |C7   |F7   |Bb   |Bb   |F7   |F7   |Bb   |Bb   ||
+I1: ||NC   ||"
+BennyGoodman_TigerRag-1_FINAL.sv;Ab-maj;A1: ||Ab   |Ab   |Ab   |Ab   |Ab   |Ab   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Ab   |Ab   |Ab   |Ab   |Ab   |Ab   |Ab7   |Ab7   |Db   |Db   |Db   |Db-   |Ab   |F7   |Bb7   |Eb7   |Ab   |Ab   |Ab   |Ab   ||
+BennyGoodman_TigerRag-2_FINAL.sv;Ab-maj;A1: ||Ab   |Ab   |Ab   |Ab   |Ab   |Ab   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Eb7   |Ab   |Ab   |Ab   |Ab   |Ab   |Ab   |Ab7   |Ab7   |Db   |Db   |Db   |Db-   |Ab   |F7   |Bb7   |Eb7   |Ab   |Ab   |Db   |Db-   |Ab   |F7   |Bb7   |Eb7   |Ab   |Ab   |Ab   ||
+BennyGoodman_Whispering_FINAL.sv;Eb-maj;"A1: ||Eb   |Eb   |D7   |D7   |Eb   |Eb   |C+7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb   |Eb   |Bb7   |Bb+7   ||
+A2: ||Eb   |Eb   |D7   |D7   |Eb   |Eb   |C+7   |C7   |F7   |F7   |Bb7   |Bb7   |F-7   |Bb7   |Eb   |F-7 Bb7 ||
+I1: ||Eb   |Eb   ||"
+BenWebster_ByeByeBlackbird_FINAL.sv;G-maj;"A1: ||Gj7   |Gj7   |Gj7   |Gj7   |Gj7   |Bbo   |A-7   |D7   |A-7   |D7   |A-7   |D7   |A-7   |D7   |Gj7   |Gj7   ||
+B1: ||G7   |G7   |Bm7b5   |E7   |A-7   |A-7   |C-7 F7 |A-7 D7 |Gj7   |Gj7   |Bm7b5   |E7   |A-7   |D7   |Gj7   |Gj7   ||"
+BenWebster_DidYouCallHerToday_FINAL.sv;Ab-maj;A1: ||Bb7   |Eb7   |Ab6   |Ab6   |Eb-7   |Ab7   |Db6   |Db6   |Db7   |Do   |Ab6   |F7   |Bb7   |Bb7   |Bb-7   |Eb7   ||
+BenWebster_MyIdeal_FINAL.sv;Bb-maj;"A1: ||Bbj7 G7 |C-7   |Ab7 G7 |C7   |C-7 F7 |Am7b5 D7 |G-7 C7 |Gb7 F7 ||
+B1: ||Bbj7 G7 |C-7   |Ab7 G7 |C7   |C-7 Db-7 |Bbj7Ebj7G-7C7|Gb7 F7 |Bb6   ||"
+BenWebster_NightAndDay_FINAL.sv;D-maj;"A1: ||Em7b5   |A7   |Dj7   |Dj7   |Em7b5   |A7   |Dj7   |Dj7   ||
+B1: ||G#m7b5   |G-7   |F#-7   |Fo   |E-7   |A7   |Dj7   |Dj7   ||
+A2: ||Em7b5   |A7   |Dj7   |Dj7   |Em7b5   |A7   |Dj7   |Dj7   ||
+B2: ||G#m7b5   |G-7   |F#-7   |Fo   |E-7   |A7   |Dj7   |C7   ||
+C1: ||Fj7   |Fj7   |Dj7   |Dj7   |Fj7   |Fj7   |Dj7   |Dj7   ||
+B3: ||G#m7b5   |G-7   |F#-7   |Fo   |E-7   |A7   |D6   |E7 A7 ||"
+BobBerg_Angles_FINAL.sv;Ab-maj;"A1: ||Abj7   |Abj7   |Abj7   |Abj7   |C-7   |C-7   |C-7   |C-7   |Db7   |Db7   |Db7   |Db7   |Eb7   |Eb7   |Eb7   |Eb7   ||
+A2: ||Abj7   |Abj7   |Abj7   |Abj7   |C-7   |C-7   |C-7   |C-7   |Db7   |Db7   |Db7   |Db7   |Eb7   |Eb7   |Eb7   |Eb7   ||
+B1: ||F-7   |F-7   |F-7   |F-7   |Db7911#   |Db7911#   |Db7911#   |Db7911#   |G79#   |G79#   |G79#   |G79#   |D79#11#13b   |D79#11#13b   |D79#11#13b   |D79#11#13b   ||"
+BobBerg_BluesForBela_FINAL.sv;C-min;A1: ||C-7   |C-7   |C-7   |C-7   |F-7   |F-7   |C-7   |C-7   |Ab7   |G7   |C-7   |G7   ||
+BobBerg_IDidn'tKnowWhatTimeItWas_FINAL.sv;F-maj;"A1: ||E-7 A7 |D-7 Bm7b5 |E-7 A7 |D-7 G7 |G-7 C7 |D-   |Bbj7 A-7 |G-7 F-7 ||
+A2: ||E-7 A7 |D-7 Bm7b5 |E-7 A7 |D-7 G7 |G-7 C7 |D-   |Bbj7 A-7 |G-7 C7 ||
+B1: ||F6 D-7 |Em7b5   |A7   |D-7 C-7F7|Bbj7 A+7 |D-7   |Gsus79 G7913 |G-7 F-7 ||
+A3: ||E-7 A7 |D-7 Bm7b5 |E-7 A7 |D-7 G7 |G-7 C7 |D-   |Bbj7 A-7 |Bb-7 Eb7 |A-7 D7 |G-7 Csus7 |F6   |F6   ||"
+BobBerg_NoMoe_FINAL.sv;Bb-maj;"A1: ||Bb G7 |C-7 F+7 |Bb G7 |C-7 F+7 |F-7 Bb7 |Ebj7 Eo |D-7 G+7 |C-7 F+7 ||
+A2: ||Bb G7 |C-7 F+7 |Bb G7 |C-7 F+7 |F-7 Bb7 |Ebj7 Eo |C-7 F7 |Bb   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bb G7 |C-7 F+7 |Bb G7 |C-7 F+7 |F-7 Bb7 |Ebj7 Eo |C-7 F7 |Bb   ||"
+BuckClayton_AfterTheatreJump_FINAL.sv;Db-maj;"A1: ||Db Bb7 |Eb-7 Ab7 |Db Bb-7 |Eb-7 Ab7 |Db Db7 |Gb7 Gb- |Db Bb-7 |Eb-7 Ab7 ||
+A2: ||Db Bb7 |Eb-7 Ab7 |Db Bb-7 |Eb-7 Ab7 |Db Db7 |Gb Gb- |Db Bb-7 |Eb-7 Ab7 ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb7   |Ab7   ||
+A3: ||Db Bb7 |Eb-7 Ab7 |Db Bb-7 |Eb-7 Ab7 |Db Db7 |Gb Gb- |Db Bb-7 |Eb-7 Ab7 ||
+I1: ||NC   ||"
+BuckClayton_DestinationK.C._FINAL.sv;C-maj;"A1: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+A2: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Ab7   |G7   ||
+A3: ||C   |G7   |G7   |C   |C   |C   |G7   |C   ||"
+BuckClayton_Dickie'sDream_FINAL.sv;C-min;"A1: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+A2: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb7   |D- G7 ||
+A3: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+I1: ||C- C-/Bb |Ab G7 ||"
+CannonballAdderley_HighFly_FINAL.sv;Bb-maj;"A1: ||D-7   |G7   |Cj7 F7 |E-7 A-7 |C-7   |F7   |Bb7   |B7   ||
+A2: ||D-7   |G7   |Cj7 F7 |E-7 A-7 |C-7   |B7   |Dm7b5   |G79b   ||
+B1: ||Cm7b5   |F7   |D-7   |G79b   |Cm7b5   |F7   |E-7 A-7 |Eb-7 Ab-7 ||
+A3: ||D-7   |G7   |Cj7 F7 |E-7 A-7 |C-7   |F7   |Bb6   |B7913   ||"
+CannonballAdderley_SoWhat_FINAL.sv;D-dor;"A1: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+A2: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+B1: ||Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   ||
+A3: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||"
+CannonballAdderley_StarEyes_FINAL.sv;Eb-maj;"A1: ||Ebj7   |F- Bb7 |Ebj7   |Eb- Ab7 |Dbj7   |Go C7 |Fj7   |Fo Bb7 ||
+A2: ||Ebj7   |F- Bb7 |Ebj7   |Eb- Ab7 |Dbj7   |Go C7 |Fj7   |Bb79 Eb7 ||
+B1: ||Abj7   |Abj7   |Ab-   |Db7   |Gbj7   |Gbj7   |F-   |Bb7   ||
+C1: ||Ebj7   |F- Bb7 |Ebj7   |Eb- Ab7 |Dbj7   |Go C7 |Fj7   |Bb79   |Eb7 D7 |C7 F- |Bb7 Ebj7 |Bb7   ||"
+CannonballAdderley_WorkSong_FINAL.sv;F-min;A1: ||F-7   |F-7   |F-7   |F-7   |F-7   |F-7   |G7   |C7   |F-7   |F-7   |F-7   |F-7   |F7   |Bb7   |G7 C7 |F-7   ||
+CharlieParker_Billie'sBounce_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |A-7 D7 |G-   |C7   |F7   |C7   ||
+CharlieParker_DonnaLee_FINAL.sv;Ab-maj;"A1: ||Ab   |F7   |Bb7   |Bb7   |Bb-7   |Eb7   |Ab   |Eb-7 D7 |Db   |Db-7   |Ab   |F7   |Bb7   |Bb7   |Bb-7   |Eb7   ||
+B1: ||Ab   |F7   |Bb7   |Bb7   |C7   |C7   |F-   |C79#   |F-   |C7   |F-   |Abo   |Ab F7 |Bb-7 Eb7 |Ab   |Bb-7 Eb7NC||"
+CharlieParker_Ornithology_FINAL.sv;G-maj;"A1: ||Gj7   |Gj7   |G-7 C7 |G-7 C7 |Fj7   |Fj7   |F-7   |Bb7   ||
+B1: ||Eb7   |D7   |G-   |Cm7b5 D7 |B-7   |E7   |A-7   |D7   ||
+A2: ||Gj7   |Gj7   |G-7 C7 |G-7 C7 |Fj7   |Fj7   |F-7   |Bb7   ||
+B2: ||Eb7   |D7   |G   |A-7 D7 |G/B Bb7 |A-7 Ab7 |Gj7   |A-7 D7 ||
+I1: "
+CharlieParker_ScrappleFromTheApple_FINAL.sv;F-maj;A1: ||G-7   |C7   |G-7   |C7   |Fj7 F7 |Bbj7 Bo7 |Fj7 Gj7 |A-7 D7 ||
+CharlieParker_ThrivingOnARiff_FINAL.sv;Bb-maj;"A1: ||Bb G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |Bbj7 Bb7 |Eb7 Ab7 |D-7 G7 |C-7 F7 ||
+A2: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |Bbj7 Bb7 |Eb7 Ab7 |C-7 F7 |Bbj7   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |Bbj7 Bb7 |Eb7 Ab7 |C-7 F7 |Bbj7   ||"
+CharlieParker_YardbirdSuite_FINAL.sv;C-maj;"A1: ||C6   |F-7 Bb7 |C7 Bb7 |A7   |D7   |G7   |E-7 A7 |D-7 G7 ||
+A2: ||C6   |F-7 Bb7 |C7 Bb7 |A7   |D7   |G7   |C6   |F#m7b5 B79b ||
+B1: ||E-7   |F#m7b5 B79b |E-7   |A7   |D-7   |Em7b5 A7 |D7   |D-7 G7 ||
+A3: ||C6   |F-7 Bb7 |C7 Bb7 |A7   |D7   |G7   |C6   |D-7 G7 ||"
+ChetBaker_IFallInLoveToEasily_FINAL.sv;Eb-maj;"A1: ||F-7 Bb7 |Ebj7 C-7 |Dm7b5 G79b |C-7   |Dm7b5 G79b |C-7   |D7 Ab7911# |Gj7   ||
+B1: ||Am7b5 D79# |G7   |G-7 C7 |F-7 C7 |F-7 Bb79 |Db7911# C7 |F-7 Bb7913 |Eb6   ||
+I1: "
+ChetBaker_JustFriends_FINAL.sv;G-maj;"A1: ||Cj7   |Cj7   |C-7   |F7   |F7   |F7   |Bb-7   |Eb7   ||
+B1: ||A-7   |D7   |B-7   |E-7   |A7   |A7   |A-7   |D7 Db7 ||
+A2: ||Cj7   |Cj7   |C-7   |F7   |Gj7   |Gj7   |Bb-7   |Eb7   ||
+B2: ||A-7   |D7   |B-7   |E-7   |A7   |A-7 D7 |G6   |D-7 G7 ||"
+ChetBaker_Let'sGetLost_FINAL.sv;C-maj;"A1: ||Cj7   |F#m7b5   |Cj7   |F#-7 B7 |Em7b5   |A7   |Em7b5   |A7   ||
+B1: ||D-7   |G7   |Cj7   |F#m7b5 B7 |E-7   |A7   |D7   |D-7 G7 ||
+A2: ||Cj7   |F#m7b5   |Cj7   |F#m7b5 B7 |Em7b5   |A7   |Em7b5   |A7   ||
+C1: ||D-7   |G7   |Cj7 F7 |E7 A-7 |D-7   |G7   |Cj7   |D-7 G7 |G7   ||"
+ChetBaker_LongAgoAndFarAway_FINAL.sv;G-maj;"A1: ||G6 E-7 |A-7 D7 |Gj7 E-7 |A-7 D7 |G6 E-7 |A-7 D7 |G6 E7 |A-7 D7 ||
+B1: ||Bb6 G-7 |C-7 F7 |Bbj7   |A7   |Dj7   |B-7   |A-7   |D7   ||
+A2: ||G6 E-7 |A-7 D7 |Gj7 E-7 |A-7 D7 |G6 E-7 |A-7 D7 |G6 E7 |A-7 C7 ||
+C1: ||D-7   |G7   |Cj7   |C-7 F7 |G6 Bbo |A-7 D7 |G6   |A-7 D7 ||"
+ChetBaker_Two'sBlues_FINAL.sv;G-min;A1: ||G-7   |G-7   |G-7   |G-7   |C-7   |C-7   |G-7   |G-7   |Eb79#11#13b   |D7   |G-7   |D7 C-7 ||
+ChetBaker_You'dBeSoNiceToComeHomeTo_FINAL.sv;G-min;A1: ||G-7   |A7 D7 |G-7   |G-7   |F-7   |Bb7   |Ebj7   |Ebj7   |Am7b5   |D7   |Gbo7   |G-7   |Em7b5   |A7   |Am7b5   |D7   ||
+CliffordBrown_Daahoud_FINAL.sv;Eb-maj;"A1: ||Eb-7 Ab7 |Db-7 Gb7 |Bj7   |F-7 Bb7 |Eb-7   |B7 Bb7 |Ebj7   |Ebj7   ||
+A2: ||Eb-7 Ab7 |Db-7 Gb7 |Bj7   |F-7 Bb7 |Eb-7   |B7 Bb7 |Ebj7   |Ebj7   ||
+B1: ||Bb-7   |Eb7   |Abj7   |Abj7   |Ab-7   |Db7   |Gbj7   |F-7 Bb7 ||
+A3: ||Eb-7 Ab7 |Db-7 Gb7 |Bj7   |F-7 Bb7 |Eb-7   |B7 Bb7 |Ebj7   |Ebj7   ||"
+CliffordBrown_I'llRememberApril_FINAL.sv;G-maj;"A1: ||Gj7   |Gj7   |Gj7   |Gj7   |G-7   |G-7   |G-7   |G-7   |A-7   |D7   |Bm7b5   |E79b   |A-7   |D7   |Gj7   |Gj7   ||
+B1: ||C-7   |F7   |Bbj7   |Bbj7   |C-7   |F7   |Bbj7   |Bbj7   |A-7   |D7   |Gj7   |Gj7   |F#-7   |F#-7   |Ej7   |Ej7   ||
+A2: ||Gj7   |Gj7   |Gj7   |Gj7   |G-7   |G-7   |G-7   |G-7   |A-7   |D7   |Bm7b5   |E7   |A-7   |D7   |Gj7   |Gj7   ||"
+CliffordBrown_Jordu_FINAL.sv;Eb-maj;"A1: ||D7 G7 |C-6   |F7 Bb7 |Ebj7   |D7 G7 |C-6   |Ab7   |Ab7   ||
+A2: ||D7 G7 |C-6   |F7 Bb7 |Ebj7   |D7 G7 |C-6   |Ab7   |Ab7   ||
+B1: ||G7 C7 |F7 Bb7 |Eb7 Ab7 |Dbj7   |F7 Bb7 |Eb7 Ab7 |Db7 Gb7 |Bj7   ||
+A3: ||D7 G7 |C-6   |F7 Bb7 |Ebj7   |D7 G7 |C-6   |Ab7   |Ab7   ||"
+CliffordBrown_JoySpring_FINAL.sv;F-maj;"A1: ||Fj7   |G-7 C7 |Fj7   |Bb-7 Eb7 |Eb7 D7 |G-7 C7 |F   |Ab-7 Db7 |Gbj7   |Ab-7 Db7 |Gbj7   |B-7 E7 |Bb-7 A7 |Ab-7 Db7 |Gb   |A-7 D7 ||
+B1: ||Gj7   |G-7 C7 |Fj7   |F-7 Bb7 |Ebj7   |Ab-7 Db7 |Gbj7   |G-7 C7 ||
+A2: ||Fj7   |G-7 C7 |Fj7   |Bb-7 Eb7 |A-7 D7 |G-7 C7 |F   |G-7 C7 ||"
+CliffordBrown_Sandu_FINAL.sv;Eb-blues;A1: ||Eb7   |Ab7   |Eb7   |Eb7   |Ab7   |Ab7   |Eb7   |G-7 C7 |F-7   |Bb7   |Eb7  C-7|F-7 Bb7 ||
+CliffordBrown_Stompin'AtTheSavoy_FINAL.sv;Db-maj;"A1: ||Dbj7   |Dbj7 Ab7 |Dbj7   |Dbj7 Do |Eb-7   |Ab7   |Db6 Bb-7 |Eb-7 Ab7 ||
+A2: ||Dbj7   |Dbj7 Ab7 |Dbj7   |Dbj7 Do |Eb-7   |Ab7   |Db6   |Db7   ||
+B1: ||Gb7 G7 |Gb7   |B7 C7 |B7   |E7 F7 |E7   |A7   |Ab7   ||
+A3: ||Dbj7   |Dbj7 Ab7 |Dbj7   |Dbj7 Do |Eb-7   |Ab7   |Db6   |Eb-7 Ab7 ||"
+ColemanHawkins_BodyAndSoul_FINAL.sv;Db-maj;"A1: ||Eb- D+7 |Eb-7 D7 |Dbj7 Eb-7 |F-7 Eo |Eb-7   |Cm7b5 B7 |Bb-7 Eb-7Ab7|Dbj7 Fm7b5Bb79b||
+A2: ||Eb- D+7 |Eb-7 D7 |Db-7 Eb-7 |F-7 Eo |Eb-7   |Cm7b5 B7 |Bb-7 Eb-7Ab7|Db E-7A7||
+B1: ||Dj7 E-7 |B-7F#G-7C7|F#-7B-7E-7A7|Dj7 F#-7E-7|D-7 G7 |Cj7 Ebo |D-7 G7 |C7B7Bbsus7Bb7||
+A3: ||Eb- B+7 |Eb-7 Ab7 |Dbj7 Gb7 |F-7 Eo |Eb-7   |Ab7 Ao |Ao Eb-7Ab+7|Ab+7 Fm7b5Bb7||"
+ColemanHawkins_It'sOnlyAPapermoon_FINAL.sv;F-maj;"A1: ||F6 D7 |G-7 C7NC|G-7 C7NC|F6   |F7  NC|Bb6 Gm7b5 |C7   |F6 C7 ||
+A2: ||F6 D7 |G-7 C7 |G-7 C7 |F6   |F7   |Bb6 Gm7b5 |C7   |F6   ||
+B1: ||Bb Bo |F/C D7 |G-7 C7 |F6 F7 |Bb Bo |F/C D7 |Am7b5 D7 |G-7 C7 ||
+A3: ||F6 D7 |G-7 C7 |G-7 C7 |F6   |F7   |Bb6 Gm7b5 |C7   |F6   ||
+I1: ||F6   ||"
+ColemanHawkins_MyBlueHeaven_FINAL.sv;Eb-maj;"A1: ||Eb   |Eb   |Eb D7Db7|C7   |F7   |Bb7   |G-7 Gb7 |F-7 Bb7 ||
+A2: ||Eb   |Eb   |Eb D7Db7|C7   |F7   |Bb7   |Eb   |Eb7  Eb+7||
+B1: ||Ab   |C7   |F-   |F-   |Bb7   |Bb7   |Eb Eo |F-7 Bb7 ||
+A3: ||Eb   |Eb   |Eb D7Db7|C7   |F7   |Bb7   |Eb Ab7 |Eb  NC||"
+ColemanHawkins_Perdido_FINAL.sv;Bb-maj;"A1: ||C-7   |F7   |Bb6   |D-7 G7 |C-7   |F7   |Bb6   |D-7 G7 ||
+A2: ||C-7   |F7   |Bb6   |D-7 G7 |C-7   |F7   |Bb6   |Bb6   ||
+B1: ||D7   |D7   |G79   |G+7   |C7   |C7   |F7   |F7   ||
+A3: ||C-7   |F7   |Bb6   |D-7 G7 |C-7   |F7   |Bb6   |D-7 G7 ||"
+ColemanHawkins_Stompin'AtTheSavoy_FINAL.sv;Db-maj;"A1: ||G D7G|C79   |G   |G G#o |D7   |D7   |G   |A- D7 ||
+A2: ||G D7G|C79   |G   |G G#o |D7   |D7   |G   |G   ||
+B1: ||C   |D7   |C G |G   |E-   |A79   |A-7 D7 |D7   ||
+A3: ||G D7G|C79   |G   |G G#o |D7   |D7   |G CD|A-7 D7 ||"
+CurtisFuller_BlueTrain_FINAL.sv;Eb-blues;A1: ||Eb7NC  |Ab7   |Eb7   |Eb7   |Ab7   |Ab7   |Eb7   |G-7 C7 |F-7   |Bb7   |Eb7   |F-7 Bb7 ||
+CurtisFuller_DownUnder_FINAL.sv;F#-min;A1: ||Gb-7   |Abm7b5 Db7 |Gb-7   |Gb-7   |G7   |G7   |Gb-7   |E-7 A7 |D7   |Db7   |Gb-7   |Db7   ||
+DavidLiebman_NoGreaterLove_FINAL.sv;Bb-maj;"A1: ||Bbj7   |Eb7   |Ab7   |G7   |C7   |C7   |C-7   |F7   ||
+A2: ||Bbj7   |Eb7   |Ab7   |G7   |C7   |C-7 F7 |Bb6   |Bb6   ||
+B1: ||Am7b5 D7 |G-6   |G-6 D7 |G-6   |Am7b5 D7 |G-7   |C7   |F7   ||
+A3: ||Bbj7   |Eb7   |Ab7   |G7   |C7   |C-7 F7 |Bb6   |F7   ||"
+DavidLiebman_SoftlyAsInAMorningSunrise_FINAL.sv;C-min;"A1: ||C-   |C-   |C-   |C-   |C-   |C-   |C-   |C-   ||
+A2: ||C-   |C-   |C-   |C-   |C-   |C-   |C-   |C-   ||
+B1: ||Eb79#   |Eb79#   |C79#   |C79#   |Abj79#11#13b   |Abj79#11#13b   |G79#11#13b   |G79#11#13b   ||
+A3: ||C-   |C-   |C-   |C-   |C-   |C-   |C-   |C-   ||"
+DavidLiebman_ThereWillNeverBeAnotherYou_FINAL.sv;Eb-maj;"A1: ||Ebj7   |Ebj7   |Dm7b5   |G79b   |C-7   |C-7   |Bb-7   |Eb7   |Abj7   |Fm7b5 Bb7 |Ebj7   |C-7   |F7   |F7   |F-7   |Bb7   ||
+B1: ||Ebj7   |Ebj7   |Dm7b5   |G79b   |C-7   |C-7   |Bb-7   |Eb7   |Abj7   |Fm7b5 Bb7 |Ebj7   |G-7 C7 |Ebj7 D7 |G7 C7 |F-7 Bb7 |Eb6 Bb7 ||"
+DavidMurray_AskMeNow_FINAL.sv;Db-maj;"A1: ||Eb-7   |Ab   |Dbj7   |F-7 E-7 |Eb-7   |Ab7   |Dbj7   |Dbj7   |Bb-7   |Eb7   |Eb7   |Bb-7   |Eb-7   |Ab7   |Db-7   |Gb7   ||
+B1: ||G-7 C7 |F#-7 B7 |F-7 Bb7 |E-7 A7 |Eb-7   |Ab7   |B79#11#13b   |Bb7   |Eb7   |D7   |Dbj7   |Eb7   |Eb-7   |Ab7   |Db   |Db   ||"
+DavidMurray_BluesForTwo-1_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7    |Eb7   |Eb7   |Bb7   |Bb7   |C7   |F7   |Bb7   |Bb7   ||
+DavidMurray_BluesForTwo-2_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C7   |F7   |Bb7   |Bb7   ||
+DexterGordon_Cheesecake_FINAL.sv;C-min;"A1: ||C-69   |Dm7b5 G+7 |C-69   |C7   |F-69   |C+7   |F-69   |F-69   |Dm7b5   |G+7   |F-7   |Bb7   |Eb-7 Ab7 |Dm7b5 G+7 |C-69   |Dm7b5 G7 ||
+A2: ||C-69   |Dm7b5 G+7 |C-69   |C7   |F-69   |C+7   |F-69   |F-69   |Dm7b5   |Dm7b5   |F-7   |Bb7   |Eb-7 Ab7 |Dm7b5 G+7 |C-69   |C-69   ||
+B1: ||G-7   |C7   |F-7   |Bb7   |Eb-7   |Ab7   |Dm7b5   |G+7   ||
+A3: ||C-69   |Dm7b5 G+7 |C-7   |C7   |F-69   |C+7   |F-69   |F-69   |Dm7b5   |G+7   |F-7   |Bb7   |Eb-7 Ab7 |Dm7b5 G+7 |C-69   |C-69   ||"
+DexterGordon_Montmartre_FINAL.sv;Bb-min;"A1: ||Bb-   |C-7 F7 |Bb-   |Cb7   |Bb-   |C-7   |C-7   |Cb7   ||
+A2: ||Bb-   |C-7 F7 |Bb-   |Cb7   |Bb-   |F7   |C-7 F7 |Bb-   ||
+B1: ||F-7   |Bb7   |E-7 A7 |Eb7 Ab7 |F-7   |Bb7   |C-7   |F7   ||
+A3: ||Bb-   |C-7 F7 |Bb-   |Cb7   |Bb-   |C-7   |C-7 F7 |Bb-   ||"
+DexterGordon_SocietyRed_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |D7   |G-7   |C7   |F7   |F7   ||
+DexterGordon_StanleyTheSteamer_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C-7   |F7   |Bb7   |F7   ||
+DexterGordon_TheRainbowPeople_FINAL.sv;Eb-maj;"A1: ||Eb F-7 |G-7 F-7 |G-7 F-7 |F#-7 B7 |F-7   |Bb7   |Ebj7 C7 |F-7 Bb7 ||
+A2: ||Ebj7 F-7 |G-7 F-7 |G-7 F-7 |F#-7 B7 |F-7   |Bb7   |Eb Db7 |B-7 E7 ||
+B1: ||Bb-7   |Eb7   |Am7b5   |Ab7   |G7   |C7   |F7   |Bb7   ||
+A3: ||Ebj7 F-7 |G-7 F-7 |G-7 F-7 |F#-7 B7 |F-7   |Bb7   |Eb C7 |F-7 Bb7 ||"
+DickieWells_AfterTheatreJump_FINAL.sv;Db-maj;"A1: ||Db Bb7 |Eb-7 Ab7 |F-7 Bb-7 |Eb-7 Ab7 |Ab-7 Db7 |Gb7 B7 |F-7 Bb-7 |Eb-7 Ab7 ||
+A2: ||Db Bb7 |Eb-7 Ab7 |F-7 Bb-7 |Eb-7 Ab7 |Ab-7 Db7 |Gb7 B7 |F-7 Bb-7 |Eb7 Ab7 ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb7   |Ab7   ||
+A3: ||Db Bb7 |Eb-7 Ab7 |F-7 Bb-7 |Eb-7 Ab7 |Ab-7 Db7 |Gb7 B7 |F-7 Bb-7 |Eb-7 Ab7 ||
+I1: ||NC   ||"
+DickieWells_DestinationK.C._FINAL.sv;C-maj;"A1: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+A2: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Ab7   |G7   ||
+A3: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+I1: ||NC   ||"
+DickieWells_Dickie'sDream_FINAL.sv;C-min;"A1: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+A2: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb7   |D- G7 ||
+A3: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+I1: ||NC   ||"
+DizzyGillespie_Anthropology_FINAL.sv;Bb-maj;"A1: ||Bb6 G7 |C-7 F7 |Bb6 G-7 |C7 F7 |Bb7   |Eb6 Eb-6 |D-7 G7 |C-7 F7 ||
+A2: ||Bb6 G7 |C-7 F7 |Bb6 G-7 |C7 F7 |Bb7   |Eb6 Eb-6 |D-7 G7 |C-7F7Bb6 ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bb6 G7 |C-7 F7 |Bb6 G-7 |C7 F7 |Bb7   |Eb6 Eb-6 |D-7 G7 |C-7 F7 ||
+I1: ||Bb6   ||"
+DizzyGillespie_Be=Bop_FINAL.sv;F-min;"A1: ||F- Gm7b5 |F- Bb-6 |F-   |Gm7b5 C79b |F- Gm7b5 |F- Bb-6 |F-   |C7 F- ||
+A2: ||F- Gm7b5 |F- Bb-6 |F-   |Gm7b5 C79b |F- Gm7b5 |F- Bb-6 |F-   |C7 F- ||
+B1: ||F-7   |Bb79#   |Ebj7   |Ebj7   |Eb-7   |Ab79#   |Dbj7   |Gm7b5 C79# ||
+A3: ||F- Gm7b5 |F- Bb-6 |F-   |Gm7b5 C79b |F- Gm7b5 |F- Bb-6 |F-   |C7 F- ||"
+DizzyGillespie_CognacBlues_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |F7   |G-7   |G-7   |F7 D-7 |G-7 C7 ||
+DizzyGillespie_Groovin'High_FINAL.sv;Db-maj;"A1: ||Ebj7   |Ebj7   |Am7b5   |D7   |Ebj7   |Ebj7   |Gm7b5   |C7   |F7   |F7   |F-7   |Bb7   |G-7   |F#-7   |F-7   |Bb7   ||
+A2: ||Ebj7   |Ebj7   |Am7b5   |D7   |Ebj7   |Ebj7   |Gm7b5   |C7   |F7   |F7   |F-7   |Bb7   |F-7   |Ab-7 Db7 |Eb6   |F-7 Bb7 ||"
+DizzyGillespie_HotHouse_FINAL.sv;C-maj;"A1: ||Gm7b5   |C+7   |Fm7b5   |Bb+7   |Dm7b5   |G+7   |Cj7   |Cj7   ||
+A2: ||Gm7b5   |C+7   |Fm7b5   |Bb+7   |Dm7b5   |G+7   |Cj7   |Cj7   ||
+B1: ||C-7   |F7   |Bbj7   |Bbj7   |Ab7   |Ab7   |G7   |G7   ||
+A3: ||Gm7b5   |C+7   |Fm7b5   |Bb+7   |Dm7b5   |G+7   |Cj7   |Cj7   ||"
+DonByas_Be=Bop_FINAL.sv;F-min;"A1: ||F- Gm7b5 |F-/Ab Bb-6 |F-/C   |Gm7b5 C7 |F- Gm7b5 |F-/Ab Bb-6 |F-/C   |Gm7b5 F- ||
+A2: ||F-7 Gm7b5 |F-/Ab Bb-6 |F-/C   |Gm7b5 C7 |F- Gm7b5 |F-/Ab Bb-6 |F-/C   |Gm7b5 F- ||
+B1: ||F-7   |Bb79#   |Ebj7   |Ebj7   |Eb-7   |Ab79#   |Dbj7   |Gm7b5 C79b ||
+A3: ||F-7 Gm7b5 |F-/Ab Bb-6 |F-/C   |Gm7b5 C7 |F- Gm7b5 |F-/Ab Bb-6 |F-/C   |C7 F- ||"
+DonByas_BodyAndSoul_FINAL.sv;Db-maj;"A1: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6 Bb7 ||
+A2: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db A7 ||
+B1: ||Dj7 E-7 |D G-7C7|F#-7B-7E-7A7|Dj7   |D-7 G7 |Cj7 Ebo |D-7 G7 |C7B7Bb7 ||
+A3: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6 Bb7 ||"
+DonByas_CognacBlues_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |F7   |G-7   |C7   |F7 D-7 |G-7 C7 ||
+DonByas_HarvardBlues-1_FINAL.sv;Db-blues;"A1: ||Db7   |Gb7 Go |Db Db7 |Bb-7 Db7 |Gb7   |Gb7 Go |Db7   |Db7 Ao |Ab7   |Gb7   |Db7   |Db7   ||
+I1: ||NC   ||"
+DonByas_HarvardBlues-2_FINAL.sv;Db-blues;"A1: ||Db7   |Gb7 Go |Db7   |Db7   |Gb7   |Gb7 Go |Db7   |Bb- Eb7 |Ab7   |Gb7   |Db7   |Db7   ||
+I1: ||NC   ||"
+DonByas_UnAmourPleurait_FINAL.sv;F-maj;"A1: ||F/C Dbo |D- G-7 |C7 G-7C7|Fj7   |Fj7 A7 |D-7 Dbo |C7 G-7C7|Fj7   ||
+A2: ||F/C Dbo |D-7 G-7 |C7 G-7C7|Fj7   |A7   |D-7 Dbo |C7   |F F7 ||
+B1: ||Bb   |Eb C-7 |F7 C-7F7|Bb   |Bb Do |Ebj7 Ab7 |Bb F |BbFG7C7||
+C1: ||C/F Dbo |D-7 G-7 |C7   |Fj7   |A7   |D-7   |C7 G-7C7|Fj7   |Fj7  NC||"
+DonEllis_JohnnyComeLately_FINAL.sv;G-min;"A1: ||G-6   |Eb7 D7 |G-6   |Eb7 D7 |G-6   |Eb7 D7 |G-6   |Am7b5 D7 ||
+A2: ||G-6   |Eb7 D7 |G-6   |Eb7 D7 |G-6   |Eb7 D7 |G-6   |F-7 Bb7 ||
+B1: ||Ebj7 F-7 |G-7 F-7 |Ebj7 F-7 |G-7 F-7 |Ebj7 F-7 |G7 C7 |F7 Bb7 |A79b D+7 ||
+A3: ||G-6   |Eb7 D7 |G-6   |Eb7 D7 |G-6   |Eb7 D7 |G-6   |G-6   ||"
+DonEllis_SweetAndLovely_FINAL.sv;C-maj;"A1: ||G-7   |C7   |G-7   |C7   |F7   |Bbj7 Eb7 |Cj7 G7 |C6   ||
+A2: ||G-7   |C7   |G-7   |C7   |F7   |Bbj7 Eb7 |Cj7 G7 |C6   ||
+B1: ||F-7 Bb7 |Cj7   |F-7 Bb7 |Cj7   |Ab-7 Db7 |Ebj7   |Eb-7 Ab7 |D-7 G7 ||
+A3: ||G-7   |C7   |G-7   |C7   |F7   |Bbj7 Eb7 |Cj7 G7 |C6   ||"
+EricDolphy_245_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F#-7 B7 |Bb7   |Bo   |E79# A7913b |A-7 Ab-7 |G-7   |Db-7 F#7 |B+7   |B+7   ||
+EricDolphy_DahomeyDance_FINAL.sv;G-blues;A1: ||G7   |G7   |G7   |G7913   |F7   |F7   |G7   |G7913   |Dsus7   |D7   |G7   |G7913   ||
+FatsNavarro_GoodBait_AlternateTake_FINAL.sv;Bb-maj;"A1: ||Bb6 G7 |C-7 F7F7/Eb|D-7 G7 |C-7 F7 |Bbj7 Bb7/D |Ebj7 Eo |D-7/FG7C-7F7|Bb6 F7 ||
+A2: ||Bb6 G7 |C-7 F7F7/Eb|D-7 G7 |C-7 F7 |Bbj7 Bb7/D |Ebj7 Eo |D-7/FG7C-7F7|Bbj7 Bb+7 ||
+B1: ||Eb6 C7 |F-7 Bb7Bb7/Ab|G-7 C7 |F-7 Bb7 |Ebj7 Eb7/G |Abj7 Ao |G-7C7F-7Bb7|Eb6 F79 ||
+A3: ||Bb6 G7 |C-7 F7F7/Eb|D-7 G7 |C-7 F7 |Bbj7 Bb7/D |Ebj7 Eo |D-7/FG7C-7F7|Bb6   |Bb6   ||"
+FatsNavarro_GoodBait_FINAL.sv;Bb-maj;"A1: ||Bbj7 G-7 |C-7 F7 |Bbj7 G-7 |C-7 F7 |Bbj7 Bb7 |Ebj7 Ab7 |D-7G7C-7F7|Bbj7 F7 ||
+A2: ||Bbj7 G-7 |C-7 F7 |Bbj7 G-7 |C-7 F7 |Bbj7 Bb7 |Ebj7 Ab7 |D-7G7C-7F7|Bbj7 Bb7 ||
+B1: ||Ebj7 C-7 |F-7 Bb7 |Ebj7 C-7 |F-7 Bb7 |Ebj7 Eb7 |Abj7 Db7 |G-7C7F-7Bb7|Ebj7 F7 ||
+A3: ||Bbj7 G-7 |C-7 F7 |Bbj7 G-7 |C-7 F7 |Bbj7 Bb7 |Ebj7 Ab7 |D-7G7C-7F7|Bbj7 F7 ||
+I1: ||Bbj7 G7 ||"
+FatsNavarro_OurDelight_FINAL.sv;Ab-maj;"A1: ||Bb7913   |Eb79#   |Abj7   |F7   |Bb7   |Bb-7 Bo7 |Ab/C Bo7 |Bb-7 Eb7913B7911#||
+A2: ||Bb7913   |Eb79#   |Abj7   |F7   |Bb7   |Bb-7 Bo7 |Ab/C Bo7 |Ebsus7 Abj7 ||
+B1: ||Eb-7   |Ab+79b   |Dbj7   |Dbj7   |Db-7 Gb7 |C-7 F7 |B-7 E7 |Eb7 B7911# ||
+A3: ||Bb7913   |Eb79#   |Abj7   |F7   |Bb7   |Bb-7 Bo7 |Ab/C Bo7 |Ebsus7 Abj7 ||"
+FatsNavarro_TheSkunk_FINAL.sv;Db-blues;A1: ||Db7   |Gb7   |Db7   |Db7   |Gb7   |Gb7   |Db7   |Bb7   |Eb7   |Ab7   |Db7   |Ab7   ||
+FreddieHubbard_245_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F#- B7 |Bb7   |Bo   |E79# Ab7913b |A-7 Ab-7 |G-7   |C#- F#7 |B+7   |B+7   ||
+FreddieHubbard_DolphinDance_FINAL.sv;;"A1: ||C-7   |Ab7911#   |C-7   |A-7 D7 |Gj7   |Ab-7   |F-7911   |F-7911   |C-7   |C-7   |A-7911   |D7913   ||
+B1: ||Gj7   |G7913   |A   |Ebm7b5   |F7913   |F79b13   |F7913   |E-79 A7913 |Eb7911#   |A-7 D7913 |B-7   |E7913 D-7 |C#-7   |F#7913   |D-7   |C-7   |D-7   |C-7   ||
+C1: ||Dbj7   |Bb79b13   |C79#   |G79#   ||"
+FreddieHubbard_DownUnder_FINAL.sv;F#-min;A1: ||Gb-7   |Abm7b5 Db7 |Gb-7   |Gb-7   |G7   |G7   |Gb-7   |E-7 A7 |D7   |Db7   |Gb-7   |Db7   ||
+FreddieHubbard_MaidenVoyage_FINAL.sv;D;"A1: ||Dsus7   |Dsus7   |Dsus7   |Dsus7   |Fsus7   |Fsus7   |Fsus7   |Fsus7   ||
+A2: ||Dsus7   |Dsus7   |Dsus7   |Dsus7   |Fsus7   |Fsus7   |Fsus7   |Fsus7   ||
+B1: ||Ebsus7   |Ebsus7   |Ebsus7   |Ebsus7   |Dbsus7   |Dbsus7   |Dbsus7   |Dbsus7   ||
+A3: ||Dsus7   |Dsus7   |Dsus7   |Dsus7   |Fsus7   |Fsus7   |Fsus7   |Fsus7   ||"
+FreddieHubbard_SocietyRed_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |D79b   |G-7   |C7   |A-7 D-7 |Gm7b5 C7 ||
+FreddieHubbard_SpeakNoEvil_FINAL.sv;C-min;"A1: ||C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7 Eb-7 |E-7911 C-7 |D-7911 Bb-7 |A79#11#13b   |Bb-7   |A79#11#13b   |Bb-7   ||
+A2: ||C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7 Eb-7 |E-7911 C-7 |D-7911 Bb-7 |A79#11#13b   |Bb-7   |A79#11#13b   |Bb-7   ||
+B1: ||Am7b5   |Ab7   |G-7   |Gb7   |F-7   |Bb7   |Ebj79#11#   |Dbj7911#   ||
+A3: ||C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7 Eb-7 |E-7911 C-7 |D-7911 Bb-7 |A79#11#13b   |Bb-7   |A79#11#13b   |Bb-7   ||"
+GerryMulligan_LineForLyons_FINAL.sv;Bb-maj;"A1: ||Bb69 Bb7 |Eb-7 Ab7 |D-7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 ||
+A2: ||Bb69 Bb7 |Eb-7 Ab7 |D-7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |Bbj7   |Bb7   ||
+B1: ||Ebj7   |Em7b5 A7 |D-7   |G79b   |C-7   |F7   |D-7 G7 |C-7 F7 ||
+A3: ||Bb69 Bb7 |Eb-7 Ab7 |D-7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |Bbj7   |C-7 F7 ||
+I1: ||Bb6 Bb7 ||"
+GerryMulligan_ScrappleFromTheApple_FINAL.sv;G-min;"A1: ||G-7   |C7   |G-7   |C79b   |Fj7   |G-7 C7 |Fj7 G-7 |A-7 D7 ||
+A2: ||G-7   |C7   |G-7   |C79b   |Fj7   |G-7 C7 |Fj7 G-7 |F   ||
+B1: ||A7   |A7   |D7   |D7   |G7   |G7   |C7   |C7   ||
+A3: ||G-7   |C7   |G-7   |C79b   |Fj7   |G-7 C7 |Fj7 G-7C79b|F   ||"
+GerryMulligan_WalkingShoes_FINAL.sv;G-maj;"A1: ||G   |C7   |G   |F7 E-7 |A-7   |C#-7 F#7 |G Go |A-7 D7 ||
+A2: ||G   |C7   |G   |F7 E-7 |A-7   |C#-7 F#7 |G Go |A-7 D7 ||
+B1: ||F#-7   |B7   |E-   |F#-7 B7 |E-   |A7   |A-7   |D7   ||
+A3: ||G   |C7   |G   |F7 E7 |Eb7 D7 |A-7 D7 |G   |A-7 D7 |G   |G   |G   ||"
+HankMobley_Doodlin'_FINAL.sv;Db-blues;A1: ||Db7   |Gb7   |Db7   |Db7   |Gb7   |Gb7   |Db7   |Db7 Bb7 |Eb-7   |Ab79   |Db7   |Ab7   ||
+HankMobley_LadyBird_FINAL.sv;C-maj;A1: ||Cj7   |Cj7   |F-7   |Bb7   |Cj7   |Cj7   |Bb-7   |Eb7   |Abj7   |Abj7   |A-7   |D7   |D-7   |G7   |Cj7 Ebj7 |Abj7 Dbj7 ||
+HankMobley_SoulStation_FINAL.sv;Eb-blues;"A1: ||Eb7   |Eb7   |Eb7   |Eb7   |Ab7   |Ab7   |Bb7   |Bb7   ||
+B1: ||Eb7   |Bb-7 Eb7 |Ab7   |Ao   |Eb7 C7 |F-7 Bb7 |Eb7   |Eb7   ||"
+HarryEdison_DidYouCallHerToday_FINAL.sv;Ab-maj;"A1: ||Bb7   |Eb7   |Ab6   |Ab6   |Eb-7   |Ab7   |Db6   |Db6   ||
+B1: ||Db7   |Do   |Ab   |F7   |Bb7   |Bb7   |Bb-7   |Eb7   ||
+A'2: ||Bb7   |Eb7   |Ab6   |Ab6   |Eb-7   |Ab7   |Db6   |Db6   ||
+C1: ||Db7   |Do   |Ab   |F7   |Bb-7   |Eb7   |Ab   |Ab   ||"
+JJJohnson_BlueMode_FINAL.sv;Bb-blues;"A1: ||Bb7   |Eb7 Em7b5 |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C-7   |F7   |Bb7 F7 |Bb7G7C-7F7||
+B1: ||Bb7   |A-7 D7 |G-7   |F-7 Bb7 |Eb7   |Eb7   |Eb-7 D7 |Db7 G7 |C-7   |C7 F7 |Bb7 G7 |C-7 F7 ||
+I1: ||Bb7   ||"
+JJJohnson_BluesInTheCloset_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |F7   ||
+JJJohnson_CrazyRhythm_FINAL.sv;F-maj;"A1: ||Fj7   |Fj7   |Fj7   |Fj7/A Abo7 |G-7   |C7   |F6   |G-7 C7 ||
+A2: ||Fj7   |Fj7   |Fj7   |Fj7/A Abo7 |G-7   |C7   |F6   |F6  C7||
+B1: ||C-7   |F7   |Bb F7 |Bb   |Bb-   |Eb79   |D7   |G7 C7 ||
+A3: ||Fj7   |Fj7   |G7   |G7   |C7   |C7   |F   |F   ||"
+JJJohnson_Elora_FINAL.sv;Bb-maj;"A1: ||C-7   |F7   |Bbj7 Ebj7 |D-7 Db7 |C-7 G7 |C-7 F7 |Bbj7   |D-7 Db7 ||
+A2: ||C-7   |F7   |Bbj7 Ebj7 |D-7 Db7 |C-7 G7 |C-7 F7 |Bbj7   |F-7 Bb7 ||
+B1: ||Ebj7   |Eb-7 Ab7 |Bb-7   |A-7 D7 |G-7   |C7   |C-7   |F7   ||
+A3: ||C-7   |F7   |Bbj7 Ebj7 |D-7 Db7 |C-7 G7 |C-7 F7 |Bbj7   |D-7 Db7 ||
+I1: ||C-7   ||"
+JJJohnson_Yesterdays_FINAL.sv;D-min;"A1: ||D-   |Em7b5 A79b |D-   |Em7b5 A79b |D- D-/C# |D-/C   |Bm7b5   |E7   ||
+B1: ||A+7   |D7   |G7   |C7   |C-7 F7 |Bbj7   |Em7b5   |A79b   ||"
+JoeHenderson_In'NOut-1_FINAL.sv;Eb;A1: ||Fsus7913   |Fsus7913   |Fsus7913   |Gbsus7913   |Fsus7913   |Fsus7913   |F7 Eb7 |D79   |Ebj7911#   |Ebj7911#   |Ebj7911#   |Ebj7911#   ||
+JoeHenderson_In'NOut-2_FINAL.sv;Eb;A1: ||Fsus7913   |Fsus7913   |Fsus7913   |Gbsus7913   |Fsus7913   |Fsus7913   |Fsus7913 Ebsus7913 |D79   |Ebj7911#   |Ebj7911#   |Ebj7911#   |Ebj7911#   ||
+JoeHenderson_JohnnyComeLately_FINAL.sv;G-min;"A1: ||G-   |Eb7 D79b |G-   |Eb7 D79b |G-   |Eb7 D79b |G-   |Eb7 D79b ||
+A2: ||G-   |Eb7 D79b |G-   |Eb7 D79b |G-   |Eb7 D79b |G-   |F- Bb7 ||
+B1: ||Ebj7 F- |G- F- |Ebj7 F- |G- F- |Ebj7 F- |G- C7 |F- Bb7 |A79b D79b ||
+A3: ||G-   |Eb7 D79b |G-   |Eb7 D79b |G-   |Eb7 D79b |G-   |Eb7 D79b ||"
+JoeHenderson_Punjab_FINAL.sv;;"A1: ||Dj7   |Dj7 Bb7913 |Bj7   |Abj7   |Fm7b5   |Bb7   |E6911#   |E6911#   |E6911#   |E6911# Eb7 ||
+B1: ||Abj7   |G7913   |Gb7913 Bj7 |F79   |Fsus79   |Fsus79   |Gj7 Aj7 |Bj7 Cj7911# ||"
+JoeHenderson_Serenity_FINAL.sv;Eb-maj;A1: ||Dm7b5NC  |G+7   |Abj7 Gbj7 |E-7 A7 |F-7 Bb7 |Ebj7 Dm7b5G7|C-7 C-7/Bb |Ab-7 Db7 |G+7 Gb7 |F7   |Ej7   |F-7 Bb+7 |Ebj7   |Dm7b5 G+7 ||
+JoeHenderson_U.M.M.G._FINAL.sv;Db-maj;"A1: ||Fm7b5   |Bb7   |Eb-7   |Ab7   |Dbo7 Db6 |Dbj7   |Db-7   |Gb7   ||
+A2: ||Fm7b5   |Bb7   |Eb-7   |Ab7   |Dbo7 Db6 |Dbj7   |Ab-7 Db7 |Ab-7 Db7 ||
+B1: ||Gm7b5   |C79b   |Fj7   |Fj7   |Abm7b5   |Db79b   |Gb-   |Ab7   ||
+C1: ||Fm7b5   |Bb79b   |Eb-7   |Ab7   |Dbo7   |Dbo7   |Db6   |Db6   |Dbo7   |Dbo7   |Db6   |Db6   ||"
+JoeLovano_BodyAndSoul-1_FINAL.sv;Db-maj;"A1: ||Eb-7 B79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6 Bb7 ||
+A2: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db A7 ||
+B1: ||Dj7 E-7 |D/F# G-7C7|F#-7B7E-7A7|Dj7   |D-7 G7 |Cj7 Ebo |D-7 G7 |C7B7Bb7 ||
+A3: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6 Bb7 ||"
+JoeLovano_BodyAndSoul-2_FINAL.sv;Db-maj;"B1: ||Dj7 E-7 |D/F# G-7C7|F#-7B-7E-7A7|Dj7   |D-7 G7 |Cj7 Ebo |D-7 G7 |C7B7Bb7 ||
+A3: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6 Bb7 ||
+I1: ||NC   |NC   |NC   |NC   |NC   |NC   ||"
+JoeLovano_ICan'tGetStarted_FINAL.sv;C-maj;"A1: ||Cj7 A-7 |D-7 G7 |E7 Am7b5 |D-7 Gsus7 |Cj7 A-7 |D-7 G7 |E7 A7 |D-7 Gsus7 ||
+A2: ||Cj7 A-7 |D-7 G7 |E7 Am7b5 |D7 Gsus7 |Cj7 A-7 |D-7 G7 |C6 Bb7 |Cj7   ||
+B1: ||E-7 A7 |E-7 A7 |Dj7 Gj7 |Dj7   |D-7 G7 |D-7 G7 |E-7 A7 |D7 Gsus7 ||
+A3: ||Cj7 A-7 |D-7 G7 |E7 A7 |D7 Gsus7 |Cj7 A79b |D-7 G7 |C6   |D-7 G7 ||"
+JoeLovano_Lonnie'sLament-1_FINAL.sv;C-min;A1: ||C-7   ||
+JoeLovano_Work_FINAL.sv;;"A1: ||C#7   |C#7   |F#7   |F#7   |F7 E7 |Eb7   |D7   |D7   ||
+A2: ||C#7   |C#7   |F#7   |F#7   |F7 E7 |Eb7   |D7   |D7   ||
+B1: ||D-7 G7 |G79#11#13b   |C7   |C7   |C-7   |C-7   |E7 A7Ab7|D7   ||
+A3: ||C#7   |C#7   |F#7   |F#7   |F7 E7 |Eb7   |D7   |D7   ||"
+JohnColtrane_26=2_FINAL.sv;F-maj;A1: ||NC   ||
+JohnColtrane_BlueTrain_FINAL.sv;Eb-blues;A1: ||Eb7   |Ab7   |Eb7   |Eb7   |Ab7   |Ab7   |Eb7   |C7   |F-7   |Bb7   |Eb7   |Eb7   ||
+JohnColtrane_Countdown_FINAL.sv;Bb-maj;A1: ||E-7 F7 |Bbj7 Db7 |Gbj7 A7 |Dj7   |D-7 Eb7 |Abj7 B7 |Ej7 G7 |Cj7   |C-7 Db7 |Gbj7 A7 |Dj7 F7 |Bbj7   |E7   |F7   |Bbj7   |Eb7   ||
+JohnColtrane_GiantSteps-1_FINAL.sv;Eb-maj;A1: ||Cbj7 D7 |Gj7 Bb7 |Ebj7   |A-7 D7 |Gj7 Bb7 |Ebj7 Gb7 |Cbj7   |F-7 Bb7 |Ebj7   |A-7 D7 |Gj7   |Db-7 Gb7 |Cbj7   |F-7 Bb7 |Ebj7   |Db-7 Gb7 ||
+JohnColtrane_GiantSteps-2_FINAL.sv;Eb-maj;A1: ||Bj7 D7 |Gj7 Bb7 |Ebj7   |A-7 D7 |Gj7 Bb7 |Ebj7 F#7 |Bj7   |F-7 Bb7 |Ebj7   |A-7 D7 |Gj7   |C#-7 F#7 |Bj7   |F-7 Bb7 |Ebj7   |C#-7 F#7 ||
+JohnColtrane_Impressions_1961_FINAL.sv;D-dor;"A1: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+A2: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+B1: ||Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   ||
+A3: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||"
+JohnColtrane_Impressions_1963_FINAL.sv;D-dor;"A1: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+A2: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+B1: ||Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   ||
+A3: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||"
+JohnColtrane_Mr.P.C._FINAL.sv;C-min;A1: ||C-7   |C-7   |C-7   |C-7   |F-7   |F-7   |C-7   |C-7   |Ab7   |G7   |C-7   |C-7   ||
+JohnColtrane_NatureBoy_FINAL.sv;E-min;A1: ||E-7   ||
+JohnColtrane_Oleo_FINAL.sv;Bb-maj;"A1: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C- F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |C-7 F7 ||
+A2: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |Bbj7   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |C-7 F7 ||"
+JohnColtrane_SoWhat_FINAL.sv;D-dor;"A1: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+A2: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||
+B1: ||Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   |Eb-7   ||
+A3: ||D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   |D-7   ||"
+JoshuaRedman_BluesOnSunday_FINAL.sv;Eb-blues;A1: ||Eb7   |Ab7   |Eb7   |Eb7   |Ab7   |Ab7   |Eb7   |C7   |F-7   |Bb7   |Eb7   |Bb7   ||
+JoshuaRedman_HomeFries_FINAL.sv;Eb-blues;A1: ||Eb7   |Eb7   |Eb7   |Eb7   |Ab7   |Gb7911#   |F7   |Bb7   |Eb7   |Eb7   |Ab7   |Ao   |G-7 C7 |F-7 Bb7 |Eb7   |Eb7   ||
+KaiWinding_Tiny'sBlues_FINAL.sv;F-blues;A1: ||F7   |F7   |F7   |F7   |Bb7   |Bb7   |F7   |A-7 D7 |G7   |C7   |F7   |C7   ||
+KennyDorham_BluesInBe=Bop_FINAL.sv;Eb-blues;A1: ||Eb7   |Eb7   |Eb7   |Eb7   |Ab7   |Ab7   |Eb7   |Eb7   |Bb7   |Ab7   |Eb7   |Eb7   ||
+KennyDorham_Doodlin'_FINAL.sv;Db-blues;A1: ||Db7   |Gb7   |Db7   |Db7   |Gb7   |Gb7   |Db7   |Db7 Bb7 |Eb-7   |Ab79   |Db7   |Ab7   ||
+KennyDorham_In'NOut_FINAL.sv;Eb;A1: ||Fsus7913NC  |NC   |NC   |Gbsus7913   |Fsus7913   |Fsus7913   |F7 Eb7 |D79   |Ebj7911#   |Ebj7911#   |Ebj7911#   |Ebj7911#   ||
+KennyDorham_LadyBird_FINAL.sv;C-maj;A1: ||Cj7   |Cj7   |F-7   |Bb7   |Cj7   |Cj7   |Bb-7   |Eb7   |Abj7   |Abj7   |A-7   |D7   |D-7   |G7   |Cj7 Ebj7 |Abj7 Dbj7 ||
+KennyDorham_Punjab_FINAL.sv;;"A1: ||Dj7   |Dj7 Bb7 |Bj7   |Abj7   |Fm7b5   |Bb7   |Ej7911#   |Ej7911#   |Ej7911#   |Ej7911# Eb7 ||
+B1: ||Abj7   |G7913   |Gb7913   |Cbj7 F7 |F7   |F7   |Gj7 Aj7 |Bj7 Cj7911# ||"
+KennyDorham_Serenity_FINAL.sv;Eb-maj;A1: ||Dm7b5   |G+7   |Abj7 Gbj7 |E-7 A7 |F-7 Bb7 |Ebj7 Dm7b5G7|C-7 C-7/Bb |Ab-7 Db7 |G+7 Gb7 |F7   |Ej7   |F-7 Bb+7 |Ebj7   |Dm7b5 G+7 ||
+LeeKonitz_AllTheThingsYouAre_FINAL.sv;Ab-maj;"A1: ||F-7   |Bb-7   |Eb7   |Abj7   |Dbj7   |G7   |Cj7   |Cj7   ||
+A2: ||C-7   |F-7   |Bb7   |Ebj7   |Abj7   |D7   |Gj7   |Gj7   ||
+B1: ||A-7   |D7   |Gj7   |Gj7   |F#-7   |B7   |Ej7   |C+7   ||
+C1: ||F-7   |Bb-7   |Eb7   |Abj7   |Dbj7   |Db-7   |C-7   |Bo7   |Bb-7   |Eb7   |Abj7   |G7 C7 ||"
+LeeKonitz_BopGoesToLeesel_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C7   |F7   |Bb7   |F7   ||
+LeeKonitz_Crosscurrent_FINAL.sv;F-maj;"A1: ||Fj7   |G-7 C7 |A-7   |G-7 C7 |F7   |Bbj7   |G-7 C7 |Fj7   ||
+A2: ||Fj7   |G-7 C7 |A-7   |G-7 C7 |F7   |Bbj7   |G-7 C7 |Fj7   ||
+B1: ||Bb-7   |Aj7   |Ab-7   |Gj7   |Gbj7   |F7 D7 |G-7   |C7   ||
+A3: ||Fj7   |G-7 C7 |A-7   |G-7 C7 |F7   |Bbj7   |G-7 C7 |Fj7   |Fj7   ||"
+LeeKonitz_I'llRememberApril_FINAL.sv;G-maj;"A1: ||Gj7   |G6   |Gj7   |G6   |G-7   |G-6   |G-7   |G-6   |Am7b5   |D7   |Bm7b5   |E7   |A-7   |D7   |G   |G79b   ||
+B1: ||C-7   |F7   |Bbj7   |G-7   |C-7   |F7   |Bbj7   |Bb6   |A-7   |D7   |Gj7   |G6   |F#-7   |B7   |Ej7   |A-7 D7 ||
+A2: ||Gj7   |G6   |Gj7   |G6   |G-7   |G-6   |G-7   |G-6   |Am7b5   |D7   |Bm7b5   |E7   |A-7   |D7   |G   |G   ||"
+LeeKonitz_Wow-1_FINAL.sv;F-maj;"A1: ||G-7   |C7   |F6   |A- Abj7 |Gj7   |Gb-7   |F6   |F#o   ||
+B1: ||G-7   |C7   |F6   |A-7 Abj7 |Gj7   |Gb-7   |Fj7   |Fj7   ||
+I1: ||C-   ||"
+LeeMorgan_BlueTrain_FINAL.sv;Eb-blues;"A1: ||Eb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |Eb7   |C-7   |F-7   |Bb7   |Eb7   |Bb7   ||
+A2: ||Eb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |Eb7   |C-7   |F-7   |Bb7   |Eb7   |Bb7   ||
+A3: ||Eb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |Eb7   |C-7   |F-7   |Bb7   |Eb7   |Bb7   ||
+A4: ||Eb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |Eb7   |C-7   |F-7   |Bb7   |Eb7   |Bb7   ||
+A5: ||Eb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |Eb7   |C-7   |F-7   |Bb7   |Eb7   |Bb7   ||
+A6: ||A6   |A6   ||"
+LesterYoung_AfterTheatreJump_FINAL.sv;Db-maj;"A1: ||Db Bb7 |Eb-7 Ab7 |F-7 Bb-7 |Eb-7 Ab7 |Ab-7 Db7 |Gb7 B7 |F-7 Bb-7 |Eb-7 Ab7 ||
+A2: ||Db Bb7 |Eb-7 Ab7 |F-7 Bb-7 |Eb-7 Ab7 |Ab-7 Db7 |Gb7 B7 |F-7 Bb-7 |Eb7 Ab7 ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb7   |Ab7   ||
+A3: ||Db Bb7 |Eb-7 Ab7 |F-7 Bb-7 |Eb-7 Ab7 |Ab-7 Db7 |Gb7 B7 |F-7 Bb-7 |Eb-7 Ab7 ||"
+LesterYoung_BodyAndSoul_FINAL.sv;Db-maj;"A1: ||Eb- D7 |Fb-7 D7 |Dbj7 Eb-7 |F-7 Eo |Eb-7   |C-7 B7 |Bb-7 Eb-7Ab7|Dbj7 F-7Bb7||
+A2: ||Eb- D7E7|Eb-7 D7Eb|Dbj7 Eb-7 |F-7 Eo |Eb-7 D7 |C-7 B7 |Bb-7 Eb-7Ab7|Db E-7A7||
+B1: ||Dj7 E-7 |B-7 G-7 |F#-7 E-7 |Dj7   |D-7 G7 |Cj7 Ebo |D-7 G7 |C7B7Bb7 ||
+A3: ||Eb- D7 |Eb-7 Ab7 |Dbj7 Gb7 |F-7 Eo |Eo   |Ab7 Ao |Bb-7 Eb-7 |Db F-7Bb7||"
+LesterYoung_D.B.Blues_FINAL.sv;Bb-blues;"A1: ||Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |F7   ||
+A2: ||Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |Bb7   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |G7   |C-7   |F7   |Bb7   ||
+I1: "
+LesterYoung_DestinationK.C._FINAL.sv;C-maj;"A1: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+A2: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Ab7   |G7   ||
+A3: ||C   |C   |G7   |C   |C   |C   |G7   |C   ||"
+LesterYoung_Dickie'sDream_FINAL.sv;C-min;"A1: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+A2: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+B1: ||C7   |C7   |F7   |F7   |Bb7   |Bb7   |Eb7   |D- G7 ||
+A3: ||C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 |C- C-/Bb |Ab G7 ||
+I1: ||C-   ||"
+LesterYoung_LesterLeapsIn_FINAL.sv;Bb-maj;"A1: ||Bb   |Bb   |Bb   |Bb   |Bb   |Bb   |Bb   |Bb   ||
+A2: ||Bb   |Bb   |Bb   |Bb   |Bb   |Bb   |Bb   |Bb   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bb   |Bb   |Bb   |Bb   |Bb   |Bb   |Bb   |Bb   ||"
+LionelHampton_Avalon_FINAL.sv;Eb-maj;"A1: ||Ab7   |Ab7   |Ab7   |Ab7   |Eb6   |Eb6   |Eb6   |Eb6   |Ab7   |Ab7   |Ab7   |Ab7   |Eb6   |Eb6   |Eb6   |Eb6   ||
+B1: ||C7   |C7   |C7   |C7   |F-7   |F-7   |Ab-7   |Db7   |Eb6   |Eb6   |C7   |C7   |F-7   |B7   |Eb6   |Eb6   ||
+I1: ||Ab7   ||"
+LionelHampton_Whispering_FINAL.sv;Eb-maj;"A1: ||Eb   |D7   |Eb   |C+7 C7 |F7   |Bb7   |Eb   |Bb7   ||
+A2: ||Eb   |D7   |Eb   |C+7 C7 |F7   |Bb7   |F-7 Bb7 |Eb   ||
+I1: ||Eb   ||"
+MichaelBrecker_CabinFever_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |F7   |F7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |F7   ||
+MichaelBrecker_DeltaCityBlues_FINAL.sv;Bb-blues;A1: ||Bb7   |Bb7   |Bb7   |Bb7   |Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Eb7   |Eb7   |Bb7   |Bb7   |Bb7   |Bb7   |C-7   |C-7   |F7   |F7   |Bb7   |Bb7   |Bb7   |Bb7   ||
+MichaelBrecker_MidnightVoyage_FINAL.sv;C-min;"A1: ||C-6   |Dm7b5 G7 |C-6   |Asus7 A7 |Absus7 Ab7 |G79#   |C-   |G79#   ||
+A2: ||C-6   |Dm7b5 G7 |C-6   |Asus7 A7 |Eb-7 Ab7 |G7   |C-   |C79#   ||
+B1: ||F-7   |G-7   |F-7   |A79#   |Absus7 Ab7 |G7   |C-   |C79#   |F-7   |G-7   |F-7   |A79#   |Eb-7 Ab7 |G7   |C-   |G79#   ||
+A3: ||C-   |Dm7b5 G7 |C-7   |Asus7 A7 |Absus7 Ab7 |G7   |C-   |G7   ||"
+MichaelBrecker_NothingPersonal_FINAL.sv;G-min;A1: ||G-7   |G-7   |G-7   |G-7   |G-7   |G-7   |G-7   |G-7   |C-7   |C-7   |C-7   |C-7   |G-7   |G-7   |G-7   |G-7   |Eb7   |Eb7   |D7   |D7   |G-7   |G-7   |G-7   |G-7   ||
+MilesDavis_Airegin_FINAL.sv;Ab-maj;"A1: ||F-7   |C79#   |F-7   |F79b   |Bb-7   |F79#   |Bb-7   |Bb-7   ||
+B1: ||Dbj7   |D-7 G7 |Cj7   |C#-7 F#7 |Bj7   |C-7 F7 |Bbj7   |Bbj7   |Bb-7   |Eb7   |Abj7   |Gm7b5 C7 ||
+A2: ||F-7   |C79#   |F-7   |F79b   |Bb-7   |F79#   |Bb-7   |Bb-7   ||
+B2: ||Dbj7   |Dm7b5 G7 |Cm7b5 Gb7 |F7 B7 |Bb-7   |Eb7   |Ab6   |Gm7b5 C7 ||"
+MilesDavis_BluesByFive_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |F-7 Bb7 |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |F7   ||
+MilesDavis_Dolores_FINAL.sv;;"A1: ||D-   |F-7 Bb7 |Ebj7   |A-7 D7 |F-7911   |Am7b5 D7 |Dbsus7   |Dbsus7   ||
+B1: ||G-7   |D7   |G-7   |F-7   |E-7   |Eb   ||
+C1: ||G-7   |F-7 Bb7 |Ebj7   |A-7 D7 |F-7   |Am7b5 D7 |Dbsus7   |Dbsus7   ||"
+MilesDavis_Oleo-1_FINAL.sv;Bb-maj;"A1: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |C-7 F7 ||
+A2: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |Bbj7   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |Bbj7   ||"
+MilesDavis_Oleo-2_FINAL.sv;Bb-maj;"A1: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |C-7 F7 ||
+A2: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |Bbj7   ||
+B1: ||D7   |D7   |G7   |G7   |C7   |C7   |F7   |F7   ||
+A3: ||Bbj7 G7 |C-7 F7 |Bbj7 G7 |C-7 F7 |F-7 Bb7 |Ebj7 Eb-6 |Bbj7 G7 |Bbj7   ||"
+MilesDavis_SoWhat_FINAL.sv;D-dor;"A1: ||D-   |D-   |D-   |D-   |D-   |D-   |D-   |D-   ||
+A2: ||D-   |D-   |D-   |D-   |D-   |D-   |D-   |D-   ||
+B1: ||Eb-   |Eb-   |Eb-   |Eb-   |Eb-   |Eb-   |Eb-   |Eb-   ||
+A3: ||D-   |D-   |D-   |D-   |D-   |D-   |D-   |D-   ||"
+MilesDavis_VierdBlues_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G79b   |C-   |F7   |Bb7 G79b |C-7 F7 ||
+MiltJackson_AllTheThingsYouAre_FINAL.sv;Ab-maj;"A1: ||F-7   |Bb-7   |Eb7   |Abj7   |Dbj7   |G7   |Cj7   |Cj7   ||
+A2: ||C-7   |F-7   |Bb7   |Ebj7   |Abj7   |A-7 D7 |Gj7   |Gj7   ||
+B1: ||A-7   |D79#   |Gj7   |Gj7   |F#-7   |B7   |Ej7   |C+7   ||
+C1: ||F-7   |Bb-7   |Eb7   |Abj7   |Dbj7   |Db-7   |C-7   |Bo   |Bb-7   |Eb7   |Abj7   |G7 C7 ||"
+MiltJackson_Don'tGetAroundMuchAnymore_FINAL.sv;C-maj;"A1: ||Cj7D-7D#oE-7|E-7   |A7   |A7   |D-7   |G7   |C   |G7   ||
+A2: ||Cj7D-7D#oE-7|E-7   |A7   |A7   |D-7   |G7   |C   |C7   ||
+B1: ||F   |F-   |E-7 C |C7   |F6   |F#m7b5 B79b |E-7 D7 |D-7   ||
+A3: ||Cj7D-7D#oE-7|E-7   |A7   |A7   |D-   |G7   |C   |C G7 ||
+I1: ||NC   |NC   ||"
+MiltJackson_SoftlyAsInAMorningSunrise_FINAL.sv;C-min;"A1: ||C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 ||
+A2: ||C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 |C-7   |F-7 Bb7 ||
+B1: ||Ebj7   |Gm7b5   |C7   |C79b   |F-   |C7 Ab7911# |D-/G   |G7   ||
+A3: ||C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 |C-7   |Dm7b5 G7 |C-7   |G79   ||"
+NatAdderley_BohemiaAfterDark_FINAL.sv;G-min;"A1: ||D79b   |D79b   ||
+A2: ||G-7   |Am7b5 D79b |G-7   |Am7b5 D79b |G-7   |Am7b5 D79b |G-7   |G-7   |G-7   |C7   |C7   |C7   |C7   |C7   |Am7b5   |D7   ||
+A3: ||G-7   |Am7b5 D79b |G-7   |Am7b5 D79b |G-7   |Am7b5 D79b |G-7   |G-7   ||"
+NatAdderley_WorkSong_FINAL.sv;F-min;A1: ||F-7   |F-7   |F-7   |F-7   |F-7   |F-7   |G7   |C7   |F-7   |F-7   |F-7   |F-7   |F7   |Bb7   |G7 C7 |F-7   ||
+OrnetteColeman_Chronology_FINAL.sv;;A1: ||NC   ||
+OrnetteColeman_Congeniality_FINAL.sv;;A1: ||NC   ||
+PatMetheny_CabinFever_FINAL.sv;Bb-blues;A1: ||Bb7 NC |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |G7   |C-7   |F7   |Bb7   |Bb7   ||
+PaulDesmond_AloneTogether_FINAL.sv;C-min;"A1: ||C-6   |Dm7b5 G79b |C-6   |Dm7b5 G79b |C-6   |Gm7b5 C79b |F-7   |F-7   |A-7 D7 |F-7 Bb7 |Ebj7   |Dm7b5 G7 |Cj7   |Dm7b5 G7 ||
+A2: ||C-6   |Dm7b5 G79b |C-6   |Dm7b5 G79b |C-6   |Gm7b5 C79b |F-7   |F-7   |A-7 D7 |F-7 Bb7 |Ebj7   |Dm7b5 G7 |Cj7   |Cj7   ||
+B1: ||Gm7b5   |C79b   |F-6   |F-6   |Fm7b5   |Bb79b   |Ebj7   |Dm7b5 G79b ||
+A3: ||C-6   |Dm7b5 G79b |C-6   |Dm7b5 G79b |C-6   |Ab7 G7 |C-6   |Dm7b5 G7 ||"
+PaulDesmond_BlueRondoALaTurk_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |A-7 D7 |G-7   |C7   |F7 D7 |G-7 C7 ||
+RexStewart_Perdido_FINAL.sv;Bb-maj;"A1: ||C-7 F7 |C-7 F7 |Bb   |Bb   |C-7 F7 |C-7 F7 |Bb   |Bo   ||
+A2: ||C-7 F7 |C-7 F7 |Bb   |Bb   |C-7 F7 |C-7 F7 |Bb   |Bb   ||
+B1: ||D7   |D7   |G79   |G+7   |C7   |C7   |F7   |F+7   ||
+A3: ||C-7 F7 |C-7 F7 |Bb   |Bb   |C-7 F7 |C-7 F7 |Bb   |Bb   ||"
+RoyEldridge_BodyAndSoul_FINAL.sv;Db-maj;"A1: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6 Bb7 ||
+A2: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db A7 ||
+B1: ||Dj7 E-7 |D/F# G-7C7|F#-7B-7E-7A7|Dj7   |D-7 G7 |Cj7 Ebo |D-7 G7 |C7B7Bb7 ||
+A3: ||Eb-7 Bb79b |Eb-7 D7 |Dbj7 Gb7 |F-7 Eo7 |Eb-7   |Cm7b5 F7 |Bb-7Eb7Eb-7Ab7|Db6   |Db6NC  ||"
+RoyEldridge_KingDavid_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C-7   |F7   |Bb7   |F7   ||
+RoyEldridge_TheGasser-1_FINAL.sv;Ab-maj;"A1: ||F7   |F7   |F7   |F7   |Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Eb7   |Eb7   |Ab6   |Bb-7 Eb7 |Ab6   |Gm7b5 C7 ||
+B1: ||F7   |F7   |F7   |F7   |Bb7   |Bb7   |Bb7   |Bb7   |F-7   |Gm7b5 C7 |F-7   |Bb-7 Eb7 |Ab6 G7 |Gb7 F7 |Bb7 Eb7 |Ab6   ||"
+RoyEldridge_TheGasser-2_FINAL.sv;Ab-maj;"A1: ||F7   |F7   |F7   |F7   |Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Eb7   |Eb7   |Ab6   |Bb-7 Eb7 |Ab6   |Gm7b5 C7 ||
+B1: ||F7   |F7   |F7   |F7   |Bb7   |Bb7   |Bb7   |Bb7   |F-7   |Gm7b5 C7 |F-7   |Bb-7 Eb7 |Ab6 G7 |Gb7 F7 |Bb7 Eb7 |Ab6   ||"
+RoyEldridge_Undecided_FINAL.sv;Bb-maj;"A1: ||Bb6   |Bb6   |Eb79   |Eb79   |C7   |C-7 F7 |Bb6 G7 |C-7 F7 ||
+A2: ||Bb6   |Bb6   |Eb79   |Eb79   |C7   |C-7 F7 |Bb6   |Bb6   ||
+B1: ||F-7 Bb7 |Bb7   |Eb6   |Eb6   |G-7 C7 |C7   |F7   |F7   ||
+A3: ||Bb6   |Bb6   |Eb79   |Eb79   |C7   |C-7 F7 |Bb6   |Bb6   ||"
+SonnyRollins_Airegin_FINAL.sv;Ab-maj;"A1: ||F-7   |C79#   |F-7   |F79b   |Bb-7   |F79#   |Bb-7   |Bb-7   ||
+B1: ||Dbj7   |D-7 G7 |Cj7   |Db-7 Gb7 |Bj7   |C-7 F7 |Bbj7   |Bbj7   |Bb-7   |Eb7   |Abj7   |Gm7b5 C7 ||
+A2: ||F-7   |C79#   |F-7   |F79b   |Bb-7   |F79#   |Bb-7   |Bb-7   ||
+B2: ||Dbj7   |Dm7b5 G7 |Cm7b5 Gb7 |F7 B7 |Bb-7   |Eb7   |Ab6   |Gm7b5 C79b ||"
+SonnyRollins_BlueSeven-1_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |F7   |Eb7   |Bb7   |F7   ||
+SonnyRollins_BlueSeven-2_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |C-7   |F7   |Bb7   |Bb7   ||
+SonnyRollins_BlueSeven-3_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C-7   |F7   |Bb7   |F7   ||
+SonnyRollins_TenorMadness_FINAL.sv;Bb-blues;A1: ||Bb7   |Bb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |C-7   |F7   |Bb7   |Bb7   ||
+SonnyRollins_VierdBlues_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |D-7 G7 |C7   |F7   |Bb7   |F7   ||
+SonnyStitt_BlueMode_FINAL.sv;Bb-blues;"A1: ||Bb7   |Eb7 Em7b5 |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7 G7 |C-7   |F7   |Bb7 F7 |B7G7C-7F7||
+A2: ||Bb7   |A-7 D-7 |G-7   |F7   |Eb7   |Eb7   |F7   |Eb7 G7 |C-7   |C-7 F7 |Bb7   |Bb7   |NC   ||"
+SonnyStitt_Elora_FINAL.sv;Bb-maj;"A1: ||C-7   |F7   |Bbj7 Ebj7 |D-7 Db-7 |C-7   |F7   |Bbj7   |C-7   ||
+A2: ||C-7   |F7   |Bbj7 Ebj7 |D-7 Db-7 |C-7   |F7   |Bb   |F-7 Bb7 ||
+B1: ||Ebj7   |Eb-7   |D-7   |Ao7 D+7 |G-7   |C7   |C-7   |F7   ||
+A3: ||C-7   |F7   |Bbj7 Ebj7 |D-7 Db-7 |C-7   |F7   |Bbj7   |Bbj7   ||
+I1: ||NC   ||"
+SonnyStitt_GoodKick_FINAL.sv;F-maj;A1: ||F7   |F7   |F7 D-7 |G-7 C7 |F7   |F7   |C7   |C7   ||
+StanGetz_BluesInTheCloset_FINAL.sv;Bb-blues;A1: ||Bb7   |Eb7   |Bb7   |Bb7   |Eb7   |Eb7   |Bb7   |Bb7   |C-7   |F7   |Bb7   |F7   ||
+StanGetz_CrazyRhythm_FINAL.sv;F-maj;"A1: ||Fj7   |Fj7   |Bb7   |A-7 Abo7 |G-7   |C7   |F6   |G-7 C7 ||
+A2: ||Fj7   |Fj7   |Bb7   |A-7 Abo7 |G-7   |C7   |F6   |F6   ||
+B1: ||C-7   |F7   |Bbj7   |Bbj7   |Bb-7   |Eb79   |D7   |G7 C7 ||
+A3: ||Fj7   |Fj7   |G7   |G7   |C7   |C7   |Fj7   |Fj7   ||"
+SteveColeman_SlippedAgain_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |A-7 D7 |G-7   |C7   |F7   |G-7 C7 ||
+SteveColeman_TakeTheColtrane_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |F7   |G7   |C7   |F7   |C7   ||
+SteveLacy_AloneTogether_FINAL.sv;D-maj;"A1: ||D-6   |Em7b5 A79b |D-6   |Em7b5 A79b |D-6   |Am7b5 D79b |G-7   |G-7   |B-7 E7 |G-7 C7 |Fj7   |Em7b5 A7 |Dj7   |Em7b5 A7 ||
+A2: ||D-6   |Em7b5 A79b |D-6   |Em7b5 A79b |D-6   |Am7b5 D79b |G-7   |G-7   |B-7 E7 |G-7 C7 |Fj7   |Em7b5 A7 |Dj7   |Dj7   ||
+B1: ||Am7b5   |D79b   |G-6   |G-6   |Gm7b5   |C79b   |Fj7   |Em7b5 A79b ||
+A3: ||D-6   |Em7b5 A79b |D-6   |Em7b5 A79b |D-6   |Bb7 A7 |D-6   |Em7b5 A7 ||"
+SteveLacy_AskMeNow_FINAL.sv;Db-maj;"A1: ||G-7C7F#-7B7|F-7Bb7E-7A7|Eb-7 Ab7 |B7 Bb7 |Eb7 D7 |Dbj7 Eb7 |Eb-7 Ab7 |F-7E7Eb-7D7||
+A2: ||G-7C7F#-7B7|F-7Bb7E-7A7|Eb-7 Ab7 |B7 Bb7 |Eb7 D7 |Dbj7 Eb7 |Eb-7 Ab7 |Db   ||
+B1: ||Eb-7 Ab |Dbj7  E-7|Eb-7 Ab7 |Dbj7   |Bb-7 Eb7 |Eb7 Bb-7 |Eb-7 Ab7 |Db-7 Gb7 ||
+A3: ||G-7C7F#-7B7|F-7Bb7E-7A7|Eb-7 Ab7 |B7 Bb7 |Eb7 D7 |Dbj7 Eb7 |Eb-7 Ab7 |Db   ||"
+SteveLacy_EasyToLove_FINAL.sv;G-maj;"A1: ||A-7   |D-7   |A-7   |D7   |Gj7   |C79   |B-7   |E79b   |A-7   |D79   |Gj7   |B-7 E7 |A-7   |D7   |B-7   |B-7 E79b ||
+A2: ||A-7   |D-7   |A-7   |D7   |Gj7   |C79   |B-7   |E79b   |A-7   |C-7 F7 |Gj7   |Bbo7   |A-7   |D7   |G   |Bm7b5 E79b ||"
+SteveLacy_Let'sCoolOne_FINAL.sv;Eb-maj;"A1: ||Ebj7   |F-7 Bb7 |Ebj7 F-7G-7|C7   |F-7   |Bb7   |Eb C7 |F-7 Bb7 ||
+A2: ||Ebj7   |F-7 Bb7 |Ebj7 F-7G-7|C7   |F-7   |Bb7   |Eb   |Eb   ||
+B1: ||Bb-7   |Eb7   |Abj7   |Abj7   |C-7   |F7   |F-7   |Bb7   ||
+A3: ||Ebj7   |F-7 Bb7 |Ebj7 F-7G-7|C7   |F-7   |Bb7   |Eb   |Eb   ||"
+SteveLacy_Work_FINAL.sv;;"A1: ||Db7   |Db7   |Gb7   |Gb7   |F7 E7 |Eb7   |D7   |D7   ||
+A2: ||Db7   |Db7   |Gb7   |Gb7   |F7 E7 |Eb7   |D7   |D7   ||
+B1: ||D-7 G7 |G7   |C7   |C7   |C-7   |F7   |E7 A7913b |Ab79#11#13b   ||
+A3: ||Db7   |Db7   |Gb7   |Gb7   |F7 E7 |Eb7   |D7   |D7   ||"
+SteveTurre_DatDere_FINAL.sv;C-min;"A1: ||C- Eb7 |Am7b5 Ab7 |C- Ab7 |Dm7b5 G7 |C- Eb7 |Am7b5 Ab7 |Dm7b5 G+7 |C- G+79 ||
+A2: ||C- Eb7 |Am7b5 Ab7 |C- Ab7 |Dm7b5 G7 |C- Eb7 |Am7b5 Ab7 |Dm7b5 G+7 |C-   ||
+B1: ||C-7G7C- |G-7D7G-7 |C-7 Ab7 |Dm7b5 G7 |C-7G7C- |G-7D7G-7 |Dm7b5 G79 |C- G79 ||"
+SteveTurre_IfIWereABell_FINAL.sv;F-maj;"A1: ||G79   |Csus7913 C7913 |Fj7   |Fj7   |A-7   |D7   |G7   |G-7 C7913 ||
+B1: ||F6 F7/A |Bb6 C7913 |F6   |E-7 A7 |D-7 D-7/C |Bb-7 E7 |Aj7 Bb7 |Aj7 D7 ||
+A2: ||G79   |Csus7913 C7913 |Fj7   |Fj7   |A-7   |D7   |G7   |G-7 C7 ||
+C1: ||F6 F7/A |Bb Bo |F6/C Bb7913 |A-7 D7 |G-7   |C7913   |F6   |F6   ||"
+SteveTurre_Steve'sBlues_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |A-7 D7 |G-7   |C7   |F7   |C7   ||
+WarneMarsh_Crosscurrent_FINAL.sv;F-maj;"A1: ||Fj7   |G-7 C7 |A-7   |G-7 C7 |F7   |Bbj7   |G-7 C7 |Fj7   ||
+A2: ||Fj7   |G-7 C7 |A-7   |G-7 C7 |F7   |Bbj7   |G-7 C7 |Fj7   ||
+B1: ||Bb-7   |Aj7   |Ab-7   |Gj7   |Gbj7   |F7 D7 |G-7   |C7   ||
+A3: ||Fj7   |G-7 C7 |A-7   |G-7 C7 |F7   |Bbj7   |G-7 C7 |Fj7   |Fj7   ||"
+WarneMarsh_Wow-1_FINAL.sv;F-maj;"A1: ||G-   |C7   |F   |A- Abj7 |Gj7   |E79b   |A-   |D- D7 ||
+A2: ||G-   |C79b   |F   |A- Abj7 |Gj7   |C7   |F C |F   |A- Abj7 ||"
+WayneShorter_Dolores_FINAL.sv;Db;"A1: ||D-7   |F-7 Bb7 |Ebj7   |A-7 D7 |F-7911   |Am7b5 D7 |Dbsus7   |Dbsus7   ||
+B1: ||G-7   |D7   |G-7   |F-79   |F-79   |Eb   ||
+C1: ||G-7   |F-7 Bb7 |Ebj7   |A-7 D7 |F-7911   |Am7b5 D7 |Dbsus7   |Dbsus7   ||"
+WayneShorter_DownUnder_FINAL.sv;F#-min;A1: ||Gb-7   |Abm7b5 Db7 |Gb-7   |Gb-7   |G7   |G7   |Gb-7   |E-7 A7 |D7   |Db7   |Gb-7   |Db7   ||
+WayneShorter_E.S.P._FINAL.sv;F;"A1: ||E79#11#13b   |E79#11#13b   |Fj7   |Fj7   |E79#11#13b   |E79#11#13b   |Ebj7911#   |Ebj7911#   |D7   |Ebj7911#   |E7   |Fj7 Eb7 |D-79   |G7   |G-7   |Gb7   ||
+A2: ||E79#11#13b   |E79#11#13b   |Fj7   |Fj7   |E79#11#13b   |E79#11#13b   |Ebj7911#   |Ebj7911#   |D7   |Ebj7911#   |E7   |Fj7 Eb7 |Db7911#   |C7   |Db7 Gb7 |Fj7   ||"
+WayneShorter_MaidenVoyage_FINAL.sv;D;"A1: ||Dsus7   |Dsus7   |Dsus7   |Dsus7   |Fsus7   |Fsus7   |Fsus7   |Fsus7   ||
+A2: ||Dsus7   |Dsus7   |Dsus7   |Dsus7   |Fsus7   |Fsus7   |Fsus7   |Fsus7   ||
+B1: ||Ebsus7   |Ebsus7   |Ebsus7   |Ebsus7   |Dbsus7   |Dbsus7   |Dbsus7   |Dbsus7   ||
+A3: ||Dsus7   |Dsus7   |Dsus7   |Dsus7   |Fsus7   |Fsus7   |Fsus7   |Fsus7   ||"
+WayneShorter_Orbits_FINAL.sv;;A1: ||NC   ||
+WayneShorter_SpeakNoEvil_FINAL.sv;C-min;"A1: ||C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |E-7911 A+7 |D-7911 G+7 |Am7b5   |Bb-7   |Am7b5   |Bb-7   ||
+A2: ||C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |E-7911 A+7 |D-7911 G+7 |Am7b5   |Bb-7   |Am7b5   |Bb-7   ||
+B1: ||C-7  Ab7|Ab7   |G-7  Gbm7b5|Gbm7b5   |F-7  Bbm7b5|Bbm7b5   |Eb7  Db7|Db7   ||
+A3: ||C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |C-7   |Dbj7   |E-7911 A+7 |D-7911 G+7 |Am7b5   |Bb-7   |Am7b5   |Bb-7   ||"
+WoodyShaw_DatDere_FINAL.sv;C-min;"A1: ||C-7   |Am7b5 Abj7 |Am7b5 D7 |Dm7b5 G7 |C-7   |Am7b5 Abj7 |Dm7b5 G+7 |C-7 G7 ||
+A2: ||C-7   |Am7b5 Abj7 |Am7b5 D7 |Dm7b5 G7 |C-7   |Am7b5 Abj7 |Dm7b5 G+7 |C-7   ||
+B1: ||Dm7b5G7C-7 |Am7b5D7G7C-7|Am7b5 D7 |Dm7b5 G7 |Dm7b5G7C-7 |Am7b5D7G+7Eb7|Dm7b5 G+7 |G7 G+7 ||
+A3: ||C-7   |Am7b5 Abj7 |Am7b5 D7 |Dm7b5 G7 |C-7   |Am7b5 Abj7 |Dm7b5 G+7 |C-7   ||"
+WoodyShaw_IfIWereABell_FINAL.sv;F-maj;"A1: ||G7   |G-7 C7 |Fj7   |Fj7   |Am7b5   |D7   |G7   |G-7 C7 ||
+B1: ||F7   |Bb7   |F7   |A+7   |D-7   |B-7 E7 |Aj7 E7 |Aj7 D7 ||
+A2: ||G7   |G-7 C7 |Fj7   |Fj7   |Am7b5   |D7   |G7   |G-7 C7 ||
+B2: ||F7   |Bb7 Bo |F E+7 |Eb7 D7 |G-7   |C7   |F   |D+7   ||"
+WoodyShaw_Steve'sBlues_FINAL.sv;F-blues;A1: ||F7   |Bb7   |F7   |F7   |Bb7   |Bb7   |F7   |A-7 D7 |G-7   |C7   |F7   |C7   ||
+WyntonMarsalis_JohnnyComeLately_FINAL.sv;G-min;"A1: ||G-7   |Eb79 D79b |G-7   |Eb79 D79b |G-6   |Eb7 D79# |G-7   |Eb7 D79# ||
+A2: ||G-7   |Eb79 D79b |G-7   |Eb79 D79b |G-6   |Eb7 D79# |G-7   |F-7 Bb7 ||
+B1: ||Eb6 F-7 |G-7 F- |Eb6 F-7 |G-7 F-7 |Eb6 F-7 |G-7 C79b |F-6 Bb7 |A79b D79# ||
+A3: ||G-7   |Eb79 D79b |G-7   |Eb79 D79b |G-6   |Eb7 D79# |G-7   |Eb7 D79b ||"
+WyntonMarsalis_U.M.M.G._FINAL.sv;Db-maj;"A1: ||Fm7b5   |Bb79b   |Eb-7   |Ab7   |Dbo7 Db6 |Dbj7   |Db-7   |Gb7   ||
+A2: ||Fm7b5   |Bb79b   |Eb-7   |Ab7   |Dbo7 Db6 |Dbj7   |Ab-7 Db7 |Ab-7 Db7 ||
+B1: ||G79#11#13b   |C79b   |Fj7   |Fj7   |Ab79#11#13b   |Db79b   |Gb-7   |Ab7   ||
+A3: ||Fm7b5   |Bb79b   |Eb-7   |Ab7   |Dbo7   |Db6   |Dbo   |Db6   ||"
+ZootSims_DancingInTheDark-1_FINAL.sv;Ab-maj;"A1: ||Abj7   |Abj7   |Abo7   |Abo7   |Bb-7   |Bb-7   |Bbm7b5   |Eb79b   |Abj7   |Ab-7   |C79#11#13b   |F79b   |Bbm7b5   |Bbm7b5   |Bbm7b5   |Eb79b   ||
+B1: ||Abj7   |Abj7   |Abo7   |Abo7   |Bb-7   |Bb-7   |Bbm7b5   |Bbm7b5 Eb79b |Abj7   |Ab-7   |B7   |A7   |Ab6   |Bbm7b5 Eb7 |Ab6   |Bb-7 Eb7 ||"
+ZootSims_DancingInTheDark-2_FINAL.sv;Ab-maj;"A1: ||Abj7   |Abj7   |Abo7   |Abo7   |Bb-7   |Bb-7   |Bbm7b5   |Eb79b   |Abj7   |Ab-7   |C7911#   |F79b   |Bbm7b5   |Bbm7b5   |Bbm7b5   |Eb79b   ||
+B1: ||Abj7   |Abj7   |Abo7   |Abo7   |Bb-7   |Bb-7   |Bbm7b5   |Bbm7b5 Eb79b |Abj7   |Ab-7   |B7   |A7   |Ab6   |Bbm7b5 Eb7 |Ab6   |Bb-7 Eb7 |Abj7   ||
+I1: ||Eb7   |Eb7   |Eb7   |Eb7   |Eb7   ||"
