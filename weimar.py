@@ -1,6 +1,8 @@
 """ A parser for chord progressions in the Weimar Jazzomat CSV format """
+import os.path
 import re
 import csv
+from collections import namedtuple
 from itertools import chain
 from typing import Tuple, List
 
@@ -39,6 +41,7 @@ _re_invalid_measure = re.compile(r'\|(NC| )+\|')
 
 
 def parse_chordtype(s: str) -> ChordType:
+    """ Parse a chord type in the Weimar Jazzomat format """
     if s in ChordType.__members__:
         return ChordType[s]
     elif s in _chordtype_mapping:
@@ -48,6 +51,8 @@ def parse_chordtype(s: str) -> ChordType:
 
 
 def parse_measure(s: str) -> Tuple[(Chord,)*4]:
+    """ Parse a measure.
+    :return four chords. Spaces translate to the chord before the space. """
     ret = []
     for match in re.finditer(_re_optional_chord, s):
         if match.group(0) in [' ', 'NC']:
@@ -58,26 +63,37 @@ def parse_measure(s: str) -> Tuple[(Chord,)*4]:
     return tuple(ret)
 
 
-def load_metadata() -> List:
-    with open('weimardb/changes.csv', newline='') as bf:
-        reader = csv.reader(bf, delimiter=';')
-        next(reader)
+class SongMetadata:
+    def __init__(self, **args):
+        self.id = args['id']
+        self.key = args['key']
+        self.changes = args['chord_changes']
+
+
+def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
+    """ Read the CSV file that contains the metadata for the solos in the Weimar database.
+    :param filename: the name of the CSV file
+    :return
+    """
+    with open(filename, newline='') as bf:
+        reader = csv.DictReader(bf, delimiter=';')
         metadata = list(reader)
 
-    metadata = [song for song in metadata if song[1] and not _re_invalid_measure.search(song[2])]
+    metadata = [SongMetadata(**song) for song in metadata
+                if song['key'] and not _re_invalid_measure.search(song['chord_changes'])]
 
     for song in metadata:
-        song[0] = song[0][:-3]
-        changes = ChordProgression(ABCNote.from_string(_re_roots.match(song[1]).group(0)))
-        for m in re.finditer(_re_measure, song[2]):
+        song.id = os.path.splitext(song.id)[0]
+        changes = ChordProgression(ABCNote.from_string(_re_roots.match(song.key).group(0)))
+        for m in re.finditer(_re_measure, song.changes):
             changes += parse_measure(m.group(0))
-        song[2] = changes
+        song.changes = changes
 
     return metadata
 
 
-def main():
+def _main():
     load_metadata()
 
 if __name__ == '__main__':
-    main()
+    _main()

@@ -7,6 +7,7 @@ import fire
 import midi
 import midiutil.MidiFile
 
+import weimar
 from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
 from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
 from music import Note, ChordProgression, ABCNote
@@ -28,7 +29,7 @@ def notes_from_file(filename: str) -> List[Note]:
     active_notes = {}
     Note.resolution = midifile_rel.resolution
 
-    for ev_rel, ev_abs in zip(midifile_rel[1], midifile_abs[1]):
+    for ev_rel, ev_abs in zip(midifile_rel[-1], midifile_abs[-1]):
         if isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1]:
             n = Note()
             n.tick_abs = ev_abs.tick
@@ -121,7 +122,7 @@ class Main:
         # Read the chord changes from a text file
         changes = changes_from_file(song)
         # Read the training set from a MIDI file
-        filename = r"input\{}.mid".format(songname)
+        filename = r"input\{}.mid".format(song)
         notes = notes_from_file(filename)
         # Learn and generate
         melody_generator = None
@@ -137,14 +138,16 @@ class Main:
         notes_to_file(withchords)
 
     @staticmethod
-    def weimar(song, choruses):
+    def weimar(gen_song, choruses):
         """
         Train a model on the Weimar database of transcriptions and then run it on the specified chord progression.
-        :param song: The name of the chord progression to use for generation.
+        :param gen_song: The name of the chord progression to use for generation.
             The text file containing the changes must exist with this name.
         :param choruses: The number of choruses to generate
         """
-        #TODO
+        metadata = weimar.load_metadata()
+        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.id)), song.changes)
+                        for song in metadata]
 
 if __name__ == "__main__":
     fire.Fire(Main)
