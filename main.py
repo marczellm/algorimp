@@ -7,6 +7,7 @@ import fire
 import midi
 import midiutil.MidiFile
 
+
 import weimar
 from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
 from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
@@ -15,7 +16,7 @@ from helpers import nwise
 
 
 def changes_from_file(songname: str) -> ChordProgression:
-    with open(r"changes\{}.txt".format(songname)) as bf:
+    with open(r"changes/{}.txt".format(songname)) as bf:
         return ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
 
 
@@ -36,12 +37,15 @@ def notes_from_file(filename: str) -> List[Note]:
             n.tick_rel = ev_rel.tick
             n.pitch = ev_rel.data[0]
             n.velocity = ev_rel.data[1]
-            active_notes[n.pitch] = n
+            if n.pitch not in active_notes:
+                active_notes[n.pitch] = {n}
+            else:
+                active_notes[n.pitch].add(n)
         elif isinstance(ev_rel, midi.NoteOffEvent) or (isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1] == 0):
-            n = active_notes.pop(ev_rel.data[0])
+            n = active_notes[ev_rel.data[0]].pop()
             n.duration = ev_abs.tick - n.tick_abs
             notes.append(n)
-    assert not active_notes, "Some notes were not released"
+    assert not any(active_notes.values()), "Some notes were not released"
     for n, m in nwise(notes, 2):
         m.ticks_since_last_note_start = m.tick_abs - n.tick_abs
         m.ticks_since_last_note_end = m.tick_abs - n.tick_abs + n.duration
@@ -122,7 +126,7 @@ class Main:
         # Read the chord changes from a text file
         changes = changes_from_file(song)
         # Read the training set from a MIDI file
-        filename = r"input\{}.mid".format(song)
+        filename = r"input/{}.mid".format(song)
         notes = notes_from_file(filename)
         # Learn and generate
         melody_generator = None

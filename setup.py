@@ -9,5 +9,5 @@ setup(
     author='Márton Marczell',
     author_email='',
     description='',
-    requires=['bidict', 'numpy', 'midi', 'midiutil', 'theano', 'lasagne', 'keras', 'fire']
+    install_requires=['bidict', 'numpy', 'midi', 'midiutil', 'theano', 'lasagne>=0.2.dev1', 'keras', 'fire']
 )
