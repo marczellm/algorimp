@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import math
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 import fire
 import midi
@@ -16,7 +16,7 @@ from helpers import nwise
 
 
 def changes_from_file(songname: str) -> ChordProgression:
-    with open(r"changes/{}.txt".format(songname)) as bf:
+    with open("changes/{}.txt".format(songname)) as bf:
         return ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
 
 
@@ -63,30 +63,33 @@ def notes_to_file(notes: List[Note], filename: str):
     print("Done.")
 
 
+def train(notes: List[Note], changes: ChordProgression,
+          melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator], rhythm_generator: RhythmGenerator=None):
+    melody_generator.learn(notes, changes)
+    if rhythm_generator is not None:
+        rhythm_generator.learn(notes)
+
+
 def generate(notes: List[Note], changes: ChordProgression,
              melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator],
-             rhythm_generator: RhythmGenerator, measures: int) -> Tuple[List[Note], List[Note]]:
+             rhythm_generator: Optional[RhythmGenerator], measures: int) -> Tuple[List[Note], List[Note]]:
     """ Improvise a melody using two models for the melody and the rhythm, and one chord progression
 
         :param notes: the training set
         :param changes: the chord progression.
         :param melody_generator: An object that conforms to the implicit melody generator interface.
         :param rhythm_generator: An object that conforms to the implicit rhythm generator interface.
-            It can be the same as the melody generator.
+            It can be the same as the melody generator, or equivalently None.
         :param measures: The number of measures to generate
         """
-    melody_generator.learn(notes, changes)
-    if rhythm_generator != melody_generator:
-        rhythm_generator.learn(notes)
-
-    # Generate output
-    print("Generating notes...")
+    if rhythm_generator is None:
+        rhythm_generator = melody_generator  # type: RhythmGenerator
     melody = notes[:max(melody_generator.order, rhythm_generator.order)]
     withchords = copy.deepcopy(melody)
     beat = melody[-1].beat
     chord = changes[beat - 1]
     melody_generator.start(beat - 1)
-    while beat < measures * 4:
+    while beat < measures * Note.meter:
         n = Note()
         tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
@@ -115,6 +118,20 @@ def generate(notes: List[Note], changes: ChordProgression,
     return melody, withchords
 
 
+def extract_measures(notes: List[Note], start: int, end: int):
+    """
+    :param notes: The list of notes
+    :param start: The number of the first measure, inclusive
+    :param end: The number of the last measure, exclusive
+    :return: Only the notes falling into the specified range of measures, but moved back so that
+    the whole sequence begins at measure 0.
+    """
+    ret = copy.deepcopy([note for note in notes if start <= note.measure < end])
+    for note in ret:
+        note.measure -= start
+    return ret
+
+
 class Main:
     """ All the entry points into the application. Refer to the Fire documentation for details. """
     @staticmethod
@@ -141,13 +158,33 @@ class Main:
         elif model == 'neural':
             melody_generator = neural.OneLayer(changes, 5)
             rhythm_generator = melody_generator
+        train(notes, changes, melody_generator, rhythm_generator)
+        print("Generating notes...")
         melody, withchords = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
         # Write output file
-        notes_to_file(withchords, model + '.mid')
+        notes_to_file(withchords, 'output/{}.mid'.format(model))
 
     @staticmethod
     def turing():
         """ Generate a Turing test """
+        song = 'Eb_therewill'
+        changes = changes_from_file(song)
+        filename = "input/{}.mid".format(song)
+        notes = notes_from_file(filename)
+        melody_generator = neural.OneLayer(changes, 5)
+
+        train(notes, changes, melody_generator)
+        for i in range(5):
+            # Write a chorus of human improvisation to file
+            start = i * changes.measures()
+            end = (i + 1) * changes.measures()
+            notes_to_file(extract_measures(notes, start, end), 'output/man{}.mid'.format(i))
+            # Generate 2 choruses of machine improvisation
+            melody, withchords = generate(notes, changes, melody_generator, None, 2 * changes.measures())
+            # Only write the second chorus to file, so that it doesn't always begin with the same notes
+            start = changes.measures()
+            end = 2 * changes.measures()
+            notes_to_file(extract_measures(withchords, start, end), 'output/machine{}.mid'.format(i))
 
     @staticmethod
     def weimar(gen_song, choruses):

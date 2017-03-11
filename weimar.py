@@ -2,11 +2,10 @@
 import os.path
 import re
 import csv
-from collections import namedtuple
 from itertools import chain
 from typing import Tuple, List
 
-from music import ABCNote, ChordType, Chord, ChordProgression
+from music import ABCNote, ChordType, Chord, ChordProgression, Note
 
 _chordtype_mapping = {
     '': ChordType.maj,
@@ -50,7 +49,7 @@ def parse_chordtype(s: str) -> ChordType:
         raise KeyError(s + " chord unknown")
 
 
-def parse_measure(s: str) -> Tuple[(Chord,)*4]:
+def parse_measure(s: str) -> Tuple[(Chord,) * Note.meter]:
     """ Parse a measure.
 
     :return four chords. Spaces translate to the chord before the space. """
@@ -60,7 +59,7 @@ def parse_measure(s: str) -> Tuple[(Chord,)*4]:
             ret.append(ret[-1])
         else:
             ret.append(Chord(ABCNote.from_string(match.group(2)), parse_chordtype(match.group(3))))
-    assert len(ret) == 4
+    assert len(ret) == Note.meter
     return tuple(ret)
 
 

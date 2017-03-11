@@ -33,6 +33,10 @@ class Note:
     def measure(self) -> int:
         return self.tick_abs // (self.meter * self.resolution)
 
+    @measure.setter
+    def measure(self, meas: int):
+        self.tick_abs = meas * self.meter * self.resolution + self.ticks_since_measure
+
     @property
     def ticks_since_measure(self) -> int:
         return self.tick_abs % (self.meter * self.resolution)
@@ -198,7 +202,7 @@ class ChordProgression(list):
         return ret
 
     def measures(self) -> int:
-        return len(self) / 4
+        return len(self) / Note.meter
 
     def _foldback(self, key: Union[int, slice]):
         m = len(self)
