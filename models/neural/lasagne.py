@@ -4,7 +4,7 @@ import lasagne
 import numpy
 import theano
 
-from models.interfaces import MelodyGenerator, RhythmGenerator
+from models.interfaces import MelodyGenerator, MelodyAndRhythmGenerator
 from ._helpers import NUM_OCTAVES, iterate_minibatches, encode_pitch, encode_chord, encode_int
 from music import Note, Chord, ChordProgression, ABCNote, ChordType
 from helpers import nwise
@@ -74,7 +74,7 @@ class OneLayerMelody(MelodyGenerator):
         return n.pitch
 
 
-class OneLayer(MelodyGenerator, RhythmGenerator):
+class OneLayer(MelodyAndRhythmGenerator):
     PITCH = 0
     TSBQ = 1
     DQ = 2
@@ -162,10 +162,5 @@ class OneLayer(MelodyGenerator, RhythmGenerator):
         return tsbq, dq
 
     def add_past(self, note: Note):
-        """ Construction of the next note involves external corrections after the neural output has been obtained.
-        Therefore the method that drives the generator has to pass it back the fully constructed note.
-
-        :param note: the last note generated and corrected
-        """
         self.past.append(note)
         self.past = self.past[-self.order:]

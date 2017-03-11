@@ -4,16 +4,16 @@ import numpy as np
 import keras
 import itertools
 
-from models.interfaces import MelodyGenerator, RhythmGenerator
+from models.interfaces import MelodyAndRhythmGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
 from helpers import nwise
 
 
-class OneLayer(MelodyGenerator, RhythmGenerator):
+class OneLayer(MelodyAndRhythmGenerator):
     """ Algorithmic improviser built on Keras.
     The implementation is a feedforward neural network with one hidden layer.
-    A limitation is that it can only be trained and then ran on a fixed chord progression.
+    A limitation is that it can only be trained and then ran on the same, fixed chord progression.
     """
 
     def __init__(self, changes: ChordProgression, order=3):
@@ -117,10 +117,5 @@ class OneLayer(MelodyGenerator, RhythmGenerator):
         return tsbq, dq
 
     def add_past(self, note: Note):
-        """ Construction of the next note involves external corrections after the neural output has been obtained.
-        Therefore the method that drives the generator has to pass it back the fully constructed note.
-
-        :param note: the last note generated and corrected
-        """
         self.past.append(note)
         self.past = self.past[-self.order:]

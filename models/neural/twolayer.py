@@ -4,13 +4,13 @@ import numpy as np
 import keras
 import itertools
 
-from models.interfaces import MelodyGenerator, RhythmGenerator
+from models.interfaces import MelodyAndRhythmGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
 from helpers import nwise, nwise_disjoint
 
 
-class TwoLayer(MelodyGenerator, RhythmGenerator):
+class TwoLayer:
     """ Algorithmic improviser built on Keras.
     The implementation is a feedforward neural network with two hidden layers.
     It allows for training on multiple different solos with potentially different chord progressions
@@ -95,7 +95,6 @@ class TwoLayer(MelodyGenerator, RhythmGenerator):
         return np.array(x), np.array(p), np.array(t), np.array(d)
 
     def learn(self, *args):
-        """ :param args: [notes1, changes1, notes2, changes2, ...] """
         self.maxtsbq = max(n.tick_since_beat_quantised for notes in args[::2] for n in notes)
         self.maxdq = max(n.duration_quantised for notes in args[::2] for n in notes)
         self._build_net()
@@ -122,10 +121,5 @@ class TwoLayer(MelodyGenerator, RhythmGenerator):
         return tsbq, dq
 
     def add_past(self, note: Note):
-        """ Construction of the next note involves external corrections after the neural output has been obtained.
-        Therefore the method that drives the generator has to pass it back the fully constructed note.
-
-        :param note: the last note generated and corrected
-        """
         self.past.append(note)
         self.past = self.past[-self.order:]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 import math
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import fire
 import midi
@@ -9,8 +9,8 @@ import midiutil.MidiFile
 
 
 import weimar
-from models.markov import StaticChordMelody, Rhythm
-from models.neural import OneLayer
+from models.interfaces import MelodyGenerator, RhythmGenerator, MelodyAndRhythmGenerator
+from models import markov, neural
 from music import Note, ChordProgression, ABCNote
 from helpers import nwise
 
@@ -52,20 +52,22 @@ def notes_from_file(filename: str) -> List[Note]:
     return notes
 
 
-def notes_to_file(notes: List[Note]):
-    print("Writing to file... ", end='')
+def notes_to_file(notes: List[Note], filename: str):
+    print("Writing file {}... ".format(filename), end='')
     kf = midiutil.MidiFile.MIDIFile(1, adjust_origin=False)
     kf.addTrackName(0, 0, "Track 1")
     for n in notes:
         kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)
-    with open("output.mid", 'wb') as f:
+    with open(filename, 'wb') as f:
         kf.writeFile(f)
     print("Done.")
 
 
-def generate(notes: List[Note], changes: ChordProgression, melody_generator, rhythm_generator, measures: int) -> Tuple[
-        List[Note], List[Note]]:
+def generate(notes: List[Note], changes: ChordProgression,
+             melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator],
+             rhythm_generator: RhythmGenerator, measures: int) -> Tuple[List[Note], List[Note]]:
     """ Improvise a melody using two models for the melody and the rhythm, and one chord progression
+
         :param notes: the training set
         :param changes: the chord progression.
         :param melody_generator: An object that conforms to the implicit melody generator interface.
@@ -114,10 +116,12 @@ def generate(notes: List[Note], changes: ChordProgression, melody_generator, rhy
 
 
 class Main:
+    """ All the entry points into the application. Refer to the Fire documentation for details. """
     @staticmethod
     def single(model, song, choruses):
         """
         Train and run a model on the same chord progression.
+
         :param model: The name of the model: 'markov' or 'neural'.
         :param song: The name of the song.
             Both the midi file and the text file containing the changes must exist with this name.
@@ -132,19 +136,24 @@ class Main:
         melody_generator = None
         rhythm_generator = None
         if model == 'markov':
-            melody_generator = StaticChordMelody(changes)
-            rhythm_generator = Rhythm()
+            melody_generator = markov.StaticChordMelody(changes)
+            rhythm_generator = markov.Rhythm()
         elif model == 'neural':
-            melody_generator = OneLayer(changes, 5)
+            melody_generator = neural.OneLayer(changes, 5)
             rhythm_generator = melody_generator
         melody, withchords = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
         # Write output file
-        notes_to_file(withchords)
+        notes_to_file(withchords, model + '.mid')
+
+    @staticmethod
+    def turing():
+        """ Generate a Turing test """
 
     @staticmethod
     def weimar(gen_song, choruses):
         """
         Train a model on the Weimar database of transcriptions and then run it on the specified chord progression.
+
         :param gen_song: The name of the chord progression to use for generation.
             The text file containing the changes must exist with this name.
         :param choruses: The number of choruses to generate

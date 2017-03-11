@@ -52,6 +52,7 @@ def parse_chordtype(s: str) -> ChordType:
 
 def parse_measure(s: str) -> Tuple[(Chord,)*4]:
     """ Parse a measure.
+
     :return four chords. Spaces translate to the chord before the space. """
     ret = []
     for match in re.finditer(_re_optional_chord, s):
@@ -72,8 +73,8 @@ class SongMetadata:
 
 def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
     """ Read the CSV file that contains the metadata for the solos in the Weimar database.
+
     :param filename: the name of the CSV file
-    :return
     """
     with open(filename, newline='') as bf:
         reader = csv.DictReader(bf, delimiter=';')
