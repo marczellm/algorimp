@@ -1,1 +1,1 @@
-from .onelayer import OneHiddenLayerMelodyAndRhythmGenerator
+from .onelayer import OneLayer

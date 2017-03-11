@@ -4,22 +4,20 @@ import numpy as np
 import keras
 import itertools
 
+from models.interfaces import MelodyGenerator, RhythmGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
 from helpers import nwise
 
 
-class OneHiddenLayerMelodyAndRhythmGenerator:
+class OneLayer(MelodyGenerator, RhythmGenerator):
     """ Algorithmic improviser built on Keras.
     The implementation is a feedforward neural network with one hidden layer.
     A limitation is that it can only be trained and then ran on a fixed chord progression.
     """
-    PITCH = 0
-    TSBQ = 1
-    DQ = 2
 
     def __init__(self, changes: ChordProgression, order=3):
-        self.order = order
+        self._order = order
         self.chord_lookahead = 2
         self.changes = changes
         self.model = None  # type: keras.models.Model
@@ -31,6 +29,10 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.maxtsbq = 0
         self.maxdq = 0
         self.outfun = weighted_nlargest  # choice function for the output of the output layers
+
+    @property
+    def order(self) -> int:
+        return self._order
 
     @property
     def chord_order(self):
@@ -88,7 +90,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
             d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
         return np.array(x), np.array(p), np.array(t), np.array(d)
 
-    def learn(self, notes: List[Note], _):
+    def learn(self, notes: List[Note], *args):
         self.maxtsbq = max(n.ticks_since_beat_quantised for n in notes)
         self.maxdq = max(n.duration_quantised for n in notes)
         self._build_net()

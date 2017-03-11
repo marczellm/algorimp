@@ -4,12 +4,13 @@ import lasagne
 import numpy
 import theano
 
+from models.interfaces import MelodyGenerator, RhythmGenerator
 from ._helpers import NUM_OCTAVES, iterate_minibatches, encode_pitch, encode_chord, encode_int
 from music import Note, Chord, ChordProgression, ABCNote, ChordType
 from helpers import nwise
 
 
-class OneHiddenLayerMelodyGenerator:
+class OneLayerMelody(MelodyGenerator):
     """ The first implementation of the neural network based algorithmic improviser, built on Theano and Lasagne.
     I later reimplemented it in Keras which I found more convenient and it also required less code.
     This implementation is now frozen, it only has one hidden layer and no chord lookahead.
@@ -17,7 +18,7 @@ class OneHiddenLayerMelodyGenerator:
     """
 
     def __init__(self, changes: ChordProgression, order=3):
-        self.order = order
+        self._order = order
         self.changes = changes
         self.inputshape = order * (len(ABCNote) + NUM_OCTAVES) + len(ABCNote) + len(ChordType)
         self.input_var = theano.tensor.bmatrix()
@@ -28,6 +29,10 @@ class OneHiddenLayerMelodyGenerator:
         self.net_fn = None  # type: theano.compile.Function
         self.current_chord = None  # type: Chord
         self.past = None  # type: List[Note]
+
+    @property
+    def order(self) -> int:
+        return self._order
 
     @staticmethod
     def _encode_network_input(past: List[Note], current_chord: Chord) -> List[int]:
@@ -69,13 +74,13 @@ class OneHiddenLayerMelodyGenerator:
         return n.pitch
 
 
-class OneHiddenLayerMelodyAndRhythmGenerator:
+class OneLayer(MelodyGenerator, RhythmGenerator):
     PITCH = 0
     TSBQ = 1
     DQ = 2
 
     def __init__(self, changes: ChordProgression, order=3):
-        self.order = order
+        self._order = order
         self.changes = changes
         self.net_fns = []  # type: List[theano.compile.Function]
         self.output_layers = []  # type: List[lasagne.layers.Layer]
@@ -84,6 +89,10 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
         self.input_var = None  # type: theano.tensor.TensorVariable
         self.maxtsbq = 0
         self.maxdq = 0
+
+    @property
+    def order(self) -> int:
+        return self._order
 
     def _build_net(self):
         self.input_var = theano.tensor.bmatrix('input_var')
@@ -111,7 +120,7 @@ class OneHiddenLayerMelodyAndRhythmGenerator:
             y.append((v[-1].pitch, v[-1].ticks_since_beat_quantised, v[-1].duration_quantised))
         return numpy.array(x), numpy.array(y)
 
-    def learn(self, notes: List[Note], _):
+    def learn(self, notes: List[Note], *args):
         self.maxtsbq = max(n.ticks_since_beat_quantised for n in notes)
         self.maxdq = max(n.duration_quantised for n in notes)
         self._build_net()

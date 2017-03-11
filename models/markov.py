@@ -3,6 +3,8 @@ from bidict import bidict, inverted
 import numpy as np
 from helpers import nwise
 from itertools import chain
+
+from models.interfaces import RhythmGenerator, MelodyGenerator
 from music import Note, Chord, ChordProgression
 
 # Type aliases (typedefs)
@@ -121,11 +123,11 @@ class Markov:
         return self.__ind2val(ret)
 
 
-class MarkovRhythmGenerator:
+class Rhythm(RhythmGenerator):
     def __init__(self, order=1):
         self.markov = Markov(order)
 
-    def learn(self, notes: List[Note]):
+    def learn(self, notes: List[Note], *args):
         self.markov.learn([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes])
         self.markov.start([(n.ticks_since_beat_quantised, n.duration_quantised) for n in notes[:self.markov.order]])
 
@@ -137,7 +139,7 @@ class MarkovRhythmGenerator:
         return self.markov.order
 
 
-class ChordAgnosticMarkovMelodyGenerator:
+class ChordAgnosticMelody(MelodyGenerator):
     def __init__(self, order=3):
         self.markov = Markov(order)
 
@@ -156,14 +158,18 @@ class ChordAgnosticMarkovMelodyGenerator:
         pass
 
 
-class StaticChordMarkovMelodyGenerator:
+class StaticChordMelody(MelodyGenerator):
     def __init__(self, changes: ChordProgression, order=3):
-        self.order = order
+        self._order = order
         self.notes_by_chord = {chord: [] for chord in changes}
         self.markovs_by_chord = {}
         self.current_markov = None  # type: Markov
         self.changes = changes
         self.past = []  # type: List[int]
+
+    @property
+    def order(self) -> int:
+        return self._order
 
     def learn(self, notes: List[Note], _):
         self.markovs_by_chord = {chord: Markov(self.order) for chord in self.changes}

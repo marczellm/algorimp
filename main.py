@@ -9,8 +9,8 @@ import midiutil.MidiFile
 
 
 import weimar
-from models.markov import StaticChordMarkovMelodyGenerator, MarkovRhythmGenerator
-from models.neural import OneHiddenLayerMelodyAndRhythmGenerator
+from models.markov import StaticChordMelody, Rhythm
+from models.neural import OneLayer
 from music import Note, ChordProgression, ABCNote
 from helpers import nwise
 
@@ -132,10 +132,10 @@ class Main:
         melody_generator = None
         rhythm_generator = None
         if model == 'markov':
-            melody_generator = StaticChordMarkovMelodyGenerator(changes)
-            rhythm_generator = MarkovRhythmGenerator()
+            melody_generator = StaticChordMelody(changes)
+            rhythm_generator = Rhythm()
         elif model == 'neural':
-            melody_generator = OneHiddenLayerMelodyAndRhythmGenerator(changes, 5)
+            melody_generator = OneLayer(changes, 5)
             rhythm_generator = melody_generator
         melody, withchords = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
         # Write output file
