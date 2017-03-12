@@ -5,7 +5,7 @@ from helpers import nwise
 from itertools import chain
 
 from models.interfaces import RhythmGenerator, MelodyGenerator
-from music import Note, Chord, ChordProgression
+from music import Note, ChordProgression
 
 # Type aliases (typedefs)
 State = Union[int, Sequence[int]]  # A scalar or a vector

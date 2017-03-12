@@ -10,7 +10,6 @@ class Note:
 
     def __init__(self):
         self.tick_abs = 0
-        self.tick_rel = 0
         self.duration = 0
         self.pitch = 0
         self.velocity = 0
@@ -115,7 +114,7 @@ class Chord:
         return self.root.name + self.type.name
 
     def __eq__(self, other):
-        return self.root == other.root and self.type == other.type
+        return other is not None and self.root == other.root and self.type == other.type
 
     def __hash__(self):
         return hash((self.root, self.type))
@@ -202,7 +201,7 @@ class ChordProgression(list):
         return ret
 
     def measures(self) -> int:
-        return len(self) / Note.meter
+        return len(self) // Note.meter
 
     def _foldback(self, key: Union[int, slice]):
         m = len(self)

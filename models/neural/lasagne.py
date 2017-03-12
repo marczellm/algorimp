@@ -20,7 +20,7 @@ class OneLayerMelody(MelodyGenerator):
     def __init__(self, changes: ChordProgression, order=3):
         self._order = order
         self.changes = changes
-        self.inputshape = order * (len(ABCNote) + NUM_OCTAVES) + len(ABCNote) + len(ChordType)
+        self.inputshape = order * (len(ABCNote.__members__) + NUM_OCTAVES) + len(ABCNote.__members__) + len(ChordType)
         self.input_var = theano.tensor.bmatrix()
         net = lasagne.layers.InputLayer(shape=(None, self.inputshape), input_var=self.input_var)
         net = lasagne.layers.DenseLayer(net, num_units=800, nonlinearity=lasagne.nonlinearities.rectify)
@@ -96,12 +96,14 @@ class OneLayer(MelodyAndRhythmGenerator):
 
     def _build_net(self):
         self.input_var = theano.tensor.bmatrix('input_var')
-        inputshape = self.order * (len(ABCNote) + NUM_OCTAVES + self.maxtsbq + self.maxdq + 2) + len(ABCNote) + len(ChordType)
+        lam = len(ABCNote.__members__)
+        inputshape = self.order * (lam + NUM_OCTAVES + self.maxtsbq + self.maxdq + 2) + lam + len(ChordType)
         net = lasagne.layers.InputLayer(shape=(None, inputshape), input_var=self.input_var)
         net = lasagne.layers.DenseLayer(net, num_units=800, nonlinearity=lasagne.nonlinearities.rectify)
-        pitch_layer = lasagne.layers.DenseLayer(net, num_units=127, nonlinearity=lasagne.nonlinearities.softmax)
-        tsbq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxtsbq + 1, nonlinearity=lasagne.nonlinearities.softmax)
-        dq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxdq + 1, nonlinearity=lasagne.nonlinearities.softmax)
+        softmax = lasagne.nonlinearities.softmax
+        pitch_layer = lasagne.layers.DenseLayer(net, num_units=127, nonlinearity=softmax)
+        tsbq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxtsbq + 1, nonlinearity=softmax)
+        dq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxdq + 1, nonlinearity=softmax)
         self.output_layers = [pitch_layer, tsbq_layer, dq_layer]
 
     def _encode_network_input(self, past: List[Note], current_chord: Chord) -> List[int]:

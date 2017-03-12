@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 import copy
 import math
-from typing import List, Tuple, Union, Optional
+from typing import List, Union, Optional
 
 import fire
 import midi
 import midiutil.MidiFile
 
-
 import weimar
 from models.interfaces import MelodyGenerator, RhythmGenerator, MelodyAndRhythmGenerator
 from models import markov, neural
-from music import Note, ChordProgression, ABCNote
+from music import Note, ChordProgression, ABCNote, Chord
 from helpers import nwise
 
 
@@ -34,7 +33,6 @@ def notes_from_file(filename: str) -> List[Note]:
         if isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1]:
             n = Note()
             n.tick_abs = ev_abs.tick
-            n.tick_rel = ev_rel.tick
             n.pitch = ev_rel.data[0]
             n.velocity = ev_rel.data[1]
             if n.pitch not in active_notes:
@@ -66,13 +64,13 @@ def notes_to_file(notes: List[Note], filename: str):
 def train(notes: List[Note], changes: ChordProgression,
           melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator], rhythm_generator: RhythmGenerator=None):
     melody_generator.learn(notes, changes)
-    if rhythm_generator is not None:
+    if rhythm_generator is not None and rhythm_generator != melody_generator:
         rhythm_generator.learn(notes)
 
 
 def generate(notes: List[Note], changes: ChordProgression,
              melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator],
-             rhythm_generator: Optional[RhythmGenerator], measures: int) -> Tuple[List[Note], List[Note]]:
+             rhythm_generator: Optional[RhythmGenerator], measures: int) -> List[Note]:
     """ Improvise a melody using two models for the melody and the rhythm, and one chord progression
 
         :param notes: the training set
@@ -85,7 +83,6 @@ def generate(notes: List[Note], changes: ChordProgression,
     if rhythm_generator is None:
         rhythm_generator = melody_generator  # type: RhythmGenerator
     melody = notes[:max(melody_generator.order, rhythm_generator.order)]
-    withchords = copy.deepcopy(melody)
     beat = melody[-1].beat
     chord = changes[beat - 1]
     melody_generator.start(beat - 1)
@@ -98,24 +95,19 @@ def generate(notes: List[Note], changes: ChordProgression,
             beat_diff = 1 + melody[-1].duration // Note.resolution
             for _ in range(beat_diff):
                 beat += 1
-                # If the chord changed, add a voicing to the MIDI file, and inform the melody generator
+                # If the chord changed, inform the melody generator
                 newchord = changes[beat - 1]
                 if newchord != chord:
                     melody_generator.start(beat - 1)
                     chord = newchord
-                    voicing = chord.voicing1357()
-                    for v in voicing:
-                        v.tick_abs = beat * Note.resolution
-                        withchords.append(v)
         # Prevent overlapping notes
         n.tick_abs = tsbq + Note.resolution * \
             max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
         n.pitch = melody_generator.next_pitch()
         melody.append(n)
-        withchords.append(n)
         if melody_generator == rhythm_generator:
             melody_generator.add_past(n)
-    return melody, withchords
+    return melody
 
 
 def extract_measures(notes: List[Note], start: int, end: int):
@@ -129,6 +121,32 @@ def extract_measures(notes: List[Note], start: int, end: int):
     ret = copy.deepcopy([note for note in notes if start <= note.measure < end])
     for note in ret:
         note.measure -= start
+    return ret
+
+
+def add_chords(notes: List[Note], changes: ChordProgression) -> List[Note]:
+    """ Add accompanying voicings to a melody
+
+    :param notes: the melody
+    :param changes: the chord progression
+    :return: a new list of notes that contains both the melody and the chords. The original list is unchanged.
+    """
+    ret = copy.copy(notes)
+    beat = 0
+    chord = None  # type: Chord
+    for i, note in enumerate(notes):
+        if i == 0 or note.beat > notes[i - 1].beat:
+            beat_diff = note.beat if i == 0 else note.beat - notes[i - 1].beat
+            for _ in range(beat_diff):
+                beat += 1
+                # If the chord changed, add a voicing
+                newchord = changes[beat - 1]
+                if newchord != chord:
+                    chord = newchord
+                    voicing = chord.voicing1357()
+                    for v in voicing:
+                        v.tick_abs = (beat - 1) * Note.resolution
+                        ret.insert(i, v)
     return ret
 
 
@@ -160,9 +178,9 @@ class Main:
             rhythm_generator = melody_generator
         train(notes, changes, melody_generator, rhythm_generator)
         print("Generating notes...")
-        melody, withchords = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
+        melody = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
         # Write output file
-        notes_to_file(withchords, 'output/{}.mid'.format(model))
+        notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model))
 
     @staticmethod
     def turing():
@@ -178,13 +196,13 @@ class Main:
             # Write a chorus of human improvisation to file
             start = i * changes.measures()
             end = (i + 1) * changes.measures()
-            notes_to_file(extract_measures(notes, start, end), 'output/man{}.mid'.format(i))
+            notes_to_file(add_chords(extract_measures(notes, start, end), changes), 'output/man{}.mid'.format(i))
             # Generate 2 choruses of machine improvisation
-            melody, withchords = generate(notes, changes, melody_generator, None, 2 * changes.measures())
-            # Only write the second chorus to file, so that it doesn't always begin with the same notes
+            melody = generate(notes, changes, melody_generator, None, 2 * changes.measures())
+            # Only write the second chorus to file, so that it doesn't always begin with the seed notes
             start = changes.measures()
             end = 2 * changes.measures()
-            notes_to_file(extract_measures(withchords, start, end), 'output/machine{}.mid'.format(i))
+            notes_to_file(extract_measures(add_chords(melody, changes), start, end), 'output/machine{}.mid'.format(i))
 
     @staticmethod
     def weimar(gen_song, choruses):

@@ -4,7 +4,6 @@ import numpy as np
 import keras
 import itertools
 
-from models.interfaces import MelodyAndRhythmGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
 from helpers import nwise, nwise_disjoint
