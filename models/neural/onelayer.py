@@ -50,12 +50,12 @@ class OneLayer(MelodyAndRhythmGenerator):
         tsbq_tensor = tsbq_layer(hidden_tensor)
         dq_tensor = dq_layer(hidden_tensor)
 
-        self.model = keras.models.Model(input=input_tensor, output=[pitch_tensor, tsbq_tensor, dq_tensor])
+        self.model = keras.models.Model(inputs=input_tensor, outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         self.model.compile(optimizer='adagrad', loss='categorical_crossentropy')
 
-        self.pitch_model = keras.models.Model(input=input_tensor, output=pitch_layer.output)
-        self.tsbq_model = keras.models.Model(input=input_tensor, output=tsbq_layer.output)
-        self.dq_model = keras.models.Model(input=input_tensor, output=dq_layer.output)
+        self.pitch_model = keras.models.Model(inputs=input_tensor, outputs=pitch_layer.output)
+        self.tsbq_model = keras.models.Model(inputs=input_tensor, outputs=tsbq_layer.output)
+        self.dq_model = keras.models.Model(inputs=input_tensor, outputs=dq_layer.output)
 
     def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> np.ndarray:
         """ 1-of-N binary encoding of a complete input to the network: past notes, present and future chords """

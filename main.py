@@ -194,8 +194,8 @@ class Main:
         train(notes, changes, melody_generator)
         for i in range(5):
             # Write a chorus of human improvisation to file
-            start = i * changes.measures()
-            end = (i + 1) * changes.measures()
+            start = (i + 1) * changes.measures()
+            end = (i + 2) * changes.measures()
             notes_to_file(add_chords(extract_measures(notes, start, end), changes), 'output/man{}.mid'.format(i))
             # Generate 2 choruses of machine improvisation
             melody = generate(notes, changes, melody_generator, None, 2 * changes.measures())
