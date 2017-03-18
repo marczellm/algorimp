@@ -4,27 +4,20 @@ import numpy as np
 import keras
 import itertools
 
+from models.interfaces import UniversalGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
-from helpers import nwise, nwise_disjoint
+from helpers import nwise
 
 
-class TwoLayer:
-    """ Algorithmic improviser built on Keras.
-    The implementation is a feedforward neural network with two hidden layers.
-    It allows for training on multiple different solos with potentially different chord progressions
-    and then generate improvisation for yet another progression.
-    """
+class TwoLayer(UniversalGenerator):
 
     def __init__(self, changes: ChordProgression, order=3):
         """ :param changes: the chord progression to use when generating the output melody """
         self._order = order
         self.changes = changes
         self.chord_lookahead = 2
-        self.model = None  # type: keras.models.Model
-        self.pitch_model = None  # type: keras.models.Model
-        self.tsbq_model = None  # type: keras.models.Model
-        self.dq_model = None  # type: keras.models.Model
+        self.model = None  # type: keras.models.
         self.past = None  # type: List[Note]
         self.current_beat = 0
         self.maxtsbq = 0
@@ -44,20 +37,12 @@ class TwoLayer:
         hidden_tensor1 = keras.layers.Dense(800, activation='relu')(input_tensor)
         hidden_tensor2 = keras.layers.Dense(800, activation='relu')(hidden_tensor1)
 
-        pitch_layer = keras.layers.Dense(127, activation='softmax')
-        tsbq_layer = keras.layers.Dense(self.maxtsbq + 1, activation='softmax')
-        dq_layer = keras.layers.Dense(self.maxdq + 1, activation='softmax')
-
-        pitch_tensor = pitch_layer(hidden_tensor2)
-        tsbq_tensor = tsbq_layer(hidden_tensor2)
-        dq_tensor = dq_layer(hidden_tensor2)
+        pitch_tensor = keras.layers.Dense(127, activation='softmax')(hidden_tensor2)
+        tsbq_tensor = keras.layers.Dense(self.maxtsbq + 1, activation='softmax')(hidden_tensor2)
+        dq_tensor = keras.layers.Dense(self.maxdq + 1, activation='softmax')(hidden_tensor2)
 
         self.model = keras.models.Model(inputs=input_tensor, outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         self.model.compile(optimizer='adagrad', loss='categorical_crossentropy')
-
-        self.pitch_model = keras.models.Model(inputs=input_tensor, outputs=pitch_layer.output)
-        self.tsbq_model = keras.models.Model(inputs=input_tensor, outputs=tsbq_layer.output)
-        self.dq_model = keras.models.Model(inputs=input_tensor, outputs=dq_layer.output)
 
     def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> np.ndarray:
         """ 1-of-N binary encoding of a complete input to the network: past notes, present and future chords """
@@ -79,11 +64,12 @@ class TwoLayer:
         Don't remove the comma! """
         return len(self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)),
 
-    def _all_training_data(self, *args) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def _all_training_data(self, training_set: List[Tuple[List[Note], ChordProgression]]) ->\
+            Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
         on the training set """
         x, p, t, d = [], [], [], []
-        for notes, changes in nwise_disjoint(args, 2):
+        for notes, changes in training_set:
             for v in nwise(notes, self.order + 1):
                 i = v[-1].beat - 1
                 j = i + self.chord_order
@@ -93,32 +79,23 @@ class TwoLayer:
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
         return np.array(x), np.array(p), np.array(t), np.array(d)
 
-    def learn(self, *args):
-        self.maxtsbq = max(n.tick_since_beat_quantised for notes in args[::2] for n in notes)
-        self.maxdq = max(n.duration_quantised for notes in args[::2] for n in notes)
+    def learn(self, training_set: List[Tuple[List[Note], ChordProgression]]):
+        self.maxtsbq = max(n.ticks_since_beat_quantised for notes, changes in training_set for n in notes)
+        self.maxdq = max(n.duration_quantised for notes, changes in training_set for n in notes)
         self._build_net()
-        x, p, t, d = self._all_training_data(*args)
+        x, p, t, d = self._all_training_data(training_set)
         self.model.fit(x, [p, t, d])
-        # TODO figure out how to best obtain past notes to start generating
 
     def start(self, beat: int):
         self.current_beat = beat
 
-    def next_pitch(self) -> int:
+    def next(self) -> Tuple[int, int, int]:
         i = self.current_beat
         j = i + self.chord_order
         encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
-        ret = self.outfun(self.pitch_model.predict(encoded_input).ravel())  # type: int
+        ret = tuple(self.outfun(arr.ravel()) for arr in self.model.predict(encoded_input))
         return ret
 
-    def next_rhythm(self) -> Tuple[int, int]:
-        i = self.current_beat
-        j = i + self.chord_order
-        encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
-        tsbq = self.outfun(self.tsbq_model.predict(encoded_input).ravel())  # type: int
-        dq = self.outfun(self.dq_model.predict(encoded_input).ravel())  # type: int
-        return tsbq, dq
-
-    def add_past(self, note: Note):
-        self.past.append(note)
+    def add_past(self, *notes: List[Note]):
+        self.past += notes
         self.past = self.past[-self.order:]

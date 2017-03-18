@@ -71,3 +71,11 @@ class UniversalGenerator(metaclass=Interface):
 
         :return: (pitch, time_since_beat_quantised, duration_quantised)
         """
+
+    @abstractmethod
+    def add_past(self, *notes: List[Note]):
+        pass
+
+    @abstractmethod
+    def start(self, beat: int):
+        pass

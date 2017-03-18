@@ -105,15 +105,14 @@ class OneLayer(MelodyAndRhythmGenerator):
         i = self.current_beat
         j = i + self.chord_order
         encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
-        ret = self.outfun(self.pitch_model.predict(encoded_input).ravel())  # type: int
-        return ret
+        return self.outfun(self.pitch_model.predict(encoded_input).ravel())
 
     def next_rhythm(self) -> Tuple[int, int]:
         i = self.current_beat
         j = i + self.chord_order
         encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
-        tsbq = self.outfun(self.tsbq_model.predict(encoded_input).ravel())  # type: int
-        dq = self.outfun(self.dq_model.predict(encoded_input).ravel())  # type: int
+        tsbq = self.outfun(self.tsbq_model.predict(encoded_input).ravel())
+        dq = self.outfun(self.dq_model.predict(encoded_input).ravel())
         return tsbq, dq
 
     def add_past(self, note: Note):

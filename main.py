@@ -8,7 +8,7 @@ import midi
 import midiutil.MidiFile
 
 import weimar
-from models.interfaces import MelodyGenerator, RhythmGenerator, MelodyAndRhythmGenerator
+from models.interfaces import MelodyGenerator, RhythmGenerator, MelodyAndRhythmGenerator, UniversalGenerator
 from models import markov, neural
 from music import Note, ChordProgression, ABCNote, Chord
 from helpers import nwise
@@ -68,27 +68,31 @@ def train(notes: List[Note], changes: ChordProgression,
         rhythm_generator.learn(notes)
 
 
-def generate(notes: List[Note], changes: ChordProgression,
-             melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator],
+def generate(past: List[Note], changes: ChordProgression,
+             melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator, UniversalGenerator],
              rhythm_generator: Optional[RhythmGenerator], measures: int) -> List[Note]:
     """ Improvise a melody using two models for the melody and the rhythm, and one chord progression
 
-        :param notes: the training set
+        :param melody_generator:
+        :param rhythm_generator:
+        :param past: the seed
         :param changes: the chord progression.
-        :param melody_generator: An object that conforms to the implicit melody generator interface.
-        :param rhythm_generator: An object that conforms to the implicit rhythm generator interface.
             It can be the same as the melody generator, or equivalently None.
         :param measures: The number of measures to generate
         """
     if rhythm_generator is None:
         rhythm_generator = melody_generator  # type: RhythmGenerator
-    melody = notes[:max(melody_generator.order, rhythm_generator.order)]
+    universal = isinstance(melody_generator, UniversalGenerator)
+    melody = past
     beat = melody[-1].beat
     chord = changes[beat - 1]
     melody_generator.start(beat - 1)
     while beat < measures * Note.meter:
         n = Note()
-        tsbq, dq = rhythm_generator.next_rhythm()
+        if universal:
+            n.pitch, tsbq, dq = melody_generator.next()
+        else:
+            tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
         n.duration = dq * 10
         if melody and melody[-1].ticks_since_beat > tsbq:  # New beat: might be a chord change
@@ -103,7 +107,8 @@ def generate(notes: List[Note], changes: ChordProgression,
         # Prevent overlapping notes
         n.tick_abs = tsbq + Note.resolution * \
             max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
-        n.pitch = melody_generator.next_pitch()
+        if not universal:
+            n.pitch = melody_generator.next_pitch()
         melody.append(n)
         if melody_generator == rhythm_generator:
             melody_generator.add_past(n)
@@ -165,8 +170,7 @@ class Main:
         # Read the chord changes from a text file
         changes = changes_from_file(song)
         # Read the training set from a MIDI file
-        filename = r"input/{}.mid".format(song)
-        notes = notes_from_file(filename)
+        notes = notes_from_file(r"input/{}.mid".format(song))
         # Learn and generate
         melody_generator = None
         rhythm_generator = None
@@ -178,9 +182,35 @@ class Main:
             rhythm_generator = melody_generator
         train(notes, changes, melody_generator, rhythm_generator)
         print("Generating notes...")
-        melody = generate(notes, changes, melody_generator, rhythm_generator, choruses * changes.measures())
+        melody = generate(notes[:max(melody_generator.order, rhythm_generator.order)],
+                          changes, melody_generator, rhythm_generator, choruses * changes.measures())
         # Write output file
         notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model))
+
+    @staticmethod
+    def weimar(model, song, choruses):
+        """
+        Train a model on the Weimar database of transcriptions and then run it on the specified chord progression.
+
+        :param model: The name of the model: 'twolayer' or 'lstm'.
+        :param song: The name of the chord progression to use for generation.
+            Both the midi file and the text file containing the changes must exist with this name.
+            The generation seed will be obtained from the beginning of the midi file.
+        :param choruses: The number of choruses to generate
+        """
+        metadata = weimar.load_metadata()
+        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.id)), song.changes)
+                        for song in metadata]
+        changes = changes_from_file(song)
+        notes = notes_from_file(r"input/{}.mid".format(song))
+        if model == 'twolayer':
+            model = neural.TwoLayer(changes, 5)
+        elif model == 'lstm':
+            raise NotImplementedError('LSTM model not yet implemented')
+        model.learn(training_set)
+        print("Generating notes...")
+        melody = generate(notes[:model.order], changes, model, None, choruses * changes.measures())
+        notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model))
 
     @staticmethod
     def turing():
@@ -198,24 +228,12 @@ class Main:
             end = (i + 2) * changes.measures()
             notes_to_file(add_chords(extract_measures(notes, start, end), changes), 'output/man{}.mid'.format(i))
             # Generate 2 choruses of machine improvisation
-            melody = generate(notes, changes, melody_generator, None, 2 * changes.measures())
+            melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 2 * changes.measures())
             # Only write the second chorus to file, so that it doesn't always begin with the seed notes
             start = changes.measures()
             end = 2 * changes.measures()
             notes_to_file(extract_measures(add_chords(melody, changes), start, end), 'output/machine{}.mid'.format(i))
 
-    @staticmethod
-    def weimar(gen_song, choruses):
-        """
-        Train a model on the Weimar database of transcriptions and then run it on the specified chord progression.
-
-        :param gen_song: The name of the chord progression to use for generation.
-            The text file containing the changes must exist with this name.
-        :param choruses: The number of choruses to generate
-        """
-        metadata = weimar.load_metadata()
-        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.id)), song.changes)
-                        for song in metadata]
 
 if __name__ == "__main__":
     fire.Fire(Main)
