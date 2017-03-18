@@ -17,8 +17,8 @@ class TwoLayer(UniversalGenerator):
         self._order = order
         self.changes = changes
         self.chord_lookahead = 2
-        self.model = None  # type: keras.models.
-        self.past = None  # type: List[Note]
+        self.model = None  # type: keras.models.Model
+        self.past = []  # type: List[Note]
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
