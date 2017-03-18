@@ -199,17 +199,18 @@ class Main:
         :param choruses: The number of choruses to generate
         """
         metadata = weimar.load_metadata()
-        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.id)), song.changes)
+        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.name)), song.changes)
                         for song in metadata]
         changes = changes_from_file(song)
-        notes = notes_from_file(r"input/{}.mid".format(song))
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
         elif model == 'lstm':
             raise NotImplementedError('LSTM model not yet implemented')
+        seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         model.learn(training_set)
         print("Generating notes...")
-        melody = generate(notes[:model.order], changes, model, None, choruses * changes.measures())
+        model.add_past(*seed)
+        melody = generate(seed, changes, model, None, choruses * changes.measures())
         notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model))
 
     @staticmethod

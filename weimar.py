@@ -64,10 +64,10 @@ def parse_measure(s: str) -> Tuple[(Chord,) * Note.meter]:
 
 
 class SongMetadata:
-    def __init__(self, **args):
-        self.id = args['id']
-        self.key = args['key']
-        self.changes = args['chord_changes']
+    def __init__(self, name, key, chord_changes, **_):
+        self.name = name
+        self.key = key
+        self.changes = chord_changes
 
 
 def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
@@ -77,13 +77,14 @@ def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
     """
     with open(filename, newline='') as bf:
         reader = csv.DictReader(bf, delimiter=';')
+        reader.fieldnames[0] = 'name'
         metadata = list(reader)
 
     metadata = [SongMetadata(**song) for song in metadata
                 if song['key'] and not _re_invalid_measure.search(song['chord_changes'])]
 
     for song in metadata:
-        song.id = os.path.splitext(song.id)[0]
+        song.name = os.path.splitext(song.name)[0]
         changes = ChordProgression(ABCNote.from_string(_re_roots.match(song.key).group(0)))
         for m in re.finditer(_re_measure, song.changes):
             changes += parse_measure(m.group(0))
