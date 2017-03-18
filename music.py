@@ -5,7 +5,7 @@ from typing import List, Union
 
 
 class Note:
-    resolution = 0
+    default_resolution = 0
     meter = 4
 
     def __init__(self):
@@ -15,6 +15,7 @@ class Note:
         self.velocity = 0
         self.ticks_since_last_note_start = 0
         self.ticks_since_last_note_end = 0
+        self.resolution = self.default_resolution
 
     @property
     def beat_in_measure(self) -> int:
@@ -155,7 +156,7 @@ class Chord:
                 oct_shift += 12
             mnote = Note()
             mnote.pitch = note.value + oct_shift + 48
-            mnote.duration = Note.resolution
+            mnote.duration = mnote.resolution
             mnote.velocity = 80
             midinotes.append(mnote)
         return midinotes

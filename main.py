@@ -27,11 +27,11 @@ def notes_from_file(filename: str) -> List[Note]:
     # Convert MIDI events to our music representation: a list of Note objects
     notes = []
     active_notes = {}
-    Note.resolution = midifile_rel.resolution
 
     for ev_rel, ev_abs in zip(midifile_rel[-1], midifile_abs[-1]):
         if isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1]:
             n = Note()
+            n.resolution = midifile_rel.resolution
             n.tick_abs = ev_abs.tick
             n.pitch = ev_rel.data[0]
             n.velocity = ev_rel.data[1]
@@ -52,10 +52,10 @@ def notes_from_file(filename: str) -> List[Note]:
 
 def notes_to_file(notes: List[Note], filename: str):
     print("Writing file {}... ".format(filename), end='')
-    kf = midiutil.MidiFile.MIDIFile(1, adjust_origin=False)
+    kf = midiutil.MidiFile.MIDIFile(adjust_origin=False)
     kf.addTrackName(0, 0, "Track 1")
     for n in notes:
-        kf.addNote(0, 0, n.pitch, n.tick_abs / Note.resolution, n.duration / Note.resolution, 100)
+        kf.addNote(0, 0, n.pitch, n.tick_abs / n.resolution, n.duration / n.resolution, 100)
     with open(filename, 'wb') as f:
         kf.writeFile(f)
     print("Done.")
@@ -89,6 +89,7 @@ def generate(past: List[Note], changes: ChordProgression,
     melody_generator.start(beat - 1)
     while beat < measures * Note.meter:
         n = Note()
+        n.resolution = past[0].resolution
         if universal:
             n.pitch, tsbq, dq = melody_generator.next()
         else:
@@ -96,7 +97,7 @@ def generate(past: List[Note], changes: ChordProgression,
         tsbq *= 10
         n.duration = dq * 10
         if melody and melody[-1].ticks_since_beat > tsbq:  # New beat: might be a chord change
-            beat_diff = 1 + melody[-1].duration // Note.resolution
+            beat_diff = 1 + melody[-1].duration // n.resolution
             for _ in range(beat_diff):
                 beat += 1
                 # If the chord changed, inform the melody generator
@@ -105,8 +106,8 @@ def generate(past: List[Note], changes: ChordProgression,
                     melody_generator.start(beat - 1)
                     chord = newchord
         # Prevent overlapping notes
-        n.tick_abs = tsbq + Note.resolution * \
-            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / Note.resolution))
+        n.tick_abs = tsbq + n.resolution * \
+            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / n.resolution))
         if not universal:
             n.pitch = melody_generator.next_pitch()
         melody.append(n)
@@ -146,11 +147,11 @@ def add_chords(notes: List[Note], changes: ChordProgression) -> List[Note]:
                 beat += 1
                 # If the chord changed, add a voicing
                 newchord = changes[beat - 1]
-                if newchord != chord:
+                if newchord != chord or beat % len(changes) == 0:
                     chord = newchord
                     voicing = chord.voicing1357()
                     for v in voicing:
-                        v.tick_abs = (beat - 1) * Note.resolution
+                        v.tick_abs = (beat - 1) * v.resolution
                         ret.insert(i, v)
     return ret
 
@@ -171,6 +172,7 @@ class Main:
         changes = changes_from_file(song)
         # Read the training set from a MIDI file
         notes = notes_from_file(r"input/{}.mid".format(song))
+        Note.default_resolution = notes[0].resolution
         # Learn and generate
         melody_generator = None
         rhythm_generator = None
@@ -198,20 +200,22 @@ class Main:
             The generation seed will be obtained from the beginning of the midi file.
         :param choruses: The number of choruses to generate
         """
-        metadata = weimar.load_metadata()
-        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.name)), song.changes)
-                        for song in metadata]
         changes = changes_from_file(song)
+        model_name = model
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
         elif model == 'lstm':
             raise NotImplementedError('LSTM model not yet implemented')
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
+        Note.default_resolution = seed[0].resolution
+        metadata = weimar.load_metadata()
+        training_set = [(notes_from_file('weimardb/{}.mid'.format(song.name)), song.changes)
+                        for song in metadata]
         model.learn(training_set)
         print("Generating notes...")
         model.add_past(*seed)
         melody = generate(seed, changes, model, None, choruses * changes.measures())
-        notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model))
+        notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model_name))
 
     @staticmethod
     def turing():
@@ -220,6 +224,7 @@ class Main:
         changes = changes_from_file(song)
         filename = "input/{}.mid".format(song)
         notes = notes_from_file(filename)
+        Note.default_resolution = notes[0].resolution
         melody_generator = neural.OneLayer(changes, 5)
 
         train(notes, changes, melody_generator)
