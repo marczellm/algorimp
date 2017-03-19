@@ -84,7 +84,7 @@ class OneLayer(MelodyAndRhythmGenerator):
         self.changes = changes
         self.net_fns = []  # type: List[theano.compile.Function]
         self.output_layers = []  # type: List[lasagne.layers.Layer]
-        self.past = None  # type: List[Note]
+        self.past = []  # type: List[Note]
         self.current_chord = None  # type: Chord
         self.input_var = None  # type: theano.tensor.TensorVariable
         self.maxtsbq = 0
@@ -163,6 +163,6 @@ class OneLayer(MelodyAndRhythmGenerator):
         tsbq = numpy.argmax(self.net_fns[self.TSBQ](encoded_network_input))  # type: int
         return tsbq, dq
 
-    def add_past(self, note: Note):
-        self.past.append(note)
+    def add_past(self, *notes: List[Note]):
+        self.past += notes
         self.past = self.past[-self.order:]

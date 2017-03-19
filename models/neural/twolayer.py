@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 import keras
@@ -7,7 +7,7 @@ import itertools
 from models.interfaces import UniversalGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
-from helpers import nwise
+from helpers import nwise, nwise_disjoint
 
 
 class TwoLayer(UniversalGenerator):
@@ -64,12 +64,12 @@ class TwoLayer(UniversalGenerator):
         Don't remove the comma! """
         return len(self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)),
 
-    def _all_training_data(self, training_set: List[Tuple[List[Note], ChordProgression]]) ->\
+    def _all_training_data(self, training_set: List[Union[Tuple[List[Note], ChordProgression]]]) ->\
             Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
         on the training set """
         x, p, t, d = [], [], [], []
-        for notes, changes in training_set:
+        for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
                 i = v[-1].beat - 1
                 j = i + self.chord_order
@@ -79,7 +79,7 @@ class TwoLayer(UniversalGenerator):
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
         return np.array(x), np.array(p), np.array(t), np.array(d)
 
-    def learn(self, training_set: List[Tuple[List[Note], ChordProgression]]):
+    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
         self.maxtsbq = max(n.ticks_since_beat_quantised for notes, changes in training_set for n in notes)
         self.maxdq = max(n.duration_quantised for notes, changes in training_set for n in notes)
         self._build_net()

@@ -1,5 +1,5 @@
 """ Abstract Base Classes that describe the interface to interact with the models. """
-from typing import List, Tuple
+from typing import List, Tuple, Union
 from abc import ABCMeta as Interface, abstractmethod
 
 from music import ChordProgression, Note
@@ -7,7 +7,7 @@ from music import ChordProgression, Note
 
 class MelodyGenerator(metaclass=Interface):
     @abstractmethod
-    def learn(self, notes: List[Note], changes: ChordProgression):
+    def learn(self, notes: List[Note], changes: ChordProgression, *args):
         """ Train the model on the given note sequence and chord progression. """
 
     @property
@@ -47,11 +47,11 @@ class RhythmGenerator(metaclass=Interface):
 
 class MelodyAndRhythmGenerator(MelodyGenerator, RhythmGenerator, metaclass=Interface):
     @abstractmethod
-    def add_past(self, note: Note):
+    def add_past(self, *notes: List[Note]):
         """ Construction of the next note involves external corrections after the neural output has been obtained.
         Therefore the method that drives the generator has to pass it back the fully constructed note.
 
-        :param note: the last note generated and corrected
+        :param notes: the past notes to add
         """
 
 
@@ -59,10 +59,10 @@ class UniversalGenerator(metaclass=Interface):
     """ A generator that can train on many different chord progressions and then improvise on a new one """
 
     @abstractmethod
-    def learn(self, *training_set: List[Tuple[List[Note], ChordProgression]]):
+    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
         """ Train the model on the given note sequence and chord progression.
 
-        :param training_set: [(notes1, changes1), (notes2, changes2), ...]
+        :param training_set: [notes1, changes1, notes2, changes2, ...]
         """
 
     @abstractmethod
