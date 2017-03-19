@@ -4,13 +4,13 @@ import numpy as np
 import keras
 import itertools
 
-from models.interfaces import MelodyAndRhythmGenerator
+from models.interfaces import MelodyAndRhythmGenerator, UniversalGenerator
 from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
 from helpers import nwise, nwise_disjoint
 
 
-class OneLayer(MelodyAndRhythmGenerator):
+class OneLayer(MelodyAndRhythmGenerator, UniversalGenerator):
     """ Algorithmic improviser built on Keras.
     The implementation is a feedforward neural network with one hidden layer.
     A limitation is that it can only be trained and then ran on the same, fixed chord progression.
@@ -101,6 +101,13 @@ class OneLayer(MelodyAndRhythmGenerator):
 
     def start(self, beat: int):
         self.current_beat = beat
+
+    def next(self) -> Tuple[int, int, int]:
+        i = self.current_beat
+        j = i + self.chord_order
+        encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
+        ret = tuple(self.outfun(arr.ravel()) for arr in self.model.predict(encoded_input))
+        return ret
 
     def next_pitch(self) -> int:
         i = self.current_beat

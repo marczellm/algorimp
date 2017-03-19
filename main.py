@@ -151,7 +151,7 @@ def add_chords(notes: List[Note], changes: ChordProgression) -> List[Note]:
                 beat += 1
                 # If the chord changed, add a voicing
                 newchord = changes[beat - 1]
-                if newchord != chord or beat % len(changes) == 0:
+                if newchord != chord or beat % len(changes) == 1:
                     chord = newchord
                     voicing = chord.voicing1357()
                     for v in voicing:
@@ -209,6 +209,8 @@ class Main:
         """
         changes = changes_from_file(song)
         model_name = model
+        if model == 'onelayer':
+            model = neural.OneLayer(changes, 5)
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
         elif model == 'lstm':
@@ -232,7 +234,7 @@ class Main:
         filename = "input/{}.mid".format(song)
         notes = notes_from_file(filename)
         Note.default_resolution = notes[0].resolution
-        melody_generator = neural.OneLayer(changes, 5)
+        melody_generator = neural.TwoLayer(changes, 5)
 
         train(notes, changes, melody_generator)
         for i in range(5):
