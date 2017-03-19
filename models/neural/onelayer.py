@@ -24,7 +24,7 @@ class OneLayer(MelodyAndRhythmGenerator):
         self.pitch_model = None  # type: keras.models.Model
         self.tsbq_model = None  # type: keras.models.Model
         self.dq_model = None  # type: keras.models.Model
-        self.past = None  # type: List[Note]
+        self.past = []  # type: List[Note]
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
