@@ -80,8 +80,8 @@ class TwoLayer(UniversalGenerator):
         return np.array(x), np.array(p), np.array(t), np.array(d)
 
     def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
-        self.maxtsbq = max(n.ticks_since_beat_quantised for notes, changes in training_set for n in notes)
-        self.maxdq = max(n.duration_quantised for notes, changes in training_set for n in notes)
+        self.maxtsbq = max(n.ticks_since_beat_quantised for notes, _ in nwise_disjoint(training_set, 2) for n in notes)
+        self.maxdq = max(n.duration_quantised for notes, changes in nwise_disjoint(training_set, 2) for n in notes)
         self._build_net()
         x, p, t, d = self._all_training_data(training_set)
         self.model.fit(x, [p, t, d])
