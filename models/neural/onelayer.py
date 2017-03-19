@@ -13,13 +13,13 @@ from helpers import nwise, nwise_disjoint
 class OneLayer(MelodyAndRhythmGenerator, UniversalGenerator):
     """ Algorithmic improviser built on Keras.
     The implementation is a feedforward neural network with one hidden layer.
-    A limitation is that it can only be trained and then ran on the same, fixed chord progression.
     """
 
     def __init__(self, changes: ChordProgression, order=3):
+        """ :param changes: the chord progression to use when generating the output melody """
         self._order = order
-        self.chord_lookahead = 2
         self.changes = changes
+        self.chord_lookahead = 2
         self.model = None  # type: keras.models.Model
         self.pitch_model = None  # type: keras.models.Model
         self.tsbq_model = None  # type: keras.models.Model

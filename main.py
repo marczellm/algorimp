@@ -218,8 +218,8 @@ class Main:
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
-        training_set = list(itertools.chain(notes_from_file('weimardb/{}.mid'.format(song.name)), song.changes)
-                            for song in metadata)
+        training_set = list(itertools.chain(*((notes_from_file('weimardb/{}.mid'.format(song.name)), song.changes)
+                            for song in metadata)))
         model.learn(*training_set)
         print("Generating notes...")
         model.add_past(*seed)
