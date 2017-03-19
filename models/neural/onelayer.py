@@ -116,6 +116,6 @@ class OneLayer(MelodyAndRhythmGenerator):
         dq = self.outfun(self.dq_model.predict(encoded_input).ravel())
         return tsbq, dq
 
-    def add_past(self, note: Note):
-        self.past.append(note)
+    def add_past(self, *notes: List[Note]):
+        self.past += notes
         self.past = self.past[-self.order:]
