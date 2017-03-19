@@ -68,8 +68,6 @@ def train(notes: List[Note], changes: ChordProgression,
     melody_generator.learn(notes, changes)
     if rhythm_generator is not None and rhythm_generator != melody_generator:
         rhythm_generator.learn(notes)
-    elif isinstance(melody_generator, MelodyAndRhythmGenerator):
-        melody_generator.add_past(*notes[:melody_generator.order])
 
 
 def generate(past: List[Note], changes: ChordProgression,
@@ -190,6 +188,8 @@ class Main:
             melody_generator = neural.lasagne.OneLayer(changes, 5)
             rhythm_generator = melody_generator
         train(notes, changes, melody_generator, rhythm_generator)
+        if model != 'markov':
+            melody_generator.add_past(*notes[:melody_generator.order])
         print("Generating notes...")
         melody = generate(notes[:max(melody_generator.order, rhythm_generator.order)],
                           changes, melody_generator, rhythm_generator, choruses * changes.measures())
@@ -235,8 +235,8 @@ class Main:
         notes = notes_from_file(filename)
         Note.default_resolution = notes[0].resolution
         melody_generator = neural.TwoLayer(changes, 5)
-
         train(notes, changes, melody_generator)
+        melody_generator.add_past(*notes[:melody_generator.order])
         for i in range(5):
             # Write a chorus of human improvisation to file
             start = (i + 1) * changes.measures()
