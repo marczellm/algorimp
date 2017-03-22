@@ -22,7 +22,7 @@ class TwoLayer(UniversalGenerator):
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
-        self.outfun = weighted_nlargest  # choice function for the output of the output layers
+        self.outfun = np.argmax  # choice function for the output of the output layers
 
     @property
     def order(self) -> int:
