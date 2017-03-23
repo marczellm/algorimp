@@ -237,17 +237,14 @@ class Main:
         melody_generator = neural.TwoLayer(changes, 5)
         train(notes, changes, melody_generator)
         melody_generator.add_past(*notes[:melody_generator.order])
+        melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 6 * changes.measures())
+        melody = add_chords(melody, changes)
         for i in range(5):
-            # Write a chorus of human improvisation to file
+            # Write a chorus of human improvisation and a chorus of machine improvisation to file
             start = (i + 1) * changes.measures()
             end = (i + 2) * changes.measures()
             notes_to_file(add_chords(extract_measures(notes, start, end), changes), 'output/man{}.mid'.format(i))
-            # Generate 2 choruses of machine improvisation
-            melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 2 * changes.measures())
-            # Only write the second chorus to file, so that it doesn't always begin with the seed notes
-            start = changes.measures()
-            end = 2 * changes.measures()
-            notes_to_file(extract_measures(add_chords(melody, changes), start, end), 'output/machine{}.mid'.format(i))
+            notes_to_file(extract_measures(melody, start, end), 'output/machine{}.mid'.format(i))
 
 
 if __name__ == "__main__":

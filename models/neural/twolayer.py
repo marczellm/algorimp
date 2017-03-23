@@ -5,7 +5,7 @@ import keras
 import itertools
 
 from models.interfaces import UniversalGenerator
-from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
+from ._helpers import encode_int, encode_chord, encode_pitch
 from music import Chord, ChordProgression, Note
 from helpers import nwise, nwise_disjoint
 
@@ -84,7 +84,7 @@ class TwoLayer(UniversalGenerator):
         self.maxdq = max(n.duration_quantised for notes, changes in nwise_disjoint(training_set, 2) for n in notes)
         self._build_net()
         x, p, t, d = self._all_training_data(training_set)
-        self.model.fit(x, [p, t, d])
+        self.model.fit(x, [p, t, d], epochs=10)
 
     def start(self, beat: int):
         self.current_beat = beat

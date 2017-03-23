@@ -29,10 +29,10 @@ cxxflags = -D_hypot=hypot -Wno-narrowing
 # -ID:\ProgramFiles\theano\libgpuarray\include\ -LD:\ProgramFiles\theano\libgpuarray\lib\Release\
 ```
 #### Linux 
-I've ran this on CUDA 7.5 and GCC 4.9 with the following `.theanorc`:
+I've ran this on CUDA 7.5 and GCC 4.9 with the following `.theanorc`, after [installing libgpuarray](http://deeplearning.net/software/libgpuarray/installation.html):
 ```
 [global]
-device = gpu
+device = cuda
 floatX = float32
 cxx = /usr/bin/g++-4.9
 
@@ -48,5 +48,5 @@ flags=-ccbin=/usr/bin/g++-4.9 -D_FORCE_INLINES -w
 
 ## License
 The MIDI files in the `weimar` directory are from the 
-Weimar Jazz Database of the [Jazzomat Research Project](The Jazzomat Research Project).
+Weimar Jazz Database of the [Jazzomat Research Project](https://jazzomat.hfm-weimar.de/).
 They fall under the [Open Database License v1.0](https://opendatacommons.org/licenses/odbl/1.0/).
