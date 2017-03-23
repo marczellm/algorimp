@@ -5,7 +5,7 @@ import keras
 import itertools
 
 from models.interfaces import UniversalGenerator
-from ._helpers import encode_int, encode_chord, encode_pitch
+from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
 from music import Chord, ChordProgression, Note
 from helpers import nwise, nwise_disjoint
 
@@ -22,7 +22,7 @@ class TwoLayer(UniversalGenerator):
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
-        self.outfun = np.argmax  # choice function for the output of the output layers
+        self.outfuns = np.argmax, weighted_nlargest, weighted_nlargest  # choice functions for the output layers
 
     @property
     def order(self) -> int:
@@ -84,7 +84,7 @@ class TwoLayer(UniversalGenerator):
         self.maxdq = max(n.duration_quantised for notes, changes in nwise_disjoint(training_set, 2) for n in notes)
         self._build_net()
         x, p, t, d = self._all_training_data(training_set)
-        self.model.fit(x, [p, t, d], epochs=10)
+        self.model.fit(x, [p, t, d], epochs=5)
 
     def start(self, beat: int):
         self.current_beat = beat
@@ -93,7 +93,7 @@ class TwoLayer(UniversalGenerator):
         i = self.current_beat
         j = i + self.chord_order
         encoded_input = np.array([self._encode_network_input(self.past, self.changes[i:j])])
-        ret = tuple(self.outfun(arr.ravel()) for arr in self.model.predict(encoded_input))
+        ret = tuple(fun(arr.ravel()) for fun, arr in zip(self.outfuns, self.model.predict(encoded_input)))
         return ret
 
     def add_past(self, *notes: List[Note]):
