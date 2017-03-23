@@ -75,3 +75,14 @@ def sampler(temperature=1.0):
         p = np.random.multinomial(1, p / p.sum(), 1)
         return np.argmax(p)
     return sample
+
+
+def sampler2(temperature=1.0):
+    def sample(preds):
+        preds = np.asarray(preds).astype('float64')
+        preds = np.log(preds) / temperature
+        exp_preds = np.exp(preds)
+        preds = exp_preds / np.sum(exp_preds)
+        probas = np.random.multinomial(1, preds, 1)
+        return np.argmax(probas)
+    return sample
