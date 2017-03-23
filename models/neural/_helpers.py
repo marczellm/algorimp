@@ -52,8 +52,6 @@ def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
 
 
 # Choice functions for the output of a softmax layer
-
-
 def weighted_choice(p) -> int:
     return np.random.choice(len(p), p=p)
 
@@ -69,3 +67,11 @@ def weighted_nlargest(p) -> int:
     nlargest /= np.sum(nlargest)
     return np.random.choice(ind_nlargest, p=nlargest)
 
+
+# Adapted from the Keras sample code
+def sampler(temperature=1.0):
+    def sample(p):
+        p = np.exp(np.log(p) / temperature)
+        p = np.random.multinomial(1, p / p.sum(), 1)
+        return np.argmax(p)
+    return sample

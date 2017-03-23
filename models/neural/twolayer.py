@@ -5,7 +5,7 @@ import keras
 import itertools
 
 from models.interfaces import UniversalGenerator
-from ._helpers import encode_int, encode_chord, encode_pitch, weighted_nlargest
+from ._helpers import encode_int, encode_chord, encode_pitch, sampler
 from music import Chord, ChordProgression, Note
 from helpers import nwise, nwise_disjoint
 
@@ -22,7 +22,7 @@ class TwoLayer(UniversalGenerator):
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
-        self.outfuns = np.argmax, weighted_nlargest, weighted_nlargest  # choice functions for the output layers
+        self.outfuns = (sampler(1.5),)*3  # choice functions for the output layers
 
     @property
     def order(self) -> int:
