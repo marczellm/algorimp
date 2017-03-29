@@ -182,11 +182,11 @@ class Main:
             melody_generator = markov.StaticChordMelody(changes)
             rhythm_generator = markov.Rhythm()
         elif model == 'neural':
-            melody_generator = neural.TwoLayer(changes, 5)
-            rhythm_generator = melody_generator
+            melody_generator = neural.OneLayer(changes, 5)
+        elif model == 'lstm':
+            melody_generator = neural.LSTM(changes, 16)
         elif model == 'lasagne':
             melody_generator = neural.lasagne.OneLayer(changes, 5)
-            rhythm_generator = melody_generator
         train(notes, changes, melody_generator, rhythm_generator)
         if model != 'markov':
             melody_generator.add_past(*notes[:melody_generator.order])
@@ -214,7 +214,7 @@ class Main:
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
         elif model == 'lstm':
-            raise NotImplementedError('LSTM model not yet implemented')
+            model = neural.LSTM(changes, 16)
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
@@ -234,7 +234,7 @@ class Main:
         filename = "input/{}.mid".format(song)
         notes = notes_from_file(filename)
         Note.default_resolution = notes[0].resolution
-        melody_generator = neural.TwoLayer(changes, 5)
+        melody_generator = neural.LSTM(changes, 16)
         train(notes, changes, melody_generator)
         melody_generator.add_past(*notes[:melody_generator.order])
         melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 6 * changes.measures())
