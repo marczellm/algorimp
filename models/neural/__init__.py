@@ -1,3 +1,1 @@
-from .onelayer import OneLayer
-from .twolayer import TwoLayer
-from . import lasagne
+from ._main import OneLayer, TwoLayer

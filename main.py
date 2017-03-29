@@ -182,7 +182,7 @@ class Main:
             melody_generator = markov.StaticChordMelody(changes)
             rhythm_generator = markov.Rhythm()
         elif model == 'neural':
-            melody_generator = neural.OneLayer(changes, 5)
+            melody_generator = neural.TwoLayer(changes, 5)
             rhythm_generator = melody_generator
         elif model == 'lasagne':
             melody_generator = neural.lasagne.OneLayer(changes, 5)
