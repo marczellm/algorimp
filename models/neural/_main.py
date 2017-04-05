@@ -25,7 +25,7 @@ class OneLayer(NeuralBase):
         model = keras.models.Model(inputs=input_tensor, outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
-        self.epochs = 1
+        self.epochs = 20
         return model
 
 
