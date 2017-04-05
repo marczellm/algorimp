@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import List
 
 import numpy as np
 import keras
@@ -71,9 +71,9 @@ class LSTM(NeuralBase):
         self.outfuns = (np.argmax,) * 3
         return model
 
-    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> Tuple[np.ndarray, np.ndarray]:
-        return np.array([encode_pitch(note)
-                         + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
-                         + encode_int(note.duration_quantised, self.maxdq + 1)
-                         for note in past], dtype=bool), \
-               np.array(lsum(encode_chord(chord) for chord in chords), dtype=bool)
+    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> List[np.ndarray]:
+        return [np.array([encode_pitch(note)
+                          + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
+                          + encode_int(note.duration_quantised, self.maxdq + 1)
+                          for note in past], dtype=bool),
+                np.array(lsum(encode_chord(chord) for chord in chords), dtype=bool)]

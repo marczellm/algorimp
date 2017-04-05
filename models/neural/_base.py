@@ -48,20 +48,20 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         """
         pass
 
-    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> Tuple[np.ndarray, ...]:
+    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> List[np.ndarray]:
         """ 1-of-N binary encoding of a complete input to the network: past notes, present and future chords """
         assert len(past) == self.order
         assert len(chords) == self.chord_order
 
-        return np.array(lsum(encode_pitch(note)
-                             + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
-                             + encode_int(note.duration_quantised, self.maxdq + 1)
-                             for note in past)
-                        + lsum(encode_chord(chord) for chord in chords), dtype=bool),
+        return [np.array(lsum(encode_pitch(note)
+                              + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
+                              + encode_int(note.duration_quantised, self.maxdq + 1)
+                              for note in past)
+                         + lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
     def inputshape(self) -> Tuple[int]:
         """ Generates a dummy input matrix for the network and returns its shape. """
-        return self._encode_network_input([Note()]*self.order, [Chord.parse('C7')]*self.chord_order)[0].shape
+        return self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)[0].shape
 
     def _all_training_data(self, training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
@@ -79,7 +79,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
                 p.append(encode_int(v[-1].pitch, 127))
                 t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
-        return [np.array(xi, dtype=bool) for xi in x],\
+        return [np.array(xi, dtype=bool) for xi in x], \
                [np.array(p, dtype=bool), np.array(t, dtype=bool), np.array(d, dtype=bool)]
 
     def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
