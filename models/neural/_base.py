@@ -59,6 +59,12 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
                               for note in past)
                          + lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
+    def _encoded_input_for_generation(self):
+        i = self.current_beat
+        j = i + self.chord_order
+        ret = self._encode_network_input(self.past, self.changes[i:j])
+        return np.array(ret)
+
     def inputshape(self) -> Tuple[int]:
         """ Generates a dummy input matrix for the network and returns its shape. """
         return self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)[0].shape
@@ -96,22 +102,16 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         self.current_beat = beat
 
     def next(self) -> Tuple[int, int, int]:
-        i = self.current_beat
-        j = i + self.chord_order
-        encoded_input = self._encode_network_input(self.past, self.changes[i:j])
+        encoded_input = self._encoded_input_for_generation()
         ret = tuple(fun(arr.ravel()) for fun, arr in zip(self.outfuns, self.model.predict(encoded_input)))
         return ret
 
     def next_pitch(self) -> int:
-        i = self.current_beat
-        j = i + self.chord_order
-        encoded_input = self._encode_network_input(self.past, self.changes[i:j])
+        encoded_input = self._encoded_input_for_generation()
         return self.outfuns[0](self.pitch_model.predict(encoded_input).ravel())
 
     def next_rhythm(self) -> Tuple[int, int]:
-        i = self.current_beat
-        j = i + self.chord_order
-        encoded_input = self._encode_network_input(self.past, self.changes[i:j])
+        encoded_input = self._encoded_input_for_generation()
         tsbq = self.outfuns[1](self.tsbq_model.predict(encoded_input).ravel())
         dq = self.outfuns[2](self.dq_model.predict(encoded_input).ravel())
         return tsbq, dq
