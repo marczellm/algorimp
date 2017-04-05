@@ -191,6 +191,8 @@ class Main:
         if model != 'markov':
             melody_generator.add_past(*notes[:melody_generator.order])
         print("Generating notes...")
+        if rhythm_generator is None:
+            rhythm_generator = melody_generator
         melody = generate(notes[:max(melody_generator.order, rhythm_generator.order)],
                           changes, melody_generator, rhythm_generator, choruses * changes.measures())
         # Write output file
