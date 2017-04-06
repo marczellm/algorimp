@@ -63,7 +63,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         i = self.current_beat
         j = i + self.chord_order
         ret = self._encode_network_input(self.past, self.changes[i:j])
-        return np.array(ret) if len(ret) == 1 else ret
+        return [np.array([arr]) for arr in ret]
 
     def inputshape(self) -> Tuple[int]:
         """ Generates a dummy input matrix for the network and returns its shape. """

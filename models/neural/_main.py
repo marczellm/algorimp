@@ -25,7 +25,7 @@ class OneLayer(NeuralBase):
         model = keras.models.Model(inputs=input_tensor, outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
-        self.epochs = 20
+        self.epochs = 1
         return model
 
 
@@ -67,7 +67,7 @@ class LSTM(NeuralBase):
         model = keras.models.Model(inputs=[in_notes, in_chords], outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         model.compile(optimizer=rmsprop(), loss=categorical_crossentropy)
 
-        self.epochs = 30
+        self.epochs = 1
         self.outfuns = (np.argmax,) * 3
         return model
 
