@@ -28,7 +28,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
-        self.outfuns = (sampler(1.5),) * 3  # choice functions for the output layers
+        self.outfuns = (np.argmax,) * 3  # choice functions for the output layers
         self.epochs = 1
 
     @property

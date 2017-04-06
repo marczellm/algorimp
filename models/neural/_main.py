@@ -6,13 +6,17 @@ from keras.activations import softmax, relu
 from keras.losses import categorical_crossentropy
 from keras.optimizers import adagrad, rmsprop
 
-from music import Note, Chord
-from ._helpers import encode_chord, lsum, encode_int, encode_pitch
+from music import Note, Chord, ChordProgression
+from ._helpers import encode_chord, lsum, encode_int, encode_pitch, sampler
 from ._base import NeuralBase
 
 
 class OneLayer(NeuralBase):
     """ Algorithmic improviser based on a feedforward neural network with one hidden layer. """
+
+    def __init__(self, changes: ChordProgression, order=3):
+        super().__init__(changes, order)
+        self.chord_lookahead = 0
 
     def _build_net(self) -> keras.models.Model:
         input_tensor = keras.layers.Input(shape=self.inputshape())
@@ -25,7 +29,7 @@ class OneLayer(NeuralBase):
         model = keras.models.Model(inputs=input_tensor, outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
-        self.epochs = 1
+        self.epochs = 20
         return model
 
 
@@ -45,6 +49,7 @@ class TwoLayer(NeuralBase):
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
         self.epochs = 25
+        self.outfuns = (sampler(1.5),) * 3
         return model
 
 
@@ -67,8 +72,7 @@ class LSTM(NeuralBase):
         model = keras.models.Model(inputs=[in_notes, in_chords], outputs=[pitch_tensor, tsbq_tensor, dq_tensor])
         model.compile(optimizer=rmsprop(), loss=categorical_crossentropy)
 
-        self.epochs = 1
-        self.outfuns = (np.argmax,) * 3
+        self.epochs = 30
         return model
 
     def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> List[np.ndarray]:
