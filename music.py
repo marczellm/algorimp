@@ -1,5 +1,7 @@
 import enum
 import re
+import numbers
+
 import numpy as np
 from typing import List, Union
 
@@ -206,7 +208,7 @@ class ChordProgression(list):
 
     def _foldback(self, key: Union[int, slice]):
         m = len(self)
-        if isinstance(key, int):
+        if isinstance(key, numbers.Integral):
             key %= m
         elif isinstance(key, slice):
             key = slice(key.start % m, key.stop % m, key.step)
