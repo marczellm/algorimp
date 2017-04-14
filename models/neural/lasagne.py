@@ -1,8 +1,9 @@
 from typing import Tuple, List
 
-import lasagne
 import numpy
 import theano
+import lasagne
+from lasagne.nonlinearities import softmax
 
 from models.interfaces import MelodyGenerator, MelodyAndRhythmGenerator
 from ._helpers import NUM_OCTAVES, iterate_minibatches, encode_pitch, encode_chord, encode_int
@@ -23,8 +24,8 @@ class OneLayerMelody(MelodyGenerator):
         self.inputshape = order * (len(ABCNote.__members__) + NUM_OCTAVES) + len(ABCNote.__members__) + len(ChordType)
         self.input_var = theano.tensor.bmatrix()
         net = lasagne.layers.InputLayer(shape=(None, self.inputshape), input_var=self.input_var)
-        net = lasagne.layers.DenseLayer(net, num_units=800, nonlinearity=lasagne.nonlinearities.rectify)
-        self.net = lasagne.layers.DenseLayer(net, num_units=128, nonlinearity=lasagne.nonlinearities.softmax)
+        net = lasagne.layers.DenseLayer(net, 800)
+        self.net = lasagne.layers.DenseLayer(net, 128, nonlinearity=softmax)
 
         self.net_fn = None  # type: theano.compile.Function
         self.current_chord = None  # type: Chord
@@ -99,11 +100,10 @@ class OneLayer(MelodyAndRhythmGenerator):
         lam = len(ABCNote.__members__)
         inputshape = self.order * (lam + NUM_OCTAVES + self.maxtsbq + self.maxdq + 2) + lam + len(ChordType)
         net = lasagne.layers.InputLayer(shape=(None, inputshape), input_var=self.input_var)
-        net = lasagne.layers.DenseLayer(net, num_units=800, nonlinearity=lasagne.nonlinearities.rectify)
-        softmax = lasagne.nonlinearities.softmax
-        pitch_layer = lasagne.layers.DenseLayer(net, num_units=127, nonlinearity=softmax)
-        tsbq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxtsbq + 1, nonlinearity=softmax)
-        dq_layer = lasagne.layers.DenseLayer(net, num_units=self.maxdq + 1, nonlinearity=softmax)
+        net = lasagne.layers.DenseLayer(net, 800)
+        pitch_layer = lasagne.layers.DenseLayer(net, 127, nonlinearity=softmax)
+        tsbq_layer = lasagne.layers.DenseLayer(net, self.maxtsbq + 1, nonlinearity=softmax)
+        dq_layer = lasagne.layers.DenseLayer(net, self.maxdq + 1, nonlinearity=softmax)
         self.output_layers = [pitch_layer, tsbq_layer, dq_layer]
 
     def _encode_network_input(self, past: List[Note], current_chord: Chord) -> List[int]:

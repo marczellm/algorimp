@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 import keras
 import numpy as np
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Iterable
 
 from helpers import nwise_disjoint, nwise
 from models.interfaces import UniversalGenerator, MelodyAndRhythmGenerator
@@ -48,7 +48,8 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         """
         pass
 
-    def _encode_network_input(self, past: List[Note], chords: List[Chord]) -> List[np.ndarray]:
+    def _encode_network_input(self, past: List[Note], chords: List[Chord], changes: ChordProgression)\
+            -> List[np.ndarray]:
         """ 1-of-N binary encoding of a complete input to the network: past notes, present and future chords """
         assert len(past) == self.order
         assert len(chords) == self.chord_order
@@ -59,17 +60,18 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
                               for note in past)
                          + lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
-    def _encoded_input_for_generation(self):
+    def _encode_input_for_generation(self):
         i = self.current_beat
         j = i + self.chord_order
-        ret = self._encode_network_input(self.past, self.changes[i:j])
+        ret = self._encode_network_input(self.past, self.changes[i:j], self.changes)
         return [np.array([arr]) for arr in ret]
 
     def inputshape(self) -> Tuple[int]:
         """ Generates a dummy input matrix for the network and returns its shape. """
-        return self._encode_network_input([Note()] * self.order, [Chord.parse('C7')] * self.chord_order)[0].shape
+        return self._encode_network_input([Note()] * self.order,
+                                          [Chord.parse('C7')] * self.chord_order, self.changes)[0].shape
 
-    def _all_training_data(self, training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
+    def _all_training_data(self, training_set: Iterable[Union[List[Note], ChordProgression]]):
         """ 1-of-N binary encoding of all pairs of inputs (past notes and current chord) and outputs (next note)
         on the training set """
         x, p, t, d = [], [], [], []
@@ -77,7 +79,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
             for v in nwise(notes, self.order + 1):
                 i = v[-1].beat - 1
                 j = i + self.chord_order
-                xx = self._encode_network_input(v[:self.order], changes[i:j])
+                xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
                 if not x:
                     x = [[] for _ in xx]
                 for xi, xxi in zip(x, xx):
@@ -88,30 +90,30 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         return [np.array(xi, dtype=bool) for xi in x], \
                [np.array(p, dtype=bool), np.array(t, dtype=bool), np.array(d, dtype=bool)]
 
-    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
+    def learn(self, *training_set: Union[List[Note], ChordProgression]):
         self.maxtsbq = max(n.ticks_since_beat_quantised for notes, _ in nwise_disjoint(training_set, 2) for n in notes)
         self.maxdq = max(n.duration_quantised for notes, changes in nwise_disjoint(training_set, 2) for n in notes)
         self.model = self._build_net()
-        self.pitch_model = keras.models.Model(inputs=self.model.input, outputs=self.model.outputs[0])
-        self.tsbq_model = keras.models.Model(inputs=self.model.input, outputs=self.model.outputs[1])
-        self.dq_model = keras.models.Model(inputs=self.model.input, outputs=self.model.outputs[2])
+        self.pitch_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[0])
+        self.tsbq_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[1])
+        self.dq_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[2])
         x, y = self._all_training_data(training_set)
         self.model.fit(x, y, epochs=self.epochs)
 
     def start(self, beat: int):
         self.current_beat = beat
 
-    def next(self) -> Tuple[int, int, int]:
-        encoded_input = self._encoded_input_for_generation()
+    def next(self) -> Tuple[int, ...]:
+        encoded_input = self._encode_input_for_generation()
         ret = tuple(fun(arr.ravel()) for fun, arr in zip(self.outfuns, self.model.predict(encoded_input)))
         return ret
 
     def next_pitch(self) -> int:
-        encoded_input = self._encoded_input_for_generation()
+        encoded_input = self._encode_input_for_generation()
         return self.outfuns[0](self.pitch_model.predict(encoded_input).ravel())
 
     def next_rhythm(self) -> Tuple[int, int]:
-        encoded_input = self._encoded_input_for_generation()
+        encoded_input = self._encode_input_for_generation()
         tsbq = self.outfuns[1](self.tsbq_model.predict(encoded_input).ravel())
         dq = self.outfuns[2](self.dq_model.predict(encoded_input).ravel())
         return tsbq, dq

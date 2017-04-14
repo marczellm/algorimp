@@ -6,7 +6,7 @@ import numpy as np
 
 from music import Note, Chord
 
-NUM_OCTAVES = 16
+NUM_OCTAVES = 10
 
 
 def encode_int(i: int, n: int) -> List[int]:
