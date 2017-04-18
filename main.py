@@ -183,8 +183,8 @@ class Main:
             rhythm_generator = markov.Rhythm()
         elif model == 'neural':
             melody_generator = neural.OneLayer(changes, 5)
-        elif model == 'lstm':
-            melody_generator = neural.LSTM(changes, 16)
+        elif model.startswith('lstm'):
+            melody_generator = neural.LSTM(changes, 16, stateful=model.endswith('stateful'))
         elif model == 'lasagne':
             melody_generator = neural.lasagne.OneLayer(changes, 5)
         train(notes, changes, melody_generator, rhythm_generator)
@@ -215,8 +215,8 @@ class Main:
             model = neural.OneLayer(changes, 5)
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
-        elif model == 'lstm':
-            model = neural.LSTM(changes, 16)
+        elif model.startswith('lstm'):
+            model = neural.LSTM(changes, 16, stateful=model.endswith('stateful'))
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()

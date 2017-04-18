@@ -58,17 +58,20 @@ class LSTM(NeuralBase):
     """ Algorithmic improviser based on an LSTM network.
         Also featuring a separate output layer for octave selection. """
 
-    def __init__(self, changes: ChordProgression, order=3):
+    def __init__(self, changes: ChordProgression, order=3, stateful=False):
         super().__init__(changes, order)
         self.octave_model = None  # type: keras.models.Model
+        self.stateful = stateful
 
     def _build_net(self) -> keras.models.Model:
         dummy_input = self._encode_network_input([Note()] * self.order,
                                                  [Chord.parse('C7')] * self.chord_order, self.changes)
-        in_notes = keras.layers.Input(shape=dummy_input[0].shape)
-        in_chords = keras.layers.Input(shape=dummy_input[1].shape)
+        in_notes = keras.layers.Input(batch_shape=(1,) + dummy_input[0].shape) if self.stateful\
+            else keras.layers.Input(shape=dummy_input[0].shape)
+        in_chords = keras.layers.Input(batch_shape=(1,) + dummy_input[1].shape) if self.stateful\
+            else keras.layers.Input(shape=dummy_input[1].shape)
 
-        lstm_out = keras.layers.LSTM(256)(in_notes)
+        lstm_out = keras.layers.LSTM(256, stateful=self.stateful)(in_notes)
         x = keras.layers.concatenate([lstm_out, in_chords])
         x = keras.layers.Dense(800)(x)
 
@@ -100,7 +103,8 @@ class LSTM(NeuralBase):
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
                 i = v[-1].beat - 1
-                j = i + self.chord_order
+                j = i + self.chord_radius + 1
+                i = i - self.chord_radius
                 xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
                 if not x:
                     x = [[] for _ in xx]

@@ -1,9 +1,10 @@
-from typing import Tuple, Union, Sequence, List
-from bidict import bidict, inverted
-import numpy as np
-from helpers import nwise
 from itertools import chain
+from typing import Tuple, Union, Sequence, List
 
+import numpy as np
+from bidict import bidict, inverted
+
+from helpers import nwise
 from models.interfaces import RhythmGenerator, MelodyGenerator
 from music import Note, ChordProgression
 

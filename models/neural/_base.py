@@ -19,7 +19,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         """ :param changes: the chord progression to use when generating the output melody """
         self._order = order
         self.changes = changes
-        self.chord_lookahead = 2
+        self.chord_radius = 2
         self.model = None  # type: keras.models.Model
         self.pitch_model = None  # type: keras.models.Model
         self.tsbq_model = None  # type: keras.models.Model
@@ -37,7 +37,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
 
     @property
     def chord_order(self):
-        return self.chord_lookahead + 1
+        return 2 * self.chord_radius + 1
 
     @abstractmethod
     def _build_net(self) -> keras.models.Model:
@@ -61,8 +61,8 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
                          + lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
     def _encode_input_for_generation(self):
-        i = self.current_beat
-        j = i + self.chord_order
+        i = self.current_beat - self.chord_radius
+        j = self.current_beat + self.chord_radius + 1
         ret = self._encode_network_input(self.past, self.changes[i:j], self.changes)
         return [np.array([arr]) for arr in ret]
 
@@ -78,7 +78,8 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
                 i = v[-1].beat - 1
-                j = i + self.chord_order
+                j = i + self.chord_radius + 1
+                i = i - self.chord_radius
                 xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
                 if not x:
                     x = [[] for _ in xx]
@@ -98,7 +99,9 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         self.tsbq_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[1])
         self.dq_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[2])
         x, y = self._all_training_data(training_set)
-        self.model.fit(x, y, epochs=self.epochs)
+        stateful = any(isinstance(layer, keras.layers.Recurrent) and layer.stateful for layer in self.model.layers)
+        kwargs = {'batch_size': 1, 'shuffle': False} if stateful else {}
+        self.model.fit(x, y, epochs=self.epochs, **kwargs)
 
     def start(self, beat: int):
         self.current_beat = beat
