@@ -70,10 +70,18 @@ def weighted_nlargest(p) -> int:
 
 
 # Adapted from the Keras sample code
-def sampler(temperature=1.0):
+def sampler_exp(temperature=1.0):
     def sample(p):
         p = np.asarray(p, np.float64)
         p = np.exp(np.log(p) / temperature)
+        return np.argmax(np.random.multinomial(1, p / p.sum(), 1))
+    return sample
+
+
+def sampler(temperature=1.0):
+    def sample(p):
+        p = np.asarray(p, np.float64)
+        p **= 1 / temperature
         return np.argmax(np.random.multinomial(1, p / p.sum(), 1))
     return sample
 

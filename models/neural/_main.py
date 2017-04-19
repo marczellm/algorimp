@@ -87,7 +87,7 @@ class LSTM(NeuralBase):
 
         self.octave_model = keras.models.Model(inputs=model.inputs, outputs=model.outputs[3])
         self.epochs = 30
-        self.outfuns = (np.argmax,) * 4
+        self.outfuns = (sampler(0.5),) * 4
         return model
 
     def _encode_network_input(self, past: List[Note], chords: List[Chord], changes: ChordProgression)\
@@ -118,6 +118,7 @@ class LSTM(NeuralBase):
                 t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
+        progressbar.update(progressbar.target)
         print()
         return [np.array(xi, dtype=bool) for xi in x],\
                [np.array(p, dtype=bool), np.array(t, dtype=bool), np.array(d, dtype=bool), np.array(o, dtype=bool)]
