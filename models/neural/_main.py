@@ -62,6 +62,7 @@ class LSTM(NeuralBase):
         super().__init__(changes, order)
         self.octave_model = None  # type: keras.models.Model
         self.stateful = stateful
+        self._implementation = 0
 
     def _build_net(self) -> keras.models.Model:
         dummy_input = self._encode_network_input([Note()] * self.order,
@@ -71,7 +72,7 @@ class LSTM(NeuralBase):
         in_chords = keras.layers.Input(batch_shape=(1,) + dummy_input[1].shape) if self.stateful\
             else keras.layers.Input(shape=dummy_input[1].shape)
 
-        lstm_out = keras.layers.LSTM(256, stateful=self.stateful)(in_notes)
+        lstm_out = keras.layers.LSTM(256, stateful=self.stateful, implementation=self._implementation)(in_notes)
         x = keras.layers.concatenate([lstm_out, in_chords])
         x = keras.layers.Dense(800)(x)
 
