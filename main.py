@@ -92,14 +92,16 @@ def generate(past: List[Note], changes: ChordProgression,
     while beat < measures * Note.meter:
         n = Note()
         n.resolution = past[0].resolution
+        rest = None
         if universal:
-            n.pitch, tsbq, dq = melody_generator.next()
+            n.pitch, tsbq, dq, *rest = melody_generator.next()  # in LSTM case, rest[0] is beat_in_measure
         else:
             tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
         n.duration = dq * 10
-        if melody and melody[-1].ticks_since_beat > tsbq:  # New beat: might be a chord change
-            beat_diff = 1 + melody[-1].duration // n.resolution
+        if melody and ((rest and melody[-1].beat_in_measure != rest[0]) or melody[-1].ticks_since_beat > tsbq):
+            beat_diff = (rest[0] - melody[-1].beat_in_measure) % Note.meter if rest \
+                else 1 + melody[-1].duration // n.resolution
             for _ in range(beat_diff):
                 beat += 1
                 # If the chord changed, inform the melody generator
@@ -109,7 +111,7 @@ def generate(past: List[Note], changes: ChordProgression,
                     chord = newchord
         # Prevent overlapping notes
         n.tick_abs = tsbq + n.resolution * \
-            max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / n.resolution))
+            (beat if rest else max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / n.resolution)))
         if not universal:
             n.pitch = melody_generator.next_pitch()
         melody.append(n)
@@ -184,7 +186,7 @@ class Main:
         elif model == 'neural':
             melody_generator = neural.OneLayer(changes, 5)
         elif model.startswith('lstm'):
-            melody_generator = neural.LSTM(changes, 16, stateful=model.endswith('stateful'))
+            melody_generator = neural.LSTM(changes, stateful=model.endswith('stateful'))
         elif model == 'lasagne':
             melody_generator = neural.lasagne.OneLayer(changes, 5)
         train(notes, changes, melody_generator, rhythm_generator)
@@ -216,7 +218,7 @@ class Main:
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
         elif model.startswith('lstm'):
-            model = neural.LSTM(changes, 16, stateful=model.endswith('stateful'))
+            model = neural.LSTM(changes, stateful=model.endswith('stateful'))
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
@@ -236,7 +238,7 @@ class Main:
         filename = "input/{}.mid".format(song)
         notes = notes_from_file(filename)
         Note.default_resolution = notes[0].resolution
-        melody_generator = neural.LSTM(changes, 16)
+        melody_generator = neural.LSTM(changes)
         train(notes, changes, melody_generator)
         melody_generator.add_past(*notes[:melody_generator.order])
         melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 6 * changes.measures())

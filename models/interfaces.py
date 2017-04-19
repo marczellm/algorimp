@@ -66,10 +66,10 @@ class UniversalGenerator(metaclass=Interface):
         """
 
     @abstractmethod
-    def next(self) -> Tuple[int, int, int]:
+    def next(self) -> Tuple[int, ...]:
         """ Generate a note.
 
-        :return: (pitch, time_since_beat_quantised, duration_quantised)
+        :return: (pitch, time_since_beat_quantised, duration_quantised) by default
         """
 
     @abstractmethod

@@ -58,7 +58,7 @@ class LSTM(NeuralBase):
     """ Algorithmic improviser based on an LSTM network.
         Also featuring a separate output layer for octave selection. """
 
-    def __init__(self, changes: ChordProgression, order=3, stateful=False):
+    def __init__(self, changes: ChordProgression, order=16, stateful=False):
         super().__init__(changes, order)
         self.octave_model = None  # type: keras.models.Model
         self.stateful = stateful
@@ -80,14 +80,15 @@ class LSTM(NeuralBase):
         tsbq_tensor = keras.layers.Dense(self.maxtsbq + 1, activation=softmax)(x)
         dq_tensor = keras.layers.Dense(self.maxdq + 1, activation=softmax)(x)
         octave_tensor = keras.layers.Dense(NUM_OCTAVES, activation=softmax)(x)
+        beat_tensor = keras.layers.Dense(Note.meter, activation=softmax)(x)
 
         model = keras.models.Model(inputs=[in_notes, in_chords],
-                                   outputs=[pitch_tensor, tsbq_tensor, dq_tensor, octave_tensor])
+                                   outputs=[pitch_tensor, tsbq_tensor, dq_tensor, octave_tensor, beat_tensor])
         model.compile(optimizer=rmsprop(), loss=categorical_crossentropy)
 
         self.octave_model = keras.models.Model(inputs=model.inputs, outputs=model.outputs[3])
         self.epochs = 30
-        self.outfuns = (sampler(0.5),) * 4
+        self.outfuns = (sampler(0.5),) + (sampler(0.3),) * 2 + (np.argmax,) * 2
         return model
 
     def _encode_network_input(self, past: List[Note], chords: List[Chord], changes: ChordProgression)\
@@ -102,7 +103,7 @@ class LSTM(NeuralBase):
     def _all_training_data(self, training_set: Iterable[Union[List[Note], ChordProgression]]):
         print('Processing training data...')
         progressbar = keras.utils.Progbar(sum(len(notes) - self.order + 1 for notes in training_set[::2]))
-        x, p, t, d, o = [], [], [], [], []
+        x, p, t, d, o, b = [], [], [], [], [], []
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
                 progressbar.add(1)
@@ -118,10 +119,11 @@ class LSTM(NeuralBase):
                 t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
+                b.append(encode_int(v[-1].beat_in_measure, Note.meter))
         progressbar.update(progressbar.target)
         print()
         return [np.array(xi, dtype=bool) for xi in x],\
-               [np.array(p, dtype=bool), np.array(t, dtype=bool), np.array(d, dtype=bool), np.array(o, dtype=bool)]
+               [np.array(arr, dtype=bool) for arr in [p, t, d, o, b]]
 
     def next_pitch(self):
         encoded_input = self._encode_input_for_generation()
@@ -130,5 +132,5 @@ class LSTM(NeuralBase):
         return octave * 12 + abcnote
 
     def next(self):
-        p, t, d, o = super().next()
-        return o * 12 + p, t, d
+        p, t, d, o, b = super().next()
+        return o * 12 + p, t, d, b
