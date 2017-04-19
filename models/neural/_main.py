@@ -62,7 +62,7 @@ class LSTM(NeuralBase):
         super().__init__(changes, order)
         self.octave_model = None  # type: keras.models.Model
         self.stateful = stateful
-        self._implementation = 0
+        self._implementation = 2
 
     def _build_net(self) -> keras.models.Model:
         dummy_input = self._encode_network_input([Note()] * self.order,
@@ -100,9 +100,12 @@ class LSTM(NeuralBase):
                 np.array(lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
     def _all_training_data(self, training_set: Iterable[Union[List[Note], ChordProgression]]):
+        print('Processing training data...')
+        progressbar = keras.utils.Progbar(sum(len(notes) - self.order + 1 for notes in training_set[::2]))
         x, p, t, d, o = [], [], [], [], []
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
+                progressbar.add(1)
                 i = v[-1].beat - 1
                 j = i + self.chord_radius + 1
                 i = i - self.chord_radius
@@ -115,6 +118,7 @@ class LSTM(NeuralBase):
                 t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
+        print()
         return [np.array(xi, dtype=bool) for xi in x],\
                [np.array(p, dtype=bool), np.array(t, dtype=bool), np.array(d, dtype=bool), np.array(o, dtype=bool)]
 
