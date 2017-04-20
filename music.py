@@ -11,12 +11,10 @@ class Note:
     meter = 4
 
     def __init__(self):
-        self.tick_abs = 0
+        self.tick_abs = 0  # tick_rel is not stored, because it is either the time since the last note on or note off
         self.duration = 0
         self.pitch = 0
         self.velocity = 0
-        self.ticks_since_last_note_start = 0
-        self.ticks_since_last_note_end = 0
         self.resolution = self.default_resolution
 
     @property

@@ -46,10 +46,7 @@ def notes_from_file(filename: str) -> List[Note]:
             n.duration = ev_abs.tick - n.tick_abs
             notes.append(n)
     assert not any(active_notes.values()), "Some notes were not released"
-    for n, m in nwise(notes, 2):
-        m.ticks_since_last_note_start = m.tick_abs - n.tick_abs
-        m.ticks_since_last_note_end = m.tick_abs - n.tick_abs + n.duration
-    return notes
+    return sorted(notes, key=lambda note: note.tick_abs)
 
 
 def notes_to_file(notes: List[Note], filename: str):

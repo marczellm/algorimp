@@ -3,6 +3,7 @@ from typing import Tuple, List, Union
 
 import fire
 
+from helpers import nwise
 from main import changes_from_file, notes_from_file, generate, train, notes_to_file
 from models import neural
 from models.interfaces import UniversalGenerator
@@ -36,7 +37,7 @@ class TotalRecall(UniversalGenerator):
 
 class Tests:
     @staticmethod
-    def optimize_lstm():
+    def fast_and_furious():
         """ Keras provides a choice of 3 implementations for recurrent layers. Find out which is the fastest. """
         song = 'Eb_therewill'
         changes = changes_from_file(song)
@@ -53,7 +54,7 @@ class Tests:
 
     @staticmethod
     def total_recall():
-        """ Test the code driving generation by feeding it the training set """
+        """ Test the code that drives generation by feeding it the training set as generated output """
         song = 'Eb_therewill'
         model = TotalRecall()
         changes = changes_from_file(song)
@@ -61,9 +62,15 @@ class Tests:
         Note.default_resolution = notes[0].resolution
         train(notes, changes, model)
         m = generate(notes[:model.order], changes, model, None, 4 * changes.measures())
-        mm = m[33:38]
-        nn = notes[33:38]
         notes_to_file(m, 'output/test.mid')
+
+    @staticmethod
+    def back_to_the_future():
+        """ Find out how common it is that a later note has a smaller tick_abs """
+        song = 'Eb_therewill'
+        notes = notes_from_file(r"input/{}.mid".format(song))
+        print(sum(n.tick_abs > m.tick_abs for n, m in nwise(notes, 2)))
+
 
 if __name__ == '__main__':
     fire.Fire(Tests)
