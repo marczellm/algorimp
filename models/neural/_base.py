@@ -25,7 +25,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         self.tsbq_model = None  # type: keras.models.Model
         self.dq_model = None  # type: keras.models.Model
         self.past = []  # type: List[Note]
-        self.current_beat = 0
+        self.beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
         self.maxbeatdiff = 0
@@ -62,9 +62,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
                          + lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
     def _encode_input_for_generation(self):
-        i = self.current_beat - self.chord_radius  # TODO use really different chords!
-        j = self.current_beat + self.chord_radius + 1
-        ret = self._encode_network_input(self.past, self.changes[i:j], self.changes)
+        ret = self._encode_network_input(self.past, self.changes.unique(self.beat, self.chord_radius), self.changes)
         return [np.array([arr]) for arr in ret]
 
     def inputshape(self) -> Tuple[int]:
@@ -78,10 +76,9 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         x, p, t, d = [], [], [], []
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
-                i = v[-1].beat - 1
-                j = i + self.chord_radius + 1  # TODO use really different chords!
-                i = i - self.chord_radius
-                xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
+                xx = self._encode_network_input(v[:self.order],
+                                                changes.unique(v[-1].beat - 1, self.chord_radius),
+                                                changes)
                 if not x:
                     x = [[] for _ in xx]
                 for xi, xxi in zip(x, xx):
@@ -107,7 +104,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         self.model.fit(x, y, epochs=epochs or self.epochs, **kwargs)
 
     def start(self, beat: int):
-        self.current_beat = beat
+        self.beat = beat
 
     def next(self) -> Tuple[int, ...]:
         encoded_input = self._encode_input_for_generation()

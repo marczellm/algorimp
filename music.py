@@ -51,21 +51,22 @@ class Note:
     def octave(self) -> int:
         return self.pitch // 12
 
+    # The casts to int are necessary because round(np.float64) returns np.float64
     @property
     def ticks_since_measure_quantised(self) -> int:
-        return round(self.ticks_since_measure / 10)
+        return int(round(self.ticks_since_measure / 10))
 
     @property
     def ticks_since_beat_quantised(self) -> int:
-        return round(self.ticks_since_beat / 10)
+        return int(round(self.ticks_since_beat / 10))
 
     @property
     def duration_quantised(self) -> int:
-        return min(round(self.duration / 10), int(4 * self.resolution / 10))
+        return int(min(round(self.duration / 10), 4 * self.resolution / 10))
 
     @property
     def velocity_quantised(self) -> int:
-        return round(self.velocity / 6.4)
+        return int(round(self.velocity / 6.4))
 
     def __str__(self):
         return self.abcnote.name + str(self.octave) + ' ' + str({'beat': self.beat,
@@ -191,6 +192,28 @@ class ChordProgression(list):
             ret.append(Chord(chord.root + diff, chord.type))
         return ret
 
+    def unique(self, i: int, radius: int) -> List[Chord]:
+        """ Return the i-th chord together with the preceding and succeeding r different chords """
+        ret = [None] * (2 * radius + 1)  # type: List[Chord]
+        ret[radius] = self[i]
+        j, k = 1, 1
+        while k <= radius:
+            chord = self[i+j]
+            prev = self[i+j-1]
+            if chord != prev:
+                ret[radius + k] = chord
+                k += 1
+            j += 1
+        j, k = 1, 1
+        while k <= radius:
+            chord = self[i-j]
+            prev = self[i-j+1]
+            if chord != prev:
+                ret[radius - k] = chord
+                k += 1
+            j += 1
+        return ret
+
     def __parse(self, string: str):
         regex = re.compile("({}|-)".format(Chord.sre).lower())
         for match in regex.finditer(string):
@@ -215,14 +238,14 @@ class ChordProgression(list):
         m = len(self)
         if isinstance(key, numbers.Integral):
             key %= m
-        elif isinstance(key, slice):
-            key = slice(key.start % m, key.stop % m, key.step)
+        elif isinstance(key, slice):  # start and stop can be None
+            key = slice((key.start or 0) % m, key.stop % m if key.stop is not None else m, key.step)
         return key
     
     def __getitem__(self, key):
         key = self._foldback(key)
         if isinstance(key, slice):
-            if key.start > key.stop:
+            if (key.start or 0) > (key.stop or len(self)):
                 slice1 = slice(key.stop)
                 slice2 = slice(key.start, len(self))
                 return super().__getitem__(slice1) + super().__getitem__(slice2)

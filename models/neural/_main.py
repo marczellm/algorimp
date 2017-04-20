@@ -108,10 +108,9 @@ class LSTM(NeuralBase):
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
                 progressbar.add(1)
-                i = v[-1].beat - 1
-                j = i + self.chord_radius + 1  # TODO use really different chords!
-                i = i - self.chord_radius
-                xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
+                xx = self._encode_network_input(v[:self.order],
+                                                changes.unique(v[-1].beat - 1, self.chord_radius),
+                                                changes)
                 if not x:
                     x = [[] for _ in xx]
                 for xi, xxi in zip(x, xx):
