@@ -28,6 +28,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         self.current_beat = 0
         self.maxtsbq = 0
         self.maxdq = 0
+        self.maxbeatdiff = 0
         self.outfuns = (np.argmax,) * 3  # choice functions for the output layers
         self.epochs = 1
 
@@ -61,7 +62,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
                          + lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
     def _encode_input_for_generation(self):
-        i = self.current_beat - self.chord_radius
+        i = self.current_beat - self.chord_radius  # TODO use really different chords!
         j = self.current_beat + self.chord_radius + 1
         ret = self._encode_network_input(self.past, self.changes[i:j], self.changes)
         return [np.array([arr]) for arr in ret]
@@ -78,7 +79,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
                 i = v[-1].beat - 1
-                j = i + self.chord_radius + 1
+                j = i + self.chord_radius + 1  # TODO use really different chords!
                 i = i - self.chord_radius
                 xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
                 if not x:
@@ -94,6 +95,8 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
     def learn(self, *training_set: Union[List[Note], ChordProgression], epochs=None):
         self.maxtsbq = max(n.ticks_since_beat_quantised for notes, _ in nwise_disjoint(training_set, 2) for n in notes)
         self.maxdq = max(n.duration_quantised for notes, changes in nwise_disjoint(training_set, 2) for n in notes)
+        self.maxbeatdiff = max(m.beat - n.beat
+                               for notes, _ in nwise_disjoint(training_set, 2) for n, m in nwise(notes, 2))
         self.model = self._build_net()
         self.pitch_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[0])
         self.tsbq_model = keras.models.Model(inputs=self.model.inputs, outputs=self.model.outputs[1])

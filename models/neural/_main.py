@@ -80,10 +80,10 @@ class LSTM(NeuralBase):
         tsbq_tensor = keras.layers.Dense(self.maxtsbq + 1, activation=softmax)(x)
         dq_tensor = keras.layers.Dense(self.maxdq + 1, activation=softmax)(x)
         octave_tensor = keras.layers.Dense(NUM_OCTAVES, activation=softmax)(x)
-        beat_tensor = keras.layers.Dense(Note.meter, activation=softmax)(x)
+        beatdiff_tensor = keras.layers.Dense(self.maxbeatdiff + 1, activation=softmax)(x)
 
         model = keras.models.Model(inputs=[in_notes, in_chords],
-                                   outputs=[pitch_tensor, tsbq_tensor, dq_tensor, octave_tensor, beat_tensor])
+                                   outputs=[pitch_tensor, tsbq_tensor, dq_tensor, octave_tensor, beatdiff_tensor])
         model.compile(optimizer=rmsprop(), loss=categorical_crossentropy)
 
         self.octave_model = keras.models.Model(inputs=model.inputs, outputs=model.outputs[3])
@@ -95,6 +95,7 @@ class LSTM(NeuralBase):
             -> List[np.ndarray]:
         return [np.array([encode_pitch(note)
                           + encode_chord(changes[note.beat])
+                          + encode_int(note.beat_in_measure, Note.meter)
                           + encode_int(note.ticks_since_beat_quantised, self.maxtsbq + 1)
                           + encode_int(note.duration_quantised, self.maxdq + 1)
                           for note in past], dtype=bool),
@@ -108,7 +109,7 @@ class LSTM(NeuralBase):
             for v in nwise(notes, self.order + 1):
                 progressbar.add(1)
                 i = v[-1].beat - 1
-                j = i + self.chord_radius + 1
+                j = i + self.chord_radius + 1  # TODO use really different chords!
                 i = i - self.chord_radius
                 xx = self._encode_network_input(v[:self.order], changes[i:j], changes)
                 if not x:
@@ -119,8 +120,8 @@ class LSTM(NeuralBase):
                 t.append(encode_int(v[-1].ticks_since_beat_quantised, self.maxtsbq + 1))
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
-                b.append(encode_int(v[-1].beat_in_measure, Note.meter))
-        progressbar.update(progressbar.target)
+                b.append(encode_int(v[-1].beat - v[-2].beat, self.maxbeatdiff + 1))
+        progressbar.update(progressbar.target, force=True)
         print()
         return [np.array(xi, dtype=bool) for xi in x],\
                [np.array(arr, dtype=bool) for arr in [p, t, d, o, b]]

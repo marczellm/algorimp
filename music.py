@@ -53,19 +53,24 @@ class Note:
 
     @property
     def ticks_since_measure_quantised(self) -> int:
-        return int(round(self.ticks_since_measure / 10))
+        return round(self.ticks_since_measure / 10)
 
     @property
     def ticks_since_beat_quantised(self) -> int:
-        return int(round(self.ticks_since_beat / 10))
+        return round(self.ticks_since_beat / 10)
 
     @property
     def duration_quantised(self) -> int:
-        return min(int(round(self.duration / 10)), 384)
+        return min(round(self.duration / 10), int(4 * self.resolution / 10))
 
     @property
     def velocity_quantised(self) -> int:
-        return int(round(self.velocity / 6.4))
+        return round(self.velocity / 6.4)
+
+    def __str__(self):
+        return self.abcnote.name + str(self.octave) + ' ' + str({'beat': self.beat,
+                                                                 'tsbq': self.ticks_since_beat_quantised,
+                                                                 'dq':   self.duration_quantised})
 
 
 class ABCNote(enum.Enum):

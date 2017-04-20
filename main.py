@@ -64,7 +64,8 @@ def notes_to_file(notes: List[Note], filename: str):
 
 
 def train(notes: List[Note], changes: ChordProgression,
-          melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator], rhythm_generator: RhythmGenerator=None):
+          melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator, UniversalGenerator],
+          rhythm_generator: Optional[RhythmGenerator]=None):
     melody_generator.learn(notes, changes)
     if rhythm_generator is not None and rhythm_generator != melody_generator:
         rhythm_generator.learn(notes)
@@ -94,14 +95,13 @@ def generate(past: List[Note], changes: ChordProgression,
         n.resolution = past[0].resolution
         rest = None
         if universal:
-            n.pitch, tsbq, dq, *rest = melody_generator.next()  # in LSTM case, rest[0] is beat_in_measure
+            n.pitch, tsbq, dq, *rest = melody_generator.next()  # in LSTM case, rest[0] is the beat diff
         else:
             tsbq, dq = rhythm_generator.next_rhythm()
         tsbq *= 10
         n.duration = dq * 10
-        if melody and ((rest and melody[-1].beat_in_measure != rest[0]) or melody[-1].ticks_since_beat > tsbq):
-            beat_diff = (rest[0] - melody[-1].beat_in_measure) % Note.meter if rest \
-                else 1 + melody[-1].duration // n.resolution
+        if melody and (rest or melody[-1].ticks_since_beat > tsbq):
+            beat_diff = rest[0] if rest else 1 + melody[-1].duration // n.resolution
             for _ in range(beat_diff):
                 beat += 1
                 # If the chord changed, inform the melody generator
