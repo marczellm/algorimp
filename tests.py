@@ -4,7 +4,7 @@ from typing import Tuple, List, Union
 import fire
 
 from helpers import nwise
-from main import changes_from_file, notes_from_file, generate, train, notes_to_file
+from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
 from models import neural
 from models.interfaces import UniversalGenerator
 from music import Note, ChordProgression
@@ -62,7 +62,7 @@ class Tests:
         Note.default_resolution = notes[0].resolution
         train(notes, changes, model)
         m = generate(notes[:model.order], changes, model, None, 4 * changes.measures())
-        notes_to_file(m, 'output/test.mid')
+        notes_to_file(add_chords(m, changes), 'output/test.mid')
 
     @staticmethod
     def back_to_the_future():

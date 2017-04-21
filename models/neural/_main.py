@@ -121,7 +121,6 @@ class LSTM(NeuralBase):
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
                 b.append(encode_int(v[-1].beat - v[-2].beat, self.maxbeatdiff + 1))
         progressbar.update(progressbar.target, force=True)
-        print()
         return [np.array(xi, dtype=bool) for xi in x],\
                [np.array(arr, dtype=bool) for arr in [p, t, d, o, b]]
 

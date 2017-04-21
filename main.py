@@ -85,8 +85,8 @@ def generate(past: List[Note], changes: ChordProgression,
     universal = isinstance(melody_generator, UniversalGenerator)
     melody = past
     beat = melody[-1].beat
-    chord = changes[beat - 1]
-    melody_generator.start(beat - 1)
+    chord = changes[beat]
+    melody_generator.start(beat)
     while beat < measures * Note.meter:
         n = Note()
         n.resolution = past[0].resolution
@@ -102,9 +102,9 @@ def generate(past: List[Note], changes: ChordProgression,
             for _ in range(beat_diff):
                 beat += 1
                 # If the chord changed, inform the melody generator
-                newchord = changes[beat - 1]
+                newchord = changes[beat]
                 if newchord != chord:
-                    melody_generator.start(beat - 1)
+                    melody_generator.start(beat)
                     chord = newchord
         # Prevent overlapping notes
         n.tick_abs = tsbq + n.resolution * \
