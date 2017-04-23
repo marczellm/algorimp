@@ -214,8 +214,8 @@ class Main:
             model = neural.OneLayer(changes, 5)
         if model == 'twolayer':
             model = neural.TwoLayer(changes, 5)
-        elif model.startswith('lstm'):
-            model = neural.LSTM(changes, stateful=model.endswith('stateful'))
+        elif model == 'lstm':
+            model = neural.LSTM(changes, stateful=True)
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
@@ -235,7 +235,7 @@ class Main:
         filename = "input/{}.mid".format(song)
         notes = notes_from_file(filename)
         Note.default_resolution = notes[0].resolution
-        melody_generator = neural.LSTM(changes)
+        melody_generator = neural.LSTM(changes, stateful=True)
         train(notes, changes, melody_generator)
         melody_generator.add_past(*notes[:melody_generator.order])
         melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 6 * changes.measures())

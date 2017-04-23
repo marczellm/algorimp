@@ -193,6 +193,9 @@ class ChordProgression(list):
     def unique(self, i: int, radius: int) -> List[Chord]:
         """ Return the i-th chord together with the preceding and succeeding r different chords """
         ret = [None] * (2 * radius + 1)  # type: List[Chord]
+        if len(set(self)) < 2:  # no two different chords
+            ret = [self[i]] * (2 * radius + 1)  # type: List[Chord]
+            return ret
         ret[radius] = self[i]
         j, k = 1, 1
         while k <= radius:

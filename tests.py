@@ -2,6 +2,8 @@ import time
 from typing import Tuple, List, Union
 
 import fire
+import numpy as np
+import matplotlib.pyplot as plt
 
 from helpers import nwise
 from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
@@ -71,6 +73,18 @@ class Tests:
         notes = notes_from_file(r"input/{}.mid".format(song))
         print(sum(n.tick_abs > m.tick_abs for n, m in nwise(notes, 2)))
 
+    @staticmethod
+    def scatter():
+        song = 'Eb_therewill'
+        notes = notes_from_file(r"input/{}.mid".format(song))
+        vec = np.array([[n.ticks_since_beat_quantised, n.duration_quantised] for n in notes])
+        kf = open('scatter.dat', 'w')
+        for tsbq, dq in vec:
+            if dq:  # don't want 0 values exported for logarithmic plot
+                print(tsbq, dq, file=kf)
+        kf.close()
+        plt.scatter(*vec.T)
+        plt.show()
 
 if __name__ == '__main__':
     fire.Fire(Tests)
