@@ -14,7 +14,10 @@ _chordtype_mapping = {
     '-7': ChordType.m7,
     '-': ChordType.m7,
     '-6': ChordType.mmaj,
+    '-j': ChordType.mmaj,
+    '+': ChordType.aug7,
     '+7': ChordType.aug7,
+    '+j': ChordType.augmaj,
     'sus7': ChordType(7),
     'o': ChordType.dim,
     'o7': ChordType.dim,
@@ -67,7 +70,8 @@ class SongMetadata:
     def __init__(self, name, key, chord_changes, **_):
         self.name = name
         self.key = key
-        self.changes = chord_changes
+        self.changes_str = chord_changes  # type: str
+        self.changes = None  # type: ChordProgression
 
 
 def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
@@ -81,12 +85,16 @@ def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
         metadata = list(reader)
 
     metadata = [SongMetadata(**song) for song in metadata
-                if song['key'] and not _re_invalid_measure.search(song['chord_changes'])]
+                if song['key']
+                and song['signature'] == '4/4'
+                and song['rhythmfeel'].lower() in ['twobeat', 'swing']
+                and song['tonality_type'].lower() in ['blues', 'functional']
+                and not _re_invalid_measure.search(song['chord_changes'])]
 
     for song in metadata:
         song.name = os.path.splitext(song.name)[0]
         changes = ChordProgression(ABCNote.from_string(_re_roots.match(song.key).group(0)))
-        for m in re.finditer(_re_measure, song.changes):
+        for m in re.finditer(_re_measure, song.changes_str):
             changes += parse_measure(m.group(0))
         song.changes = changes
 

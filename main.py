@@ -11,9 +11,8 @@ import midiutil.MidiFile
 
 import weimar
 from models.interfaces import MelodyGenerator, RhythmGenerator, MelodyAndRhythmGenerator, UniversalGenerator
-from models import markov, neural
+from models import markov
 from music import Note, ChordProgression, ABCNote, Chord
-from helpers import nwise
 
 
 def changes_from_file(songname: str) -> ChordProgression:
@@ -169,6 +168,7 @@ class Main:
             Both the midi file and the text file containing the changes must exist with this name.
         :param choruses: The number of choruses to generate
         """
+        from models import neural
         # Read the chord changes from a text file
         changes = changes_from_file(song)
         # Read the training set from a MIDI file
@@ -208,6 +208,7 @@ class Main:
             The generation seed will be obtained from the beginning of the midi file.
         :param choruses: The number of choruses to generate
         """
+        from models import neural
         changes = changes_from_file(song)
         model_name = model
         if model == 'onelayer':
@@ -219,7 +220,7 @@ class Main:
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
-        training_set = list(itertools.chain(*((notes_from_file('weimardb/{}.mid'.format(song.name)), song.changes)
+        training_set = list(itertools.chain(*((notes_from_file('weimardb/midi_from_db/{}.mid'.format(song.name)), song.changes)
                             for song in metadata)))
         model.learn(*training_set)
         print("Generating notes...")
@@ -230,6 +231,7 @@ class Main:
     @staticmethod
     def turing():
         """ Generate a Turing test """
+        from models import neural
         song = 'Eb_therewill'
         changes = changes_from_file(song)
         filename = "input/{}.mid".format(song)

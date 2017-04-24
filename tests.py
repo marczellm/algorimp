@@ -1,15 +1,16 @@
 import time
 from typing import Tuple, List, Union
 
+import re
 import fire
 import numpy as np
 import matplotlib.pyplot as plt
 
+import weimar
 from helpers import nwise
 from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
-from models import neural
 from models.interfaces import UniversalGenerator
-from music import Note, ChordProgression
+from music import Note, ChordProgression, ChordType
 
 
 class TotalRecall(UniversalGenerator):
@@ -39,15 +40,17 @@ class TotalRecall(UniversalGenerator):
 
 class Tests:
     @staticmethod
-    def fast_and_furious():
+    def fast_and_furious(stateful=True):
         """ Keras provides a choice of 3 implementations for recurrent layers. Find out which is the fastest. """
+        from models import neural
         song = 'Eb_therewill'
         changes = changes_from_file(song)
         notes = notes_from_file(r"input/{}.mid".format(song))
         Note.default_resolution = notes[0].resolution
-        model = neural.LSTM(changes, stateful=True)
+        model = neural.LSTM(changes, stateful=stateful)
         d = {}
         for i in [0, 1, 2]:
+            print('implementation', i)
             t = time.time()
             model._implementation = i
             model.learn(notes, changes, epochs=1)
@@ -75,16 +78,36 @@ class Tests:
 
     @staticmethod
     def scatter():
+        """ Create a scatter plot of durations vs position in beat """
         song = 'Eb_therewill'
         notes = notes_from_file(r"input/{}.mid".format(song))
         vec = np.array([[n.ticks_since_beat_quantised, n.duration_quantised] for n in notes])
-        kf = open('scatter.dat', 'w')
-        for tsbq, dq in vec:
-            if dq:  # don't want 0 values exported for logarithmic plot
-                print(tsbq, dq, file=kf)
-        kf.close()
+        with open('scatter.dat', 'w') as kf:
+            for tsbq, dq in vec:
+                if dq:  # don't want 0 values exported for logarithmic plot
+                    print(tsbq, dq, file=kf)
         plt.scatter(*vec.T)
         plt.show()
+
+    @staticmethod
+    def weimar():
+        """ Check for unknown chord types """
+        metadata = weimar.load_metadata()
+
+        chordtypes = list(weimar._chordtype_mapping.keys()) + list(ChordType.__members__)
+        chordtypes.remove('')
+        for song in metadata:
+            for match in re.finditer(weimar._re_roots, song.changes_str):
+                if not any(song.changes_str[match.end():].startswith(ctype) for ctype in chordtypes):
+                    print(song.changes_str[match.end():].replace('\n', ' ').replace('\r', ' '))
+
+        # Check for correct relation of changes to MIDI
+        songs = [song for song in metadata if 'therewill' in song.name.lower()]
+        song = songs[0]
+        print([s.name for s in songs])
+        Note.default_resolution = 960
+        notes = notes_from_file('weimardb/midi_from_ly/{}.mid'.format(song.name))
+        notes_to_file(add_chords(notes, song.changes), 'output/weimartest.mid')
 
 if __name__ == '__main__':
     fire.Fire(Tests)
