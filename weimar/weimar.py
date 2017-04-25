@@ -101,8 +101,41 @@ def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
     return metadata
 
 
+def convert_song(song: SongMetadata):
+    """ Combine the quantized and the unquantized MIDI files 
+    into one that aligns to measures but retains the original phrasing"""
+    from main import notes_from_file, notes_to_file
+    Note.default_resolution = 960
+    quantized = notes_from_file('weimardb/midi_from_ly/{}.mid'.format(song.name))
+    original = notes_from_file('weimardb/midi_from_db/{}.mid'.format(song.name))
+    for note in quantized:
+        if note.resolution != Note.default_resolution:  # these are in 384 tpb
+            ratio = Note.default_resolution / note.resolution  # 2.5
+            note.tick_abs = int(note.tick_abs * ratio)
+            note.duration = int(note.duration * ratio)
+            note.resolution = Note.default_resolution
+    combined = []
+    meas_no = 0
+    measure_q = []
+    measure_o = []
+    for q, o in zip(quantized, original):
+        if q.measure != meas_no:
+            if len(measure_q) > 1:
+                starttick = meas_no * Note.meter * Note.default_resolution
+                dtick_q = measure_q[-1].tick_abs - measure_q[0].tick_abs
+                dtick_o = measure_o[-1].tick_abs - measure_o[0].tick_abs
+                # TODO dtick_q / dtick_o -val megszorozva elmenteni vagy marad q.tick_abs ha nincs min 2 hang.
+            meas_no = q.measure
+            measure_q = []
+            measure_o = []
+        measure_q.append(q)
+        measure_o.append(o)
+
+
 def _main():
-    load_metadata()
+    for song in load_metadata():
+        convert_song(song)
+
 
 if __name__ == '__main__':
     _main()

@@ -10,7 +10,7 @@ import weimar
 from helpers import nwise
 from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
 from models.interfaces import UniversalGenerator
-from music import Note, ChordProgression, ChordType
+from music import Note, ChordProgression, ChordType, ABCNote
 
 
 class TotalRecall(UniversalGenerator):
@@ -96,7 +96,7 @@ class Tests:
 
         chordtypes = list(weimar._chordtype_mapping.keys()) + list(ChordType.__members__)
         chordtypes.remove('')
-        for song in metadata:
+        for song in []:
             for match in re.finditer(weimar._re_roots, song.changes_str):
                 if not any(song.changes_str[match.end():].startswith(ctype) for ctype in chordtypes):
                     print(song.changes_str[match.end():].replace('\n', ' ').replace('\r', ' '))
@@ -107,7 +107,7 @@ class Tests:
         print([s.name for s in songs])
         Note.default_resolution = 960
         notes = notes_from_file('weimardb/midi_from_ly/{}.mid'.format(song.name))
-        notes_to_file(add_chords(notes, song.changes), 'output/weimartest.mid')
+        notes_to_file(add_chords(notes, song.changes.transpose(ABCNote.Eb)), 'output/weimartest.mid')
 
 if __name__ == '__main__':
     fire.Fire(Tests)
