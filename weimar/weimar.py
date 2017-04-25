@@ -103,7 +103,7 @@ def load_metadata(filename='weimardb/changes.csv') -> List[SongMetadata]:
 
 def convert_song(song: SongMetadata):
     """ Combine the quantized and the unquantized MIDI files 
-    into one that aligns to measures but retains the original phrasing"""
+    into one that aligns to measures but attempts to retain the original phrasing """
     from main import notes_from_file, notes_to_file
     Note.default_resolution = 960
     quantized = notes_from_file('weimardb/midi_from_ly/{}.mid'.format(song.name))
@@ -122,13 +122,13 @@ def convert_song(song: SongMetadata):
                 r = (a[-1].tick_abs - a[0].tick_abs) / (b[-1].tick_abs - b[0].tick_abs)  # stretch ratio
                 a_m = (meas_no + 0.5) * Note.meter * Note.default_resolution  # middle of quantized measure
                 b_m = b[0].tick_abs + (a_m - a[0].tick_abs) / r  # estimated middle of unquantized measure
-                for b_j in b:
+                for a_j, b_j in zip(a, b):
                     n = Note()
                     n.pitch = b_j.pitch
                     n.resolution = b_j.resolution
                     n.velocity = b_j.velocity
                     n.tick_abs = int(a_m + r * (b_j.tick_abs - b_m))
-                    n.duration = int(r * b_j.duration)
+                    n.duration = int(r * b_j.duration) if b_j.duration else a_j.duration
                     c.append(n)
             else:
                 c += a
@@ -137,7 +137,7 @@ def convert_song(song: SongMetadata):
             b = []
         a.append(q)
         b.append(o)
-    notes_to_file(sorted(c, key=lambda n: n.tick_abs), 'weimardb/midi_combined/{}.mid'.format(song.name))
+    notes_to_file(sorted(c, key=lambda p: p.tick_abs), 'weimardb/midi_combined/{}.mid'.format(song.name))
 
 
 def _main():

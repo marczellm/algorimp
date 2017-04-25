@@ -106,7 +106,7 @@ class Tests:
         song = songs[0]
         print([s.name for s in songs])
         Note.default_resolution = 960
-        notes = notes_from_file('weimardb/midi_from_ly/{}.mid'.format(song.name))
+        notes = notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name))
         notes_to_file(add_chords(notes, song.changes.transpose(ABCNote.Eb)), 'output/weimartest.mid')
 
 if __name__ == '__main__':
