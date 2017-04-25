@@ -114,22 +114,30 @@ def convert_song(song: SongMetadata):
             note.tick_abs = int(note.tick_abs * ratio)
             note.duration = int(note.duration * ratio)
             note.resolution = Note.default_resolution
-    combined = []
     meas_no = 0
-    measure_q = []
-    measure_o = []
+    a, b, c = [], [], []  # quantized measure, original measure, combined output
     for q, o in zip(quantized, original):
         if q.measure != meas_no:
-            if len(measure_q) > 1:
-                starttick = meas_no * Note.meter * Note.default_resolution
-                dtick_q = measure_q[-1].tick_abs - measure_q[0].tick_abs
-                dtick_o = measure_o[-1].tick_abs - measure_o[0].tick_abs
-                # TODO dtick_q / dtick_o -val megszorozva elmenteni vagy marad q.tick_abs ha nincs min 2 hang.
+            if len(a) > 1:
+                r = (a[-1].tick_abs - a[0].tick_abs) / (b[-1].tick_abs - b[0].tick_abs)  # stretch ratio
+                a_m = (meas_no + 0.5) * Note.meter * Note.default_resolution  # middle of quantized measure
+                b_m = b[0].tick_abs + (a_m - a[0].tick_abs) / r  # estimated middle of unquantized measure
+                for b_j in b:
+                    n = Note()
+                    n.pitch = b_j.pitch
+                    n.resolution = b_j.resolution
+                    n.velocity = b_j.velocity
+                    n.tick_abs = int(a_m + r * (b_j.tick_abs - b_m))
+                    n.duration = int(r * b_j.duration)
+                    c.append(n)
+            else:
+                c += a
             meas_no = q.measure
-            measure_q = []
-            measure_o = []
-        measure_q.append(q)
-        measure_o.append(o)
+            a = []
+            b = []
+        a.append(q)
+        b.append(o)
+    notes_to_file(sorted(c, key=lambda n: n.tick_abs), 'weimardb/midi_combined/{}.mid'.format(song.name))
 
 
 def _main():
