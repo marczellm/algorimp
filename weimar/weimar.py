@@ -1,4 +1,4 @@
-""" A parser for chord progressions in the Weimar Jazzomat CSV format """
+""" A parser for chord progressions in the Weimar Jazzomat CSV format, and some helper functions """
 import os.path
 import re
 import csv
@@ -128,7 +128,7 @@ def convert_song(song: SongMetadata):
                     n.resolution = b_j.resolution
                     n.velocity = b_j.velocity
                     n.tick_abs = int(a_m + r * (b_j.tick_abs - b_m))
-                    n.duration = int(r * b_j.duration) if b_j.duration else a_j.duration
+                    n.duration = int(r * b_j.duration) or a_j.duration
                     c.append(n)
             else:
                 c += a

@@ -1,13 +1,14 @@
 import time
 from typing import Tuple, List, Union
-
 import re
+
 import fire
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import NullLocator
 
 import weimar
-from helpers import nwise
+from helpers import nwise, princomp
 from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
 from models.interfaces import UniversalGenerator
 from music import Note, ChordProgression, ChordType, ABCNote
@@ -87,6 +88,26 @@ class Tests:
                 if dq:  # don't want 0 values exported for logarithmic plot
                     print(tsbq, dq, file=kf)
         plt.scatter(*vec.T)
+        plt.show()
+
+    @staticmethod
+    def pca():
+        """ Try the PCA algorithm on an image reconstruction task """
+        A = plt.imread('k.png')
+        A = A.mean(2)  # grayscale conversion
+        i = 1
+        M = (A - A.T.mean(axis=1)).T  # subtract the mean along columns
+        for numpc in range(0, 60, 10):
+            coeff, score, latent = princomp(M)
+            coeff = coeff[:, range(numpc)]
+            score = coeff.T @ M
+            Ar = (coeff @ score).T + A.mean(axis=0)  # image reconstruction
+            ax = plt.subplot(2, 3, i, frame_on=False)
+            ax.xaxis.set_major_locator(NullLocator())  # remove ticks
+            ax.yaxis.set_major_locator(NullLocator())
+            i += 1
+            ax.imshow(Ar, cmap='gray')
+            ax.set_title('PCs # ' + str(numpc))
         plt.show()
 
     @staticmethod

@@ -94,8 +94,8 @@ def generate(past: List[Note], changes: ChordProgression,
             n.pitch, tsbq, dq, *rest = melody_generator.next()  # in LSTM case, rest[0] is the beat diff
         else:
             tsbq, dq = rhythm_generator.next_rhythm()
-        tsbq *= 10
-        n.duration = dq * 10
+        tsbq *= Note.ticks_quantisation_rate
+        n.duration = dq * Note.duration_quantisation_rate
         if melody and (rest or melody[-1].ticks_since_beat > tsbq):
             beat_diff = rest[0] if rest else 1 + melody[-1].duration // n.resolution
             for _ in range(beat_diff):
@@ -220,7 +220,8 @@ class Main:
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
-        training_set = list(itertools.chain(*((notes_from_file('weimardb/midi_from_db/{}.mid'.format(song.name)), song.changes)
+        training_set = list(itertools.chain(*((notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name)),
+                                               song.changes)
                             for song in metadata)))
         model.learn(*training_set)
         print("Generating notes...")

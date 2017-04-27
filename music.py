@@ -9,6 +9,8 @@ from typing import List, Union
 class Note:
     default_resolution = 0
     meter = 4
+    duration_quantisation_rate = 40
+    ticks_quantisation_rate = 10
 
     def __init__(self):
         self.tick_abs = 0  # tick_rel is not stored, because it is either the time since the last note on or note off
@@ -52,15 +54,16 @@ class Note:
     # The casts to int are necessary because round(np.float64) returns np.float64
     @property
     def ticks_since_measure_quantised(self) -> int:
-        return int(round(self.ticks_since_measure / 10))
+        return int(round(self.ticks_since_measure / self.ticks_quantisation_rate))
 
     @property
     def ticks_since_beat_quantised(self) -> int:
-        return int(round(self.ticks_since_beat / 10))
+        return int(round(self.ticks_since_beat / self.ticks_quantisation_rate))
 
     @property
     def duration_quantised(self) -> int:
-        return int(min(round(self.duration / 10), 4 * self.resolution / 10))
+        return int(min(round(self.duration / self.duration_quantisation_rate),
+                       4 * self.resolution / self.duration_quantisation_rate))
 
     @property
     def velocity_quantised(self) -> int:

@@ -21,7 +21,8 @@ def nwise_disjoint(iterable, n):
 
 
 def princomp(m: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """ Principal component transform """
+    """ Principal component transform. Requires that the mean is subtracted from m beforehand:
+     ``M = (A - A.T.mean(axis=1)).T`` """
     [latent, coeff] = np.linalg.eig(np.cov(m))
     idx = np.argsort(latent)[::-1]
     coeff = coeff[:, idx]

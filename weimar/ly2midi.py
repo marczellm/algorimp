@@ -6,7 +6,7 @@ import os
 
 
 class LilyBlock:
-    def __init__(self, text, name = None):
+    def __init__(self, text, name=None):
         self.text = text
         self.name = name
 
