@@ -211,10 +211,8 @@ class Main:
         from models import neural
         changes = changes_from_file(song)
         model_name = model
-        if model == 'onelayer':
+        if model == 'neural':
             model = neural.OneLayer(changes, 5)
-        if model == 'twolayer':
-            model = neural.TwoLayer(changes, 5)
         elif model == 'lstm':
             model = neural.LSTM(changes, stateful=True)
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
