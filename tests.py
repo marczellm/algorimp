@@ -145,10 +145,10 @@ class Tests:
     @staticmethod
     def weimar_parser():
         """ Check for unknown chord types """
-        chordtypes = list(weimar._chordtype_mapping.keys()) + list(ChordType.__members__)
+        chordtypes = list(weimar._parser._chordtype_mapping.keys()) + list(ChordType.__members__)
         chordtypes.remove('')
         for song in []:
-            for match in re.finditer(weimar._re_roots, song.changes_str):
+            for match in re.finditer(weimar._parser._re_roots, song.changes_str):
                 if not any(song.changes_str[match.end():].startswith(ctype) for ctype in chordtypes):
                     print(song.changes_str[match.end():].replace('\n', ' ').replace('\r', ' '))
 
@@ -156,7 +156,7 @@ class Tests:
     def weimar():
         """ Check for correct relation of changes to MIDI """
         metadata = weimar.load_metadata()
-        songs = [song for song in metadata if 'yardb' in song.name.lower()]
+        songs = [song for song in metadata if 'therewill' in song.name.lower()]
         song = songs[0]
         print([s.name for s in songs])
         Note.default_resolution = 960

@@ -124,7 +124,7 @@ class Chord:
         return self.root.name + self.type.name
 
     def __eq__(self, other):
-        return other is not None and self.root == other.root and self.type == other.type
+        return isinstance(other, Chord) and self.root == other.root and self.type == other.type
 
     def __hash__(self):
         return hash((self.root, self.type))
