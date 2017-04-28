@@ -6,9 +6,9 @@ from keras.activations import softmax, relu
 from keras.losses import categorical_crossentropy
 from keras.optimizers import adagrad, rmsprop
 
-from helpers import nwise, nwise_disjoint
+from helpers import nwise, nwise_disjoint, lsum
 from music import Note, Chord, ChordProgression
-from ._helpers import encode_chord, lsum, encode_int, encode_pitch, sampler, NUM_OCTAVES
+from ._helpers import encode_chord, encode_int, encode_pitch, sampler, NUM_OCTAVES
 from ._base import NeuralBase
 
 

@@ -1,6 +1,5 @@
-import itertools
 from enum import Enum
-from typing import List, Iterable
+from typing import List
 
 import numpy as np
 
@@ -74,8 +73,3 @@ def sampler(temperature=1.0):
         p = np.asarray(p, np.float64) ** (1 / temperature)
         return np.argmax(np.random.multinomial(1, p / p.sum(), 1))
     return sample
-
-
-def lsum(x: Iterable[Iterable]) -> List:
-    """ Concatenate iterables into a list """
-    return list(itertools.chain(*x))

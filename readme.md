@@ -21,7 +21,7 @@ Available tasks:
 
 Train a model on a single input file containing a solo on a given chord progression, 
 and generate another solo for the same changes. 
-- `model` can be `markov`, `neural`, `lstm` or `lstm_stateful`
+- `model` can be `markov`, `neural`, `lstm` or `lstm_stateless`.
 - For the given `song`, there has to be a MIDI file in the `input` folder and a chord 
   progression file in the `changes` folder, both with the same name as `song`
 - `choruses` is the number of choruses to generate
@@ -31,7 +31,7 @@ and generate another solo for the same changes.
 
 Train a model on the Weimar database of jazz solo transcriptions, and generate a solo
 for another song. Both the MIDI and the changes file still has to exist,
-the former to seed the generator.
+the former to seed the generator. Models are `neural` and `lstm`.
 
 
     turing

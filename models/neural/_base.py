@@ -4,10 +4,10 @@ import keras
 import numpy as np
 from typing import List, Tuple, Union, Iterable
 
-from helpers import nwise_disjoint, nwise
+from helpers import nwise_disjoint, nwise, lsum
 from models.interfaces import UniversalGenerator, MelodyAndRhythmGenerator
 from music import ChordProgression, Note, Chord
-from ._helpers import encode_int, encode_pitch, encode_chord, sampler, lsum
+from ._helpers import encode_int, encode_pitch, encode_chord
 
 
 class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta):

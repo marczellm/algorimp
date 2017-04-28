@@ -183,7 +183,7 @@ class Main:
         elif model == 'neural':
             melody_generator = neural.OneLayer(changes, 5)
         elif model.startswith('lstm'):
-            melody_generator = neural.LSTM(changes, stateful=model.endswith('stateful'))
+            melody_generator = neural.LSTM(changes, stateful=not model.endswith('stateless'))
         elif model == 'lasagne':
             melody_generator = neural.lasagne.OneLayer(changes, 5)
         train(notes, changes, melody_generator, rhythm_generator)

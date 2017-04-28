@@ -1,5 +1,5 @@
-from itertools import tee
-from typing import Tuple
+import itertools
+from typing import Tuple, Iterable, List
 
 import numpy as np
 
@@ -7,7 +7,7 @@ import numpy as np
 def nwise(iterable, n):
     """ Converts an iterable into an iterable of n-tuples with overlap
     For example if n=2: s -> (s0, s1), (s1, s2), (s2, s3), ... """
-    iterators = tee(iterable, n)
+    iterators = itertools.tee(iterable, n)
     for i in range(len(iterators)):
         for j in range(i):
             next(iterators[i], None)
@@ -29,3 +29,8 @@ def princomp(m: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     latent = latent[idx]
     score = coeff.T @ m
     return coeff, score, latent
+
+
+def lsum(x: Iterable[Iterable]) -> List:
+    """ Concatenate iterables into a list """
+    return list(itertools.chain(*x))

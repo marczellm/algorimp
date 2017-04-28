@@ -1,6 +1,7 @@
+import os
+import re
 import time
 from typing import Tuple, List, Union
-import re
 
 import fire
 import numpy as np
@@ -8,10 +9,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import NullLocator
 
 import weimar
-from helpers import nwise, princomp
-from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
+from helpers import nwise, princomp, lsum
 from models.interfaces import UniversalGenerator
 from music import Note, ChordProgression, ChordType, ABCNote
+from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
 
 
 class TotalRecall(UniversalGenerator):
@@ -91,9 +92,30 @@ class Tests:
         plt.show()
 
     @staticmethod
-    def pca():
+    def scatter_quant():
+        path = 'weimardb/midi_from_db_quant'
+        quant = lsum(notes_from_file(os.path.join(path, file)) for file in os.listdir(path))
+        path = 'weimardb/midi_from_db'
+        db = lsum(notes_from_file(os.path.join(path, file)) for file in os.listdir(path))
+        path = 'weimardb/midi_combined'
+        comb = lsum(notes_from_file(os.path.join(path, file)) for file in os.listdir(path))
+        path = 'weimardb/midi_from_ly'
+        ly = lsum(notes_from_file(os.path.join(path, file)) for file in os.listdir(path))
+        for note in ly:
+            note.tick_abs = int(note.tick_abs * 2.5)
+            note.resolution = 960
+        for lis in db, quant, ly, comb:
+            for pos in 48, 64, 72:
+                print(pos, sum(n.ticks_since_beat_quantised == pos for n in lis))
+        vec = np.array([[n.ticks_since_beat_quantised, n.duration_quantised] for n in comb])
+        plt.scatter(*vec.T)
+        plt.yscale('log', basey=2)
+        plt.show()
+
+    @staticmethod
+    def pca_image():
         """ Try the PCA algorithm on an image reconstruction task """
-        A = plt.imread('k.png')
+        A = plt.imread('libtests/k.png')
         A = A.mean(2)  # grayscale conversion
         i = 1
         M = (A - A.T.mean(axis=1)).T  # subtract the mean along columns
@@ -111,10 +133,18 @@ class Tests:
         plt.show()
 
     @staticmethod
-    def weimar():
-        """ Check for unknown chord types """
-        metadata = weimar.load_metadata()
+    def pca():
+        """ Perform PCA on the MIDI file """
+        notes = notes_from_file('input/Eb_therewill.mid')
+        data = np.array([[n.ticks_since_beat_quantised, n.duration_quantised, n.pitch] for n in notes])
+        cent = (data - data.T.mean(axis=1)).T
+        c, s, l = princomp(cent)
+        plt.plot(l)
+        plt.show()
 
+    @staticmethod
+    def weimar_parser():
+        """ Check for unknown chord types """
         chordtypes = list(weimar._chordtype_mapping.keys()) + list(ChordType.__members__)
         chordtypes.remove('')
         for song in []:
@@ -122,13 +152,16 @@ class Tests:
                 if not any(song.changes_str[match.end():].startswith(ctype) for ctype in chordtypes):
                     print(song.changes_str[match.end():].replace('\n', ' ').replace('\r', ' '))
 
-        # Check for correct relation of changes to MIDI
-        songs = [song for song in metadata if 'therewill' in song.name.lower()]
+    @staticmethod
+    def weimar():
+        """ Check for correct relation of changes to MIDI """
+        metadata = weimar.load_metadata()
+        songs = [song for song in metadata if 'yardb' in song.name.lower()]
         song = songs[0]
         print([s.name for s in songs])
         Note.default_resolution = 960
         notes = notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name))
-        notes_to_file(add_chords(notes, song.changes.transpose(ABCNote.Eb)), 'output/weimartest.mid')
+        notes_to_file(add_chords(notes, song.changes), 'output/weimartest.mid')
 
 if __name__ == '__main__':
     fire.Fire(Tests)
