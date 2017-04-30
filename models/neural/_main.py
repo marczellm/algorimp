@@ -66,7 +66,7 @@ class LSTM(NeuralBase):
 
     def _build_net(self) -> keras.models.Model:
         dummy_input = self._encode_network_input([Note()] * self.order,
-                                                 [Chord.parse('C7')] * self.chord_order, self.changes)
+                                                 [Chord('C7')] * self.chord_order, self.changes)
         in_notes = keras.layers.Input(batch_shape=(1,) + dummy_input[0].shape) if self.stateful\
             else keras.layers.Input(shape=dummy_input[0].shape)
         in_chords = keras.layers.Input(batch_shape=(1,) + dummy_input[1].shape) if self.stateful\

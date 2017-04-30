@@ -116,12 +116,21 @@ ChordType = enum.Enum('ChordType', 'dimmaj dim m7b5 m7 mmaj maj aug7 7 augmaj', 
 
 
 class Chord:
-    def __init__(self, root: ABCNote, typ: ChordType):
-        self.root = root
-        self.type = typ
+    def __init__(self, s: str=None, root: ABCNote=None, typ: ChordType=None):
+        if s:
+            match = self.__re.match(s.lower())
+            if match:
+                self.root = ABCNote.from_string(match.group(1))
+                self.type = ChordType[match.group(2)]
+        else:
+            self.root = root
+            self.type = typ
 
     def __str__(self):
         return self.root.name + self.type.name
+
+    def __repr__(self):
+        return "Chord('{}')".format(str(self))
 
     def __eq__(self, other):
         return isinstance(other, Chord) and self.root == other.root and self.type == other.type
@@ -139,7 +148,7 @@ class Chord:
         """ Parse a chord in algorimp format """
         match = cls.__re.match(string.lower())
         if match:
-            return Chord(ABCNote.from_string(match.group(1)), ChordType[match.group(2)])
+            return Chord(root=ABCNote.from_string(match.group(1)), typ=ChordType[match.group(2)])
 
     def notes(self) -> List[ABCNote]:
         shapes = {  # Chord shapes given with thirds
@@ -190,7 +199,7 @@ class ChordProgression(list):
         if not diff:
             return self
         for chord in self:
-            ret.append(Chord(chord.root + diff, chord.type))
+            ret.append(Chord(root=chord.root + diff, typ=chord.type))
         return ret
 
     def unique(self, i: int, radius: int) -> List[Chord]:
@@ -218,13 +227,21 @@ class ChordProgression(list):
             j += 1
         return ret
 
+    def unique_all(self) -> List[Chord]:
+        """ Returns all the chords in order without repetitions """
+        ret = [self[0]]
+        for chord in self:
+            if chord != ret[-1]:
+                ret.append(chord)
+        return ret
+
     def __parse(self, string: str):
         regex = re.compile("({}|-)".format(Chord.sre).lower())
         for match in regex.finditer(string):
             if match.group(0) == '-':
                 self.append(self[-1])
             else:
-                self.append(Chord.parse(match.group(0)))
+                self.append(Chord(match.group(0)))
 
     def __str__(self):
         ret = ""

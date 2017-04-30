@@ -61,7 +61,7 @@ def parse_chord(s: str) -> Optional[Chord]:
     """
     match = re.match(_re_chord, s)
     if match:
-        return Chord(ABCNote.from_string(match.group(1)), parse_chordtype(match.group(2)))
+        return Chord(root=ABCNote.from_string(match.group(1)), typ=parse_chordtype(match.group(2)))
     else:
         return None
 
@@ -75,12 +75,12 @@ def parse_measure(s: str) -> Tuple[(Chord,) * Note.meter]:
         if match.group(0) in [' ', 'NC']:
             ret.append(ret[-1])
         else:
-            ret.append(Chord(ABCNote.from_string(match.group(2)), parse_chordtype(match.group(3))))
+            ret.append(Chord(root=ABCNote.from_string(match.group(2)), typ=parse_chordtype(match.group(3))))
     assert len(ret) == Note.meter
     return tuple(ret)
 
 
-def parse_changes(changes: str, key: str):
+def parse_changes(changes: str, key: str) -> ChordProgression:
     ret = ChordProgression(parse_key(key))
     for m in re.finditer(_re_measure, changes):
         ret += parse_measure(m.group(0))
@@ -88,8 +88,7 @@ def parse_changes(changes: str, key: str):
 
 
 class SongMetadata:
-    def __init__(self, name: str, key: str, chord_changes: str, changes: ChordProgression=None, **_):
+    def __init__(self, name: str, chord_changes: str, changes: ChordProgression=None, **_):
         self.name = name
-        self.key = key
         self.changes_str = chord_changes
         self.changes = changes
