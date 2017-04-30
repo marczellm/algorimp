@@ -3,25 +3,24 @@ import sqlite3
 from collections import namedtuple
 from typing import List
 
-from main import notes_from_file
 from music import ChordProgression
 from weimar import SongMetadata
-from ._parser import parse_chord, parse_key
+from ._parser import parse_chord, parse_changes, re_invalid_measure
 
-Tune = namedtuple('Tune', ['melid', 'key', 'filename_sv', 'chord_changes'])
+TuneInfo = namedtuple('Tune', ['melid', 'key', 'filename_sv', 'chorus_count', 'chord_changes'])
 Note = namedtuple('Note', ['eventid', 'bar', 'beat', 'pitch'])
 Chord = namedtuple('Chord', ['start', 'end', 'value'])
 
 
 class Solo:
-    def __init__(self, tune: Tune):
-        self.tune = tune
+    def __init__(self, info: TuneInfo):
+        self.info = info
         self.notes = []  # type: List[Note]
         self.chords = []  # type: List[Chord]
 
     @property
     def name(self):
-        return os.path.splitext(self.tune.filename_sv)[0]
+        return os.path.splitext(self.info.filename_sv)[0]
 
 
 def load_metadata() -> List[SongMetadata]:
@@ -33,29 +32,32 @@ def load_metadata() -> List[SongMetadata]:
             where signature = '4/4' and key != ''
             and rhythmfeel collate nocase in ('twobeat', 'swing') 
             and tonalitytype collate nocase in ('blues', 'functional')"""
-        s = s.replace('*', ','.join(Tune._fields))
-        solos = [Solo(Tune(**row)) for row in conn.execute(s)]
+        s = s.replace('*', ','.join(TuneInfo._fields))
+        solos = [Solo(TuneInfo(**row)) for row in conn.execute(s)]
         select_notes = "select * from melody where melid=? order by eventid asc".replace('*', ','.join(Note._fields))
         select_chords = "select * from sections where type='CHORD' and melid = ?".replace('*', ','.join(Chord._fields))
-        d = 0
         for solo in solos:
-            solo.notes = [Note(**row) for row in conn.execute(select_notes, [solo.tune.melid])]
-            solo.chords = [Chord(**row) for row in conn.execute(select_chords, [solo.tune.melid])]
-            notes = notes_from_file('weimardb/midi_from_ly/{}.mid'.format(solo.name))
-            changes = ChordProgression(parse_key(solo.tune.key))
-            changes += [None] * (notes[-1].beat + 1)
-            for chord in solo.chords:
-                changes[notes[chord.start].beat] = parse_chord(chord.value) or 'NC'
-            if not('NC' in changes[:4] and all(c is None or c == 'NC' for c in changes[:4])):
-                for i, c in enumerate(changes):
-                    if c == 'NC':
-                        changes[i] = None
-                if changes[0] is None:
-                    changes[0] = next(c for c in changes if c is not None)
-                for i, c in enumerate(changes):
-                    if c is None:
-                        changes[i] = changes[i-1]
-                ret.append(SongMetadata(solo.name, solo.tune.key, solo.tune.chord_changes, changes))
+            if not re_invalid_measure.search(solo.info.chord_changes):
+                solo.notes = [Note(**row) for row in conn.execute(select_notes, [solo.info.melid])]
+                solo.chords = [Chord(**row) for row in conn.execute(select_chords, [solo.info.melid])]
+                changes = parse_changes(solo.info.chord_changes, solo.info.key)
+                changes_estim = [parse_chord(s.value) for s in solo.chords]
+                if changes[0] == changes_estim[0]:
+                    ret.append(SongMetadata(solo.name, solo.info.chord_changes, changes))
+                elif solo.notes[0].bar < 0:  # there are pickup measures
+                    assert changes[0] in changes_estim
+                    i = changes_estim.index(changes[0])
+                    changes_final = ChordProgression(changes.base)
+                    changes_final += [None] * 4 * -solo.notes[solo.chords[0].start].bar  # allocate pickup measures
+                    for chord, info in zip(changes_estim[:i], solo.chords):  # fill pickup measures
+                        changes_final[solo.notes[info.start].beat] = chord
+                    if changes_final[0] is None:
+                        changes_final[0] = next(x for x in changes_final if x is not None)
+                    for i, chord in enumerate(changes_final):
+                        if chord is None:
+                            changes_final[i] = changes_final[i-1]
+                    changes_final += changes * solo.info.chorus_count
+                    ret.append(SongMetadata(solo.name, solo.info.chord_changes, changes_final))
         return ret
 
 
