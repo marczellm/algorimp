@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Callable
 
 import numpy as np
 
@@ -73,3 +73,17 @@ def sampler(temperature=1.0):
         p = np.asarray(p, np.float64) ** (1 / temperature)
         return np.argmax(np.random.multinomial(1, p / p.sum(), 1))
     return sample
+
+
+class LoggingSampler:
+    def __init__(self, filename: str, func: Callable):
+        self.kf = open(filename + '.txt')
+        self.fun = func
+
+    def __call__(self, p):
+        ret = self.fun(p)
+        print(' '.join(map(str, np.argsort(p)[-10:])), file=self.kf)
+        print(' '.join(map(str, np.sort(p)[-10:])), file=self.kf, end='\n\n')
+        return ret
+
+
