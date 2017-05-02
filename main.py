@@ -53,7 +53,7 @@ def notes_to_file(notes: List[Note], filename: str):
     kf = midiutil.MidiFile.MIDIFile(adjust_origin=False)
     kf.addTrackName(0, 0, "Track 1")
     for n in notes:
-        kf.addNote(0, 0, n.pitch, n.tick_abs / n.resolution, n.duration / n.resolution, 100)
+        kf.addNote(0, 0, n.pitch, n.tick_abs / n.resolution, n.duration / n.resolution or 1, 100)
     with open(filename, 'wb') as f:
         kf.writeFile(f)
     print("Done.")

@@ -7,7 +7,7 @@ from keras.losses import categorical_crossentropy
 from keras.optimizers import adagrad, rmsprop
 
 from helpers import nwise, nwise_disjoint, lsum
-from models.neural._helpers import LoggingSampler
+from models.neural._helpers import LoggingSampler, weighted_nlargest
 from music import Note, Chord, ChordProgression
 from ._helpers import encode_chord, encode_int, encode_pitch, sampler, NUM_OCTAVES
 from ._base import NeuralBase
@@ -32,8 +32,7 @@ class OneLayer(NeuralBase):
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
         self.epochs = 20
-        self.outfuns = LoggingSampler('pitch', np.argmax), LoggingSampler('tsbq', np.argmax), \
-            LoggingSampler('dq', np.argmax)
+        self.outfuns = sampler(.1), weighted_nlargest(2), weighted_nlargest(2)
         return model
 
 
@@ -53,7 +52,7 @@ class TwoLayer(NeuralBase):
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
         self.epochs = 25
-        self.outfuns = (sampler(1.5),) * 3
+        self.outfuns = (sampler(.5),) * 3
         return model
 
 
@@ -91,9 +90,8 @@ class LSTM(NeuralBase):
 
         self.octave_model = keras.models.Model(inputs=model.inputs, outputs=model.outputs[3])
         self.epochs = 30
-        # self.outfuns = (sampler(0.5),) + (sampler(0.3),) * 2 + (np.argmax,) * 2
-        self.outfuns = LoggingSampler('pitch', np.argmax), LoggingSampler('tsbq', np.argmax),\
-            LoggingSampler('dq', np.argmax), np.argmax, np.argmax
+        self.outfuns = (sampler(.1),) + (weighted_nlargest(2),) * 2 + (np.argmax,) * 2
+
         return model
 
     def _encode_network_input(self, past: List[Note], chords: List[Chord], changes: ChordProgression)\

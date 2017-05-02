@@ -56,16 +56,20 @@ def weighted_choice(p) -> int:
     return np.random.choice(len(p), p=p)
 
 
-def random_nlargest(p) -> int:
-    ind_nlargest = np.argpartition(p, -5)[-5:]
-    return np.random.choice(ind_nlargest)
+def random_nlargest(n):
+    def sample(p) -> int:
+        ind_nlargest = np.argpartition(p, -n)[-n:]
+        return np.random.choice(ind_nlargest)
+    return sample
 
 
-def weighted_nlargest(p) -> int:
-    nlargest = np.partition(p, -5)[-5:]
-    ind_nlargest = np.argpartition(p, -5)[-5:]
-    nlargest /= np.sum(nlargest)
-    return np.random.choice(ind_nlargest, p=nlargest)
+def weighted_nlargest(n):
+    def sample(p) -> int:
+        nlargest = np.partition(p, -n)[-n:]
+        ind_nlargest = np.argpartition(p, -n)[-n:]
+        nlargest /= np.sum(nlargest)
+        return np.random.choice(ind_nlargest, p=nlargest)
+    return sample
 
 
 def sampler(temperature=1.0):
@@ -76,14 +80,15 @@ def sampler(temperature=1.0):
 
 
 class LoggingSampler:
-    def __init__(self, filename: str, func: Callable):
-        self.kf = open(filename + '.txt')
-        self.fun = func
+    """ A sampler that dumps the first n elements of the distribution in a file. Useful for creating plots """
+    def __init__(self, name: str, func: Callable, n: int=5):
+        self.kf = open(name + '.txt', 'w')
+        self.func = func
+        self.n = n
 
     def __call__(self, p):
-        ret = self.fun(p)
-        print(' '.join(map(str, np.argsort(p)[-10:])), file=self.kf)
-        print(' '.join(map(str, np.sort(p)[-10:])), file=self.kf, end='\n\n')
+        ret = self.func(p)
+        print(' '.join(map(str, np.sort(p)[-self.n:])), file=self.kf)
         return ret
 
 
