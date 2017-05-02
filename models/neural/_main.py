@@ -7,9 +7,8 @@ from keras.losses import categorical_crossentropy
 from keras.optimizers import adagrad, rmsprop
 
 from helpers import nwise, nwise_disjoint, lsum
-from models.neural._helpers import LoggingSampler, weighted_nlargest
 from music import Note, Chord, ChordProgression
-from ._helpers import encode_chord, encode_int, encode_pitch, sampler, NUM_OCTAVES
+from ._helpers import encode_chord, encode_int, encode_pitch, sampler, NUM_OCTAVES, weighted_nlargest
 from ._base import NeuralBase
 
 
@@ -74,9 +73,9 @@ class LSTM(NeuralBase):
         in_chords = keras.layers.Input(batch_shape=(1,) + dummy_input[1].shape) if self.stateful\
             else keras.layers.Input(shape=dummy_input[1].shape)
 
-        lstm_out = keras.layers.LSTM(256, stateful=self.stateful, implementation=self._implementation)(in_notes)
+        lstm_out = keras.layers.LSTM(512, stateful=self.stateful, implementation=self._implementation)(in_notes)
         x = keras.layers.concatenate([lstm_out, in_chords])
-        x = keras.layers.Dense(800)(x)
+        x = keras.layers.Dense(512)(x)
 
         pitch_tensor = keras.layers.Dense(12, activation=softmax)(x)
         tsbq_tensor = keras.layers.Dense(self.maxtsbq + 1, activation=softmax)(x)
