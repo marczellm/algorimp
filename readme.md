@@ -76,6 +76,12 @@ flags=-ccbin=/usr/bin/g++-4.9 -D_FORCE_INLINES -w
 ```
 
 ## License
-The MIDI files in the `weimar` directory are from the 
+The contents of the `weimardb` directory are a direct copy and various converted forms of the 
 Weimar Jazz Database of the [Jazzomat Research Project](https://jazzomat.hfm-weimar.de/).
-They fall under the [Open Database License v1.0](https://opendatacommons.org/licenses/odbl/1.0/).
+This is made available under the [Open Database License v1.0](https://opendatacommons.org/licenses/odbl/1.0/).
+
+The code contained in `weimar\_ly2midi.py` is copyright 2012-2017
+[Andreas Jansson](https://github.com/andreasjansson/ly2midi).
+
+The rest of the repository is copyright 2017 Márton Marczell.
+
