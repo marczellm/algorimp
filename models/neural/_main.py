@@ -31,7 +31,7 @@ class OneLayer(NeuralBase):
         model.compile(optimizer=adagrad(), loss=categorical_crossentropy)
 
         self.epochs = 20
-        self.outfuns = sampler(.1), weighted_nlargest(2), weighted_nlargest(2)
+        self.outfuns = sampler(.3), weighted_nlargest(2), weighted_nlargest(2)
         return model
 
 

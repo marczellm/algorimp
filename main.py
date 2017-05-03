@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import copy
-
+import random
 import itertools
 import math
 from typing import List, Union, Optional
@@ -236,17 +236,21 @@ class Main:
         filename = "input/{}.mid".format(song)
         notes = notes_from_file(filename)
         Note.default_resolution = notes[0].resolution
-        melody_generator = neural.LSTM(changes, stateful=True)
+        melody_generator = neural.LSTM(changes)
         train(notes, changes, melody_generator)
         melody_generator.add_past(*notes[:melody_generator.order])
         melody = generate(notes[:melody_generator.order], changes, melody_generator, None, 6 * changes.measures())
         melody = add_chords(melody, changes)
+        num_choruses = notes[-1].measure // changes.measures()
         for i in range(5):
             # Write a chorus of human improvisation and a chorus of machine improvisation to file
             start = (i + 1) * changes.measures()
             end = (i + 2) * changes.measures()
-            notes_to_file(add_chords(extract_measures(notes, start, end), changes), 'output/man{}.mid'.format(i))
             notes_to_file(extract_measures(melody, start, end), 'output/machine{}.mid'.format(i))
+            n = random.randint(2, num_choruses - 2)
+            start = n * changes.measures()
+            end = (n + 1) * changes.measures()
+            notes_to_file(add_chords(extract_measures(notes, start, end), changes), 'output/man{}.mid'.format(i))
 
 
 if __name__ == "__main__":
