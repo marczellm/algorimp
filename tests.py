@@ -155,13 +155,13 @@ class Tests:
     @staticmethod
     def weimar():
         """ Check for correct relation of changes to MIDI """
-        metadata = weimar.load_metadata()
-        songs = [song for song in metadata if 'therewill' in song.name.lower()]
-        song = songs[0]
-        print([s.name for s in songs])
         Note.default_resolution = 960
-        notes = notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name))
-        notes_to_file(add_chords(notes, song.changes), 'output/weimartest.mid')
+        metadata = weimar.load_metadata()
+        for song in metadata:
+            snl = song.name.lower()
+            if 'therewill' in snl or 'singin' in snl or 'anthropo' in snl:
+                notes = notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name))
+                notes_to_file(add_chords(notes, song.changes), 'output/weimartest_{}.mid'.format(song.name))
 
 if __name__ == '__main__':
     fire.Fire(Tests)

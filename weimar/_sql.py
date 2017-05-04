@@ -42,27 +42,30 @@ def load_metadata() -> List[SongMetadata]:
                 solo.chords = [Chord(**row) for row in conn.execute(select_chords, [solo.info.melid])]
                 changes = parse_changes(solo.info.chord_changes, solo.info.key)
                 changes_estim = [parse_chord(s.value) for s in solo.chords]
-                if changes[0] == changes_estim[0]:
-                    ret.append(SongMetadata(solo.name, solo.info.chord_changes, changes))
-                elif solo.notes[0].bar < 0:  # there are pickup measures
+                if solo.notes[0].bar < 1:  # there are pickup measures
                     assert changes[0] in changes_estim
                     i = changes_estim.index(changes[0])
                     changes_final = ChordProgression(changes.base)
-                    changes_final += [None] * 4 * -solo.notes[solo.chords[0].start].bar  # allocate pickup measures
-                    for chord, info in zip(changes_estim[:i], solo.chords):  # fill pickup measures
+                    changes_final += [None] * 4 * (1 - solo.notes[solo.chords[0].start].bar)  # allocate pickup measures
+                    for chord, info in zip(changes_estim[:i], solo.chords):  # fill pickup measures with chords
                         changes_final[solo.notes[info.start].beat] = chord
-                    if changes_final[0] is None:
+                    if not any(changes_final):  # there is no chord in the pickup measures
+                        # let it be the same as the first chord, for lack of a better idea
+                        changes_final[0] = changes[0]
+                    elif changes_final[0] is None:
                         changes_final[0] = next(x for x in changes_final if x is not None)
                     for i, chord in enumerate(changes_final):
                         if chord is None:
                             changes_final[i] = changes_final[i-1]
                     changes_final += changes * solo.info.chorus_count
                     ret.append(SongMetadata(solo.name, solo.info.chord_changes, changes_final))
+                else:
+                    ret.append(SongMetadata(solo.name, solo.info.chord_changes, changes))
         return ret
 
 
 def main():
-    load_metadata()
+    print(len(load_metadata()))
 
 
 if __name__ == '__main__':
