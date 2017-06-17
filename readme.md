@@ -25,8 +25,8 @@ and generate another solo for the same changes.
 - For the given `song`, there has to be a MIDI file in the `input` folder and a chord 
   progression file in the `changes` folder, both with the same name as `song`
 - `choruses` is the number of choruses to generate
+<br>
 
-    
     weimar <model> <song> <choruses>
 
 Train a model on the Weimar database of jazz solo transcriptions, and generate a solo
