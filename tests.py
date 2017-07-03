@@ -147,7 +147,7 @@ class Tests:
         """ Check for unknown chord types """
         chordtypes = list(weimar._parser._chordtype_mapping.keys()) + list(ChordType.__members__)
         chordtypes.remove('')
-        for song in []:
+        for song in weimar.load_metadata():
             for match in re.finditer(weimar._parser._re_roots, song.changes_str):
                 if not any(song.changes_str[match.end():].startswith(ctype) for ctype in chordtypes):
                     print(song.changes_str[match.end():].replace('\n', ' ').replace('\r', ' '))
