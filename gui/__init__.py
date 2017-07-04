@@ -1,1 +1,1 @@
-from .MainWindow import MainWindow
+from gui.view.MainWindow import MainWindow

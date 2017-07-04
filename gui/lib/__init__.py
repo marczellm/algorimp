@@ -5,35 +5,36 @@ import tkinter as tk
 from tkinter import ttk
 from typing import Union
 
-path = 'gui'
+path = 'gui/view'
 _registry = {}
 _widgets = copy.copy(tk.__dict__)
 _widgets.update(ttk.__dict__)
+_windows = []
+_type_mapping = {
+    int: tk.IntVar,
+    str: tk.StringVar,
+    bool: tk.BooleanVar,
+    float: tk.DoubleVar
+}
 
 
-def register(cls: type):
+def register(cls: type, filepath=None):
     name = cls.__name__
-    filepath = os.path.join(path, name + '.xml')
+    filepath = filepath or os.path.join(path, name + '.xml')
     if os.path.isfile(filepath):
-        _registry[name] = filepath
+        _registry[name] = [cls, filepath]
     else:
         raise Exception(filepath + ' does not exist!')
 
 
 class BaseComponent:
-    __type_mapping = {
-        int: tk.IntVar,
-        str: tk.StringVar,
-        bool: tk.BooleanVar,
-        float: tk.DoubleVar
-    }
-
-    def __new__(cls: type):
-        register(cls)
-        return super().__new__(cls)
+    @classmethod
+    def __init_subclass__(cls, filepath=None):
+        super().__init_subclass__()
+        register(cls, filepath)
 
     def __init__(self):
-        self.__bound_variables = {}
+        self.model = None
 
     def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Tk]):
         init_args = {k: v for k, v in elem.attrib.items() if '-' not in k}
@@ -47,30 +48,13 @@ class BaseComponent:
 
         for key, membername in init_args.items():
             if 'command' in key:
-                init_args[key] = getattr(self, membername)
-            if 'variable' in key:
-                var = None
-                if membername in self.__bound_variables:
-                    var = self.__bound_variables[membername]
+                if hasattr(self, membername):
+                    init_args[key] = getattr(self, membername)
                 else:
-                    private_membername = '_' + membername
-                    value = getattr(self, private_membername)
-                    typ = type(value)
-                    var = self.__type_mapping[typ]()
-                    if typ not in self.__type_mapping.keys():
-                        raise Exception('Binding to {} not supported'.format(typ))
-
-                    def getter(this):
-                        return getattr(this, private_membername)
-
-                    def setter(this, val):
-                        setattr(this, private_membername, val)
-                        var.set(val)
-
-                    setattr(type(self), membername, property(getter, setter))
-                    var.trace_add('write', lambda *_: setattr(self, private_membername, var.get()))
-                    self.__bound_variables[membername] = var
-                init_args[key] = var
+                    init_args[key] = getattr(self.model, membername)
+            if 'variable' in key:
+                observed_property = getattr(type(self.model), membername)
+                init_args[key] = getattr(self.model, observed_property.var_name)
 
         widget = widget_class(parent, **init_args)
         for child in elem:
@@ -87,16 +71,68 @@ class BaseComponent:
         return widget
 
 
-class BaseWindow(BaseComponent):
+def new_window():
+    window = tk.Toplevel() if _windows else tk.Tk()
+    _windows.append(window)
+    return window
+
+
+class BaseWindow(BaseComponent, filepath='gui/lib/BaseWindow.xml'):
     def __init__(self):
         super().__init__()
         self.title = ''
+        self.hwnd = new_window()
+
+    def show(self):
+        name = type(self).__name__
+        tree = Xml.parse(_registry[name][1])
+        self.hwnd.wm_title(self.title)
+        widget = self.construct(tree.getroot(), self.hwnd)
+        widget.mainloop()
 
 
-def show(window: BaseWindow):
-    name = type(window).__name__
-    tree = Xml.parse(_registry[name])
-    hwnd = tk.Tk()
-    hwnd.wm_title(window.title)
-    widget = window.construct(tree.getroot(), hwnd)
-    widget.mainloop()
+class ObservedProperty(property):
+    def __init__(self, *args, typ=str, name=''):
+        if args:
+            super.__init__(*args)
+        else:
+            def getter(this):
+                return getattr(this, self.private_membername)
+
+            def setter(this, val):
+                setattr(this, self.private_membername, val)
+                getattr(this, self.var_name).set(val)
+
+            super().__init__(getter, setter)
+
+        self.typ = typ
+        self.name = name
+
+    @property
+    def private_membername(self):
+        return '__' + self.name
+
+    @property
+    def var_name(self):
+        return '__var_' + self.name
+
+
+class ViewModelMeta(type):
+    def __new__(cls, name, bases, namespace):
+        for name, member in namespace.items():
+            if isinstance(member, ObservedProperty):
+                member.name = name
+        return super().__new__(cls, name, bases, namespace)
+
+
+class ViewModel(metaclass=ViewModelMeta):
+    def __init__(self):
+        super().__init__()
+
+        for name, member in type(self).__dict__.items():
+            if isinstance(member, ObservedProperty):
+                privname = member.private_membername
+                setattr(self, privname, member.typ())
+                var = _type_mapping[member.typ]()
+                var.trace_add('write', lambda *_: setattr(self, privname, var.get()))
+                setattr(self, member.var_name, var)
