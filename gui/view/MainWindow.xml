@@ -1,15 +1,13 @@
 <Frame pack-anchor="nw" pack-padx="5">
-    <Label pack-anchor="w">Training set</Label>
-    <Frame>
-        <Radiobutton pack-side="left" variable="training_set_type" value="MIDI file">
-            MIDI file
+    <LabelFrame text="Training set">
+        <Frame>
+            <Radiobutton pack-side="left" variable="(training_set_type)" value="MIDI file">
+                MIDI file
+            </Radiobutton>
+            <Combobox textvariable="(selected_input_file)" values="[available_input_files]"/>
+        </Frame>
+        <Radiobutton pack-anchor="w" variable="(training_set_type)" value="Weimar Jazz Database">
+            Weimar Jazz Database
         </Radiobutton>
-        <Entry pack-side="left" textvariable="training_filename"/>
-        <Button pack-side="left" command="browse_button_onclick">
-            Browse...
-        </Button>
-    </Frame>
-    <Radiobutton pack-anchor="w" variable="training_set_type" value="Weimar Jazz Database">
-        Weimar Jazz Database
-    </Radiobutton>
+    </LabelFrame>
 </Frame>

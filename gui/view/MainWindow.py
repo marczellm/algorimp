@@ -1,4 +1,3 @@
-
 import gui.lib
 
 
@@ -8,4 +7,3 @@ class MainWindow(gui.lib.BaseWindow):
         self.title = 'AlgorImp'
         from gui import viewmodel
         self.model = viewmodel.MainWindow()
-
