@@ -9,12 +9,14 @@ _type_mapping = {
 
 
 class ObservedProperty(property):
-    def __init__(self, default_value=None, *args, datatype=str, name=None):
-        self.typ = datatype
+    def __init__(self, default_value=None, *args, datatype=None, name=None):
+        self.dtype = datatype
         self.name = name
         self.default_value = default_value
-        if default_value is not None and datatype is None:
-            self.datatype = type(default_value)
+        if default_value is not None:
+            self.dtype = type(default_value)
+        else:
+            self.dtype = datatype or str
 
         if args:
             super.__init__(*args)
@@ -42,7 +44,7 @@ class ObservedProperty(property):
 class ObservedPropertyInstance:
     def __init__(self, prop: ObservedProperty):
         self.property = prop
-        self.var = _type_mapping[prop.typ]()
+        self.var = _type_mapping[prop.dtype]()
         if prop.default_value is not None:
             self.var.set(prop.default_value)
         self.to_view = False

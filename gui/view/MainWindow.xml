@@ -24,11 +24,13 @@
         <NumericEntry grid-row="0" grid-column="1" grid-sticky="e" textvariable="(choruses)"/>
         <Label        grid-row="1" grid-column="0" grid-sticky="w">Song to improvise on</Label>
         <Combobox     grid-row="1" grid-column="1" grid-sticky="e" name="output_selector"
-                      textvariable="(selected_seed_file)" values="[available_input_files]"/>
+                      textvariable="(selected_seed_file)" values="[available_input_files]"
+                      state="disabled"/>
     </LabelFrame>
     <Frame pack-anchor="w" pack-fill="x">
-        <Label pack-side="left" pack-padx="10">Progress</Label>
-        <KerasProgressbar pack-side="right" pack-fill="x" pack-expand="1" name="progressbar"/>
+        <Label            grid-row="0" grid-column="0" grid-sticky="w">Progress</Label>
+        <KerasProgressbar grid-row="0" grid-column="1" grid-sticky="ew" name="progressbar"/>
+        <Button           grid-row="1" grid-column="0" command="run_model">Train and run</Button>
+        <Button           grid-row="1" grid-column="1" command="stop_thread">Stop</Button>
     </Frame>
-    <Button command="run_model">Train and run</Button>
 </Frame>

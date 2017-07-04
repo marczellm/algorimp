@@ -40,6 +40,7 @@ class TotalRecall(UniversalGenerator):
         self.notes = training_set[0]
         self.it = iter(self.notes)
         self.m = next(self.it)
+        return True
 
 
 class Tests:

@@ -59,10 +59,11 @@ class UniversalGenerator(metaclass=Interface):
     """ A generator that can train on many different chord progressions and then improvise on a new one """
 
     @abstractmethod
-    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]], **kwargs):
+    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]], **kwargs) -> bool:
         """ Train the model on the given note sequence and chord progression.
 
         :param training_set: [notes1, changes1, notes2, changes2, ...]
+        :returns whether training completed
         """
 
     @abstractmethod

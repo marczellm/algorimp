@@ -20,16 +20,16 @@ class ViewModel(metaclass=ViewModelMeta):
                 private_member_name = member.private_membername
                 observed_property_name = member.instance_name
                 observed_property_instance = ObservedPropertyInstance(member)
-                setattr(self, private_member_name, member.default_value or member.typ())
+                setattr(self, private_member_name, member.default_value or member.dtype())
                 setattr(self, observed_property_name, observed_property_instance)
 
                 def observer(*_, privname=private_member_name, opi_name=observed_property_name):
                     opi = getattr(self, opi_name)
                     if opi.to_model:
                         try:
-                            val = opi.var.get()
+                            val = opi.property.dtype(opi.var.get())
                         except TclError:
-                            val = opi.property.typ()
+                            val = opi.property.dtype()
                         setattr(self, privname, val)
 
                 observed_property_instance.var.trace_add('write', observer)

@@ -34,7 +34,10 @@ class BaseComponent:
         self.named_widgets = {}
 
     def __getattr__(self, item):
-        return self.named_widgets[item]
+        if item in self.named_widgets:
+            return self.named_widgets[item]
+        else:
+            raise AttributeError
 
     def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Tk]):
         init_args = {k: v for k, v in elem.attrib.items() if '-' not in k}
@@ -80,6 +83,10 @@ class BaseComponent:
             self.named_widgets[init_args['name']] = widget
         for child in elem:
             self.construct(child, widget)
+        if widget.children and next(iter(widget.children.values())).winfo_manager() == 'grid':
+            columns = widget.grid_size()
+            for i in range(columns[0]):
+                widget.grid_columnconfigure(i, weight=1)
 
         if pack_args:
             widget.pack(**pack_args)

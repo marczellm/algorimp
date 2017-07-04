@@ -1,5 +1,4 @@
 import os
-
 from main import Main
 from gui.lib import ObservedProperty, ViewModel
 
@@ -28,7 +27,7 @@ class MainWindow(ViewModel):
         }
         self.available_models = tuple(self.model_naming.keys())
 
-    def run_model(self, callback=None):
+    def run_model_thread_body(self, callback=None):
         model = self.model_naming[self.selected_model]
         if self.training_set_type == 'single':
             Main.single(model, self.selected_input_file, self.choruses, self.model_order, self.epochs, callback)

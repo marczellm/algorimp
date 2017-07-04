@@ -37,7 +37,7 @@ class Main:
         melody_generator = None
         rhythm_generator = None
         if model == 'markov':
-            melody_generator = markov.StaticChordMelody(changes)
+            melody_generator = markov.ChordAgnosticMelody(order)
             rhythm_generator = markov.Rhythm()
         elif model == 'neural':
             melody_generator = neural.OneLayer(changes, order)
@@ -45,16 +45,16 @@ class Main:
             melody_generator = neural.LSTM(changes, stateful=not model.endswith('stateless'))
         elif model == 'lasagne':
             melody_generator = neural.lasagne.OneLayer(changes, order)
-        train(notes, changes, melody_generator, rhythm_generator, callback=callback, epochs=epochs)
-        if model != 'markov':
-            melody_generator.add_past(*notes[:melody_generator.order])
-        print("Generating notes...")
-        if rhythm_generator is None:
-            rhythm_generator = melody_generator
-        melody = generate(notes[:max(melody_generator.order, rhythm_generator.order)],
-                          changes, melody_generator, rhythm_generator, choruses * changes.measures())
-        # Write output file
-        notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model))
+        if train(notes, changes, melody_generator, rhythm_generator, callback=callback, epochs=epochs):
+            if model != 'markov':
+                melody_generator.add_past(*notes[:melody_generator.order])
+            print("Generating notes...")
+            if rhythm_generator is None:
+                rhythm_generator = melody_generator
+            melody = generate(notes[:max(melody_generator.order, rhythm_generator.order)],
+                              changes, melody_generator, rhythm_generator, choruses * changes.measures())
+            # Write output file
+            notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model))
 
     @staticmethod
     def weimar(model, song, choruses=3, order=5, epochs=None, callback=None):
@@ -83,11 +83,11 @@ class Main:
         training_set = list(itertools.chain(*((notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name)),
                                                song.changes)
                             for song in metadata)))
-        model.learn(*training_set, epochs=epochs, callback=callback)
-        print("Generating notes...")
-        model.add_past(*seed)
-        melody = generate(seed, changes, model, None, choruses * changes.measures())
-        notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model_name))
+        if model.learn(*training_set, epochs=epochs, callback=callback):
+            print("Generating notes...")
+            model.add_past(*seed)
+            melody = generate(seed, changes, model, None, choruses * changes.measures())
+            notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model_name))
 
     @staticmethod
     def turing():

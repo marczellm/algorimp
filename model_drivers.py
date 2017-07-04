@@ -9,9 +9,10 @@ def train(notes: List[Note], changes: ChordProgression,
           melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator, UniversalGenerator],
           rhythm_generator: Optional[RhythmGenerator]=None,
           callback=None, epochs=None):
-    melody_generator.learn(notes, changes, callback=callback, epochs=epochs)
+    ret = melody_generator.learn(notes, changes, callback=callback, epochs=epochs)
     if rhythm_generator is not None and rhythm_generator != melody_generator:
         rhythm_generator.learn(notes)
+    return ret
 
 
 def generate(past: List[Note], changes: ChordProgression,

@@ -17,23 +17,24 @@ class KerasProgressbar(ttk.Progressbar):
 
     def set_params(self, params):
         self.params = params
+        self.config(maximum=params['samples'])
 
     def on_epoch_begin(self, epoch, logs=None):
-        print('epoch_begin', epoch, logs)
+        pass
 
     def on_epoch_end(self, epoch, logs=None):
-        print('epoch_end', epoch, logs)
+        pass
 
     def on_batch_begin(self, batch, logs=None):
-        print('batch_begin', batch, logs)
+        pass
 
-    def on_batch_end(self, batch, logs=None):
-        print('batch_end', batch, logs)
+    def on_batch_end(self, _, logs=None):
+        self.step(logs['size'])
 
     def on_train_begin(self, logs=None):
-        print('train_begin', logs)
+        pass
 
     def on_train_end(self, logs=None):
-        print('train_end', logs)
+        pass
 
 BaseComponent.register(KerasProgressbar)
