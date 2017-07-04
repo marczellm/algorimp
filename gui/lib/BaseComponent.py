@@ -9,21 +9,20 @@ from warnings import warn
 
 from .misc import path
 
-_widgets = copy.copy(tk.__dict__)
-_widgets.update(ttk.__dict__)
-
 
 class BaseComponent:
-    _registry = {}
+    _widget_registry = copy.copy(tk.__dict__)
+    _widget_registry.update(ttk.__dict__)
+    _component_registry = {}
+    _windows = []
 
     @classmethod
     def register(cls, typ: type, filepath=None):
         name = typ.__name__
+        cls._widget_registry[name] = typ
         filepath = filepath or os.path.join(path, name + '.xml')
         if os.path.isfile(filepath):
-            cls._registry[name] = [typ, filepath]
-        else:
-            raise Exception(filepath + ' does not exist!')
+            cls._component_registry[name] = [typ, filepath]
 
     @classmethod
     def __init_subclass__(cls, filepath=None):
@@ -32,6 +31,10 @@ class BaseComponent:
 
     def __init__(self):
         self.model = None
+        self.named_widgets = {}
+
+    def __getattr__(self, item):
+        return self.named_widgets[item]
 
     def construct(self, elem: Xml.Element, parent: Union[tk.Widget, tk.Tk]):
         init_args = {k: v for k, v in elem.attrib.items() if '-' not in k}
@@ -39,7 +42,7 @@ class BaseComponent:
         grid_args = {k[5:]: v for k, v in elem.attrib.items() if 'grid-' in k}
         place_args = {k[6:]: v for k, v in elem.attrib.items() if 'place-' in k}
 
-        widget_class = _widgets[elem.tag]
+        widget_class = self._widget_registry[elem.tag]
         if elem.text and elem.text.strip():
             init_args['text'] = elem.text.strip()
 
@@ -58,19 +61,23 @@ class BaseComponent:
                 if name.startswith('(') and name.endswith(')'):
                     name = name[1:-1]
                     to_model = True
-                oprop = getattr(type(self.model), name)
-                opropi = getattr(self.model, oprop.opropi_name)
-                if opropi.to_view or opropi.to_model:
-                    warn('Erasing previous binding direction settings on property "{}"'.format(name))
-                opropi.to_view = to_view
-                opropi.to_model = to_model
+                observable_property = getattr(type(self.model), name)
+                property_instance = getattr(self.model, observable_property.instance_name)
+                if 'variable' in key and (property_instance.to_view or property_instance.to_model):
+                    warn('Different binding directions on the same property currently not supported. '
+                         'Erasing previous binding direction settings on property "{}"'.format(name))
+                property_instance.to_view = to_view
+                property_instance.to_model = to_model
                 if 'variable' in key:
-                    init_args[key] = opropi.var
+                    init_args[key] = property_instance.var
                 else:
                     init_args[key] = getattr(self.model, name)
                     warn('Binding to non-variable property "{}" is one-time: it will not update'.format(key))
 
         widget = widget_class(parent, **init_args)
+
+        if 'name' in init_args:
+            self.named_widgets[init_args['name']] = widget
         for child in elem:
             self.construct(child, widget)
 

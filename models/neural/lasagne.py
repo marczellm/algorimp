@@ -49,7 +49,7 @@ class OneLayerMelody(MelodyGenerator):
             y.append(v[-1].pitch)
         return numpy.array(x), numpy.array(y)
 
-    def learn(self, notes: List[Note], *_):
+    def learn(self, notes: List[Note], *_, **__):
         target_var = theano.tensor.ivector()
         net_output_var = lasagne.layers.get_output(self.net)
         loss_fn = lasagne.objectives.categorical_crossentropy(net_output_var, target_var).mean()
@@ -122,7 +122,7 @@ class OneLayer(MelodyAndRhythmGenerator):
             y.append((v[-1].pitch, v[-1].ticks_since_beat_quantised, v[-1].duration_quantised))
         return numpy.array(x), numpy.array(y)
 
-    def learn(self, notes: List[Note], *args):
+    def learn(self, notes: List[Note], *_, **__):
         self.maxtsbq = max(n.ticks_since_beat_quantised for n in notes)
         self.maxdq = max(n.duration_quantised for n in notes)
         self._build_net()

@@ -7,7 +7,7 @@ from music import ChordProgression, Note
 
 class MelodyGenerator(metaclass=Interface):
     @abstractmethod
-    def learn(self, notes: List[Note], changes: ChordProgression, *args):
+    def learn(self, notes: List[Note], changes: ChordProgression, *args, **kwargs):
         """ Train the model on the given note sequence and chord progression. """
 
     @property
@@ -59,7 +59,7 @@ class UniversalGenerator(metaclass=Interface):
     """ A generator that can train on many different chord progressions and then improvise on a new one """
 
     @abstractmethod
-    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]]):
+    def learn(self, *training_set: List[Union[Tuple[List[Note], ChordProgression]]], **kwargs):
         """ Train the model on the given note sequence and chord progression.
 
         :param training_set: [notes1, changes1, notes2, changes2, ...]

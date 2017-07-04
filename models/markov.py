@@ -144,7 +144,7 @@ class ChordAgnosticMelody(MelodyGenerator):
     def __init__(self, order=3):
         self.markov = Markov(order)
 
-    def learn(self, notes: List[Note], *_):
+    def learn(self, notes: List[Note], *_, **__):
         self.markov.learn([n.pitch for n in notes])
         self.markov.start([n.pitch for n in notes[:self.markov.order]])
 
@@ -172,7 +172,7 @@ class StaticChordMelody(MelodyGenerator):
     def order(self) -> int:
         return self._order
 
-    def learn(self, notes: List[Note], *_):
+    def learn(self, notes: List[Note], *_, **__):
         self.markovs_by_chord = {chord: Markov(self.order) for chord in self.changes}
         for markov in self.markovs_by_chord.values():
             markov.training_prep([n.pitch for n in notes])

@@ -1,3 +1,4 @@
+from tkinter import TclError
 
 from gui.lib import ObservedPropertyInstance, ObservedProperty
 
@@ -16,15 +17,19 @@ class ViewModel(metaclass=ViewModelMeta):
 
         for name, member in type(self).__dict__.items():
             if isinstance(member, ObservedProperty):
-                priv_name = member.private_membername
-                opropi_name = member.opropi_name
-                opropi = ObservedPropertyInstance(member)
-                setattr(self, priv_name, member.typ())
-                setattr(self, opropi_name, opropi)
+                private_member_name = member.private_membername
+                observed_property_name = member.instance_name
+                observed_property_instance = ObservedPropertyInstance(member)
+                setattr(self, private_member_name, member.default_value or member.typ())
+                setattr(self, observed_property_name, observed_property_instance)
 
-                def observer(*_, privname=priv_name, opi_name=opropi_name):
+                def observer(*_, privname=private_member_name, opi_name=observed_property_name):
                     opi = getattr(self, opi_name)
                     if opi.to_model:
-                        setattr(self, privname, opi.var.get())
+                        try:
+                            val = opi.var.get()
+                        except TclError:
+                            val = opi.property.typ()
+                        setattr(self, privname, val)
 
-                opropi.var.trace_add('write', observer)
+                observed_property_instance.var.trace_add('write', observer)

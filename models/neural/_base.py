@@ -89,7 +89,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         return [np.array(xi, dtype=bool) for xi in x], \
                [np.array(p, dtype=bool), np.array(t, dtype=bool), np.array(d, dtype=bool)]
 
-    def learn(self, *training_set: Union[List[Note], ChordProgression], epochs=None):
+    def learn(self, *training_set: Union[List[Note], ChordProgression], epochs=None, callback=None):
         self.maxtsbq = max(n.ticks_since_beat_quantised for notes, _ in nwise_disjoint(training_set, 2) for n in notes)
         self.maxdq = max(n.duration_quantised for notes, changes in nwise_disjoint(training_set, 2) for n in notes)
         self.maxbeatdiff = max(m.beat - n.beat
@@ -101,7 +101,7 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         x, y = self._all_training_data(training_set)
         stateful = any(isinstance(layer, keras.layers.Recurrent) and layer.stateful for layer in self.model.layers)
         kwargs = {'batch_size': 1, 'shuffle': False} if stateful else {}
-        self.model.fit(x, y, epochs=epochs or self.epochs, **kwargs)
+        self.model.fit(x, y, epochs=epochs or self.epochs, callbacks=[callback], **kwargs)
 
     def start(self, beat: int):
         self.beat = beat

@@ -6,7 +6,8 @@ from ._sql import load_metadata
 def convert_song(song: SongMetadata):
     """ Combine the quantized and the unquantized MIDI files 
     into one that aligns to measures but attempts to retain the original phrasing """
-    from main import notes_from_file, notes_to_file
+    from file_handlers import notes_to_file
+    from file_handlers import notes_from_file
     Note.default_resolution = 960
     quantized = notes_from_file('weimardb/midi_from_db_quant/{}.mid'.format(song.name))
     original = notes_from_file('weimardb/midi_from_db/{}.mid'.format(song.name))

@@ -12,7 +12,9 @@ import weimar
 from helpers import nwise, princomp, lsum
 from models.interfaces import UniversalGenerator
 from music import Note, ChordProgression, ChordType, ABCNote
-from main import changes_from_file, notes_from_file, generate, train, notes_to_file, add_chords
+from midi_tools import add_chords
+from model_drivers import train, generate
+from file_handlers import changes_from_file, notes_from_file, notes_to_file
 
 
 class TotalRecall(UniversalGenerator):

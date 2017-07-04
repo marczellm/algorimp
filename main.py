@@ -1,165 +1,21 @@
 # -*- coding: utf-8 -*-
-import copy
-import random
 import itertools
-import math
-from typing import List, Union, Optional
+import random
 
 import fire
-import midi
-import midiutil.MidiFile
 
 import weimar
-from models.interfaces import MelodyGenerator, RhythmGenerator, MelodyAndRhythmGenerator, UniversalGenerator
+from file_handlers import changes_from_file, notes_from_file, notes_to_file
+from midi_tools import extract_measures, add_chords
+from model_drivers import train, generate
 from models import markov
-from music import Note, ChordProgression, ABCNote, Chord
-
-
-def changes_from_file(songname: str) -> ChordProgression:
-    with open("changes/{}.txt".format(songname)) as bf:
-        return ChordProgression(ABCNote.from_string(songname.split('_')[0]), bf.read())
-
-
-def notes_from_file(filename: str) -> List[Note]:
-    midifile_rel = midi.read_midifile(filename)
-    midifile_abs = copy.deepcopy(midifile_rel)
-    midifile_abs.make_ticks_abs()
-
-    # Convert MIDI events to our music representation: a list of Note objects
-    notes = []
-    active_notes = {}
-
-    for ev_rel, ev_abs in zip(midifile_rel[-1], midifile_abs[-1]):
-        if isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1]:
-            n = Note()
-            n.resolution = midifile_rel.resolution
-            n.tick_abs = ev_abs.tick
-            n.pitch = ev_rel.data[0]
-            n.velocity = ev_rel.data[1]
-            if n.pitch not in active_notes:
-                active_notes[n.pitch] = {n}
-            else:
-                active_notes[n.pitch].add(n)
-        elif isinstance(ev_rel, midi.NoteOffEvent) or (isinstance(ev_rel, midi.NoteOnEvent) and ev_rel.data[1] == 0):
-            n = active_notes[ev_rel.data[0]].pop()
-            n.duration = ev_abs.tick - n.tick_abs
-            notes.append(n)
-    assert not any(active_notes.values()), "Some notes were not released"
-    return sorted(notes, key=lambda note: note.tick_abs)
-
-
-def notes_to_file(notes: List[Note], filename: str):
-    print("Writing file {}... ".format(filename), end='')
-    kf = midiutil.MidiFile.MIDIFile(adjust_origin=False)
-    kf.addTrackName(0, 0, "Track 1")
-    for n in notes:
-        kf.addNote(0, 0, n.pitch, n.tick_abs / n.resolution, n.duration / n.resolution or 1, 100)
-    with open(filename, 'wb') as f:
-        kf.writeFile(f)
-    print("Done.")
-
-
-def train(notes: List[Note], changes: ChordProgression,
-          melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator, UniversalGenerator],
-          rhythm_generator: Optional[RhythmGenerator]=None):
-    melody_generator.learn(notes, changes)
-    if rhythm_generator is not None and rhythm_generator != melody_generator:
-        rhythm_generator.learn(notes)
-
-
-def generate(past: List[Note], changes: ChordProgression,
-             melody_generator: Union[MelodyGenerator, MelodyAndRhythmGenerator, UniversalGenerator],
-             rhythm_generator: Optional[RhythmGenerator], measures: int) -> List[Note]:
-    """ Improvise a melody using two models for the melody and the rhythm, and one chord progression
-
-        :param melody_generator:
-        :param rhythm_generator:
-        :param past: the seed
-        :param changes: the chord progression.
-            It can be the same as the melody generator, or equivalently None.
-        :param measures: The number of measures to generate
-        """
-    if rhythm_generator is None:
-        rhythm_generator = melody_generator  # type: RhythmGenerator
-    universal = isinstance(melody_generator, UniversalGenerator)
-    melody = past
-    beat = melody[-1].beat
-    chord = changes[beat]
-    melody_generator.start(beat)
-    while beat < measures * Note.meter:
-        n = Note()
-        n.resolution = past[0].resolution
-        rest = None
-        if universal:
-            n.pitch, tsbq, dq, *rest = melody_generator.next()  # in LSTM case, rest[0] is the beat diff
-        else:
-            tsbq, dq = rhythm_generator.next_rhythm()
-        tsbq *= Note.ticks_quantisation_rate
-        n.duration = dq * Note.duration_quantisation_rate
-        if melody and (rest or melody[-1].ticks_since_beat > tsbq):
-            beat_diff = rest[0] if rest else 1 + melody[-1].duration // n.resolution
-            for _ in range(beat_diff):
-                beat += 1
-                # If the chord changed, inform the melody generator
-                newchord = changes[beat]
-                if newchord != chord:
-                    melody_generator.start(beat)
-                    chord = newchord
-        # Prevent overlapping notes
-        n.tick_abs = tsbq + n.resolution * \
-            (beat if rest else max(beat, math.floor((melody[-1].tick_abs + melody[-1].duration) / n.resolution)))
-        if not universal:
-            n.pitch = melody_generator.next_pitch()
-        melody.append(n)
-        if melody_generator == rhythm_generator:
-            melody_generator.add_past(n)
-    return melody
-
-
-def extract_measures(notes: List[Note], start: int, end: int):
-    """
-    :param notes: The list of notes
-    :param start: The number of the first measure, inclusive
-    :param end: The number of the last measure, exclusive
-    :return: Only the notes falling into the specified range of measures, but moved back so that
-    the whole sequence begins at measure 0.
-    """
-    ret = copy.deepcopy([note for note in notes if start <= note.measure < end])
-    for note in ret:
-        note.measure -= start
-    return ret
-
-
-def add_chords(notes: List[Note], changes: ChordProgression) -> List[Note]:
-    """ Add accompanying voicings to a melody
-
-    :param notes: the melody
-    :param changes: the chord progression
-    :return: a new list of notes that contains both the melody and the chords. The original list is unchanged.
-    """
-    ret = copy.copy(notes)
-    beat = 0
-    chord = None  # type: Chord
-    for i, note in enumerate(notes):
-        if i == 0 or note.beat > notes[i - 1].beat:
-            beat_diff = note.beat if i == 0 else note.beat - notes[i - 1].beat
-            for _ in range(beat_diff):
-                beat += 1
-                # If the chord changed, add a voicing
-                newchord = changes[beat - 1]
-                if newchord != chord or beat % len(changes) == 1:
-                    chord = newchord
-                    voicing = chord.voicing1357()
-                    for v in voicing:
-                        v.tick_abs = (beat - 1) * v.resolution
-                        ret.insert(i, v)
-    return ret
+from music import Note
 
 
 class Main:
     """ All the entry points into the application. Refer to the Fire documentation for details. """
     @staticmethod
-    def single(model, song, choruses):
+    def single(model, song, choruses=3, order=5, epochs=None, callback=None):
         """
         Train and run a model on the same chord progression.
 
@@ -167,6 +23,9 @@ class Main:
         :param song: The name of the song.
             Both the midi file and the text file containing the changes must exist with this name.
         :param choruses: The number of choruses to generate
+        :param order:
+        :param epochs:
+        :param callback: a Keras callback to monitor training
         """
         from models import neural
         # Read the chord changes from a text file
@@ -181,12 +40,12 @@ class Main:
             melody_generator = markov.StaticChordMelody(changes)
             rhythm_generator = markov.Rhythm()
         elif model == 'neural':
-            melody_generator = neural.OneLayer(changes, 5)
+            melody_generator = neural.OneLayer(changes, order)
         elif model.startswith('lstm'):
             melody_generator = neural.LSTM(changes, stateful=not model.endswith('stateless'))
         elif model == 'lasagne':
-            melody_generator = neural.lasagne.OneLayer(changes, 5)
-        train(notes, changes, melody_generator, rhythm_generator)
+            melody_generator = neural.lasagne.OneLayer(changes, order)
+        train(notes, changes, melody_generator, rhythm_generator, callback=callback, epochs=epochs)
         if model != 'markov':
             melody_generator.add_past(*notes[:melody_generator.order])
         print("Generating notes...")
@@ -198,30 +57,33 @@ class Main:
         notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model))
 
     @staticmethod
-    def weimar(model, song, choruses):
+    def weimar(model, song, choruses=3, order=5, epochs=None, callback=None):
         """
         Train a model on the Weimar database of transcriptions and then run it on the specified chord progression.
 
+        :param epochs:
+        :param callback: a Keras callback to monitor training
         :param model: The name of the model: 'twolayer' or 'lstm'.
         :param song: The name of the chord progression to use for generation.
             Both the midi file and the text file containing the changes must exist with this name.
             The generation seed will be obtained from the beginning of the midi file.
         :param choruses: The number of choruses to generate
+        :param order:
         """
         from models import neural
         changes = changes_from_file(song)
         model_name = model
         if model == 'neural':
-            model = neural.OneLayer(changes, 5)
-        elif model == 'lstm':
-            model = neural.LSTM(changes, stateful=True)
+            model = neural.OneLayer(changes, order)
+        elif model.startswith('lstm'):
+            model = neural.LSTM(changes, stateful=not model.endswith('stateless'))
         seed = notes_from_file(r"input/{}.mid".format(song))[:model.order]
         Note.default_resolution = seed[0].resolution
         metadata = weimar.load_metadata()
         training_set = list(itertools.chain(*((notes_from_file('weimardb/midi_combined/{}.mid'.format(song.name)),
                                                song.changes)
                             for song in metadata)))
-        model.learn(*training_set)
+        model.learn(*training_set, epochs=epochs, callback=callback)
         print("Generating notes...")
         model.add_past(*seed)
         melody = generate(seed, changes, model, None, choruses * changes.measures())
