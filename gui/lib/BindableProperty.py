@@ -1,5 +1,5 @@
 
-class ObservedProperty(property):
+class BindableProperty(property):
     def __init__(self, default_value=None, datatype=None, name=None):
         self.dtype = datatype
         self.name = name
@@ -17,7 +17,7 @@ class ObservedProperty(property):
         def setter(this, val):
             setattr(this, self.private_membername, val)
             for binding in self.bindings:
-                if binding.to_view:
+                if binding.to_view and binding.model is this:
                     binding.var.set(val)
 
         super().__init__(getter, setter)

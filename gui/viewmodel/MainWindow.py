@@ -1,18 +1,18 @@
 import os
 from main import Main
-from gui.lib import ObservedProperty, ViewModel
+from gui.lib import BindableProperty, ViewModel
 
 
 class MainWindow(ViewModel):
-    training_set_type = ObservedProperty('single')
-    available_input_files = ObservedProperty()
-    selected_input_file = ObservedProperty('Eb_therewill')
-    selected_seed_file = ObservedProperty()
-    available_models = ObservedProperty()
-    selected_model = ObservedProperty('Feedforward NN')
-    model_order = ObservedProperty(5)
-    epochs = ObservedProperty(20)
-    choruses = ObservedProperty(3)
+    training_set_type = BindableProperty('single')
+    available_input_files = BindableProperty()
+    selected_input_file = BindableProperty('Eb_therewill')
+    selected_seed_file = BindableProperty()
+    available_models = BindableProperty()
+    selected_model = BindableProperty('Feedforward NN')
+    model_order = BindableProperty(5)
+    epochs = BindableProperty(20)
+    choruses = BindableProperty(3)
 
     def __init__(self):
         super().__init__()

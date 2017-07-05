@@ -1,5 +1,6 @@
 import tkinter as tk
-from gui.lib import ViewModel, ObservedProperty
+from gui.lib import ViewModel, BindableProperty
+
 
 _type_mapping = {
     int: tk.IntVar,
@@ -10,7 +11,7 @@ _type_mapping = {
 
 
 class Binding:
-    def __init__(self, source: ViewModel, source_prop: ObservedProperty, target_prop: str,
+    def __init__(self, source: ViewModel, source_prop: BindableProperty, target_prop: str,
                  to_model: bool, to_view: bool):
         self.model = source
         self.property = source_prop
@@ -20,14 +21,19 @@ class Binding:
             self.var.set(source_prop.default_value)
         self.to_view = to_view
         self.to_model = to_model
-        self.var.trace_add('write', self.observer)
+        self.add_observer(self.observer)
 
-    def observer(self, *_):
+    def add_observer(self, observer):
+        self.var.trace_add('write', lambda *_: observer(self.safe_get()))
+
+    def safe_get(self):
+        try:
+            return self.property.dtype(self.var.get())
+        except tk.TclError:
+            return self.property.dtype()
+
+    def observer(self, val):
         if self.to_model:
-            try:
-                val = self.property.dtype(self.var.get())
-            except tk.TclError:
-                val = self.property.dtype()
             self.property.bindings.remove(self)
             self.property.fset(self.model, val)
             self.property.bindings.append(self)

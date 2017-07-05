@@ -1,6 +1,6 @@
 from .BaseComponent import BaseComponent
 from .BaseWindow import BaseWindow
-from .ObservedProperty import ObservedProperty
+from .BindableProperty import BindableProperty
 from gui.lib.Binding import Binding
 from .ViewModel import ViewModel
 from .NumericEntry import NumericEntry
