@@ -1,12 +1,12 @@
 <Frame pack-anchor="nw" pack-padx="5">
     <LabelFrame text="Training set" pack-anchor="w" pack-fill="x">
         <Frame pack-anchor="w" pack-fill="x">
-            <Radiobutton pack-side="left" variable="(training_set_type)" value="single">
+            <Radiobutton pack-side="left" variable="[(training_set_type)]" value="single">
                 MIDI file
             </Radiobutton>
             <Combobox pack-side="right" textvariable="(selected_input_file)" values="[available_input_files]"/>
         </Frame>
-        <Radiobutton pack-anchor="w" variable="(training_set_type)" value="weimar">
+        <Radiobutton pack-anchor="w" variable="[(training_set_type)]" value="weimar">
             Weimar Jazz Database
         </Radiobutton>
     </LabelFrame>
@@ -24,8 +24,7 @@
         <NumericEntry grid-row="0" grid-column="1" grid-sticky="e" textvariable="(choruses)"/>
         <Label        grid-row="1" grid-column="0" grid-sticky="w">Song to improvise on</Label>
         <Combobox     grid-row="1" grid-column="1" grid-sticky="e" name="output_selector"
-                      textvariable="(selected_seed_file)" values="[available_input_files]"
-                      state="disabled"/>
+                      textvariable="(selected_seed_file)" values="[available_input_files]"/>
     </LabelFrame>
     <Frame pack-anchor="w" pack-fill="x">
         <Label            grid-row="0" grid-column="0" grid-sticky="w">Progress</Label>

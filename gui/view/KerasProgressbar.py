@@ -1,32 +1,30 @@
-from tkinter import ttk
-
 from gui.lib import BaseComponent
 
 
-class KerasProgressbar(ttk.Progressbar):
-    """ This is a subclass of keras.callbacks.Callback, except that importing Keras takes a while.
-    To avoid that delay in opening the GUI, we make use of duck-typing here. """
+class KerasProgressbar(BaseComponent):
+    """ This is intended to be a subclass of keras.callbacks.Callback, except that importing Keras takes a while.
+    To avoid that delay in opening the GUI, we make use of duck-typing here.
+    The same approach is taken to make it a limited drop-in replacement to keras.utils.Progbar """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.model = None
-        self.params = None
-        self.add = self.step
+    template = '''
+    <Progressbar name="progressbar"/>
+    '''
+
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
+        self.add = self.progressbar.step
         self.target = 100
+        self.model = None  # GUI uses this to stop training
 
     def set_model(self, model):
         self.model = model
 
     def set_params(self, params):
-        self.params = params
         self.target = params['samples']
-        self.config(maximum=self.target)
+        self.progressbar.config(maximum=self.target)
 
-    def update(self, *args, **kwargs):
-        if args:  # called from training function when masquerading as the Keras built-in progress bar
-            self.config(value=args[0])
-        else:  # called from Tkinter
-            super().update()
+    def update(self, value, **_):
+        self.progressbar.config(value=value)
 
     def on_epoch_begin(self, epoch, logs=None):
         pass
@@ -38,7 +36,7 @@ class KerasProgressbar(ttk.Progressbar):
         pass
 
     def on_batch_end(self, _, logs=None):
-        self.step(logs['size'])
+        self.progressbar.step(logs['size'])
 
     def on_train_begin(self, logs=None):
         pass

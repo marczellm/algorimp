@@ -1,5 +1,4 @@
 import tkinter as tk
-import xml.etree.ElementTree as Xml
 from gui.lib.BaseComponent import BaseComponent
 
 
@@ -10,14 +9,11 @@ class BaseWindow(BaseComponent):
         cls._windows.append(window)
         return window
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, model):
+        super().__init__(self.new_window(), model)
         self.title = ''
-        self.hwnd = self.new_window()
 
     def show(self):
-        name = type(self).__name__
-        tree = Xml.parse(self._component_registry[name][1])
-        self.hwnd.wm_title(self.title)
-        widget = self.construct(tree.getroot(), self.hwnd)
+        self.parent.wm_title(self.title)
+        widget = self.construct(self.parsed_template().getroot(), self.parent)
         widget.mainloop()
