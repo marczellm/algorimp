@@ -64,6 +64,7 @@ class LSTM(NeuralBase):
         self.octave_model = None  # type: keras.models.Model
         self.stateful = stateful
         self._implementation = 2
+        self.progressbar = None  # type: Union[keras.utils.Progbar, gui.view.KerasProgressbar]
 
     def _build_net(self) -> keras.models.Model:
         dummy_input = self._encode_network_input([Note()] * self.order,
@@ -93,6 +94,10 @@ class LSTM(NeuralBase):
 
         return model
 
+    def learn(self, *training_set: Union[List[Note], ChordProgression], epochs=None, callback=None):
+        self.progressbar = callback
+        super().learn(*training_set, epochs=epochs, callback=callback)
+
     def _encode_network_input(self, past: List[Note], chords: List[Chord], changes: ChordProgression)\
             -> List[np.ndarray]:
         return [np.array([encode_pitch(note)
@@ -105,11 +110,15 @@ class LSTM(NeuralBase):
 
     def _all_training_data(self, training_set: Iterable[Union[List[Note], ChordProgression]]):
         print('Processing training data...')
-        progressbar = keras.utils.Progbar(sum(len(notes) - self.order + 1 for notes in training_set[::2]))
+        len_data = sum(len(notes) - self.order + 1 for notes in training_set[::2])
+        if self.progressbar is None:
+            self.progressbar = keras.utils.Progbar(len_data)
+        else:
+            self.progressbar.set_params({'samples': len_data})
         x, p, t, d, o, b = [], [], [], [], [], []
         for notes, changes in nwise_disjoint(training_set, 2):
             for v in nwise(notes, self.order + 1):
-                progressbar.add(1)
+                self.progressbar.add(1)
                 xx = self._encode_network_input(v[:self.order],
                                                 changes.unique(v[-1].beat - 1, self.chord_radius),
                                                 changes)
@@ -122,7 +131,7 @@ class LSTM(NeuralBase):
                 d.append(encode_int(v[-1].duration_quantised, self.maxdq + 1))
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
                 b.append(encode_int(v[-1].beat - v[-2].beat, self.maxbeatdiff + 1))
-        progressbar.update(progressbar.target, force=True)
+        self.progressbar.update(self.progressbar.target, force=True)
         return [np.array(xi, dtype=bool) for xi in x],\
                [np.array(arr, dtype=bool) for arr in [p, t, d, o, b]]
 
