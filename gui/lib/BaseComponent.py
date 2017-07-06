@@ -86,7 +86,6 @@ class BaseComponent:
         return component
 
     def process_attributes(self, widget, attrib: dict):
-
         config_args = {k: v for k, v in attrib.items() if '-' not in k}
         pack_args = {k[5:]: v for k, v in attrib.items() if k.startswith('pack-')}
         grid_args = {k[5:]: v for k, v in attrib.items() if k.startswith('grid-')}
@@ -107,19 +106,26 @@ class BaseComponent:
                     name = name[1:-1]
                     to_model = True
                 source_property = getattr(type(self.model), name)
-                binding = Binding(source=self.model, source_prop=source_property, target_prop=key,
+                binding = Binding(source=self.model, source_prop=source_property,
+                                  target=widget, target_prop=key,
                                   to_model=to_model, to_view=to_view)
-                # TODO unsubscribe previous bindings
                 if 'variable' in key:
                     config_args[key] = binding.var
                 else:
                     config_args[key] = getattr(self.model, name)
-                    warn('Binding to non-variable property "{}" is one-time: it will not update'.format(key))
+                    if to_view:
+                        binding.add_observer(lambda val: widget.config(**{key: val}))
+                    if to_model:
+                        warn('Property "{}" is not a variable: binding direction to model not supported'.format(key))
                 bindings.append(binding)
                 source_property.bindings.append(binding)
 
         for binding in bindings:
-            self.bindings[str(widget) + '.' + binding.view_property_name] = binding
+            binding_key = str(widget) + '.' + binding.target_property
+            if binding_key in self.bindings:
+                previous = self.bindings.pop(binding_key)
+                previous.source_property.bindings.remove(previous)
+            self.bindings[binding_key] = binding
 
         if any(ch.winfo_manager() == 'grid' for ch in widget.children.values()):
             columns = widget.grid_size()

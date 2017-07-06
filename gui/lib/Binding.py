@@ -11,12 +11,15 @@ _type_mapping = {
 
 
 class Binding:
-    def __init__(self, source: ViewModel, source_prop: BindableProperty, target_prop: str,
+    def __init__(self,
+                 source: ViewModel, source_prop: BindableProperty,
+                 target: tk.Widget, target_prop: str,
                  to_model: bool, to_view: bool):
-        self.model = source
-        self.property = source_prop
+        self.source = source
+        self.source_property = source_prop
         self.var = _type_mapping[source_prop.dtype]()
-        self.view_property_name = target_prop
+        self.target = target
+        self.target_property = target_prop
         if source_prop.default_value is not None:
             self.var.set(source_prop.default_value)
         self.to_view = to_view
@@ -24,17 +27,21 @@ class Binding:
         self.add_observer(self.observer)
 
     def add_observer(self, observer):
+        """
+        Register a callback to be called when the value of ``self.var`` changes.
+        :param observer: a callable accepting one parameter. The new value will be passed in that.
+        """
         self.var.trace_add('write', lambda *_: observer(self.safe_get()))
 
     def safe_get(self):
         try:
-            return self.property.dtype(self.var.get())
+            return self.source_property.dtype(self.var.get())
         except tk.TclError:
-            return self.property.dtype()
+            return self.source_property.dtype()
 
     def observer(self, val):
         if self.to_model:
-            self.property.bindings.remove(self)
-            self.property.fset(self.model, val)
-            self.property.bindings.append(self)
+            self.source_property.bindings.remove(self)
+            self.source_property.fset(self.source, val)
+            self.source_property.bindings.append(self)
 

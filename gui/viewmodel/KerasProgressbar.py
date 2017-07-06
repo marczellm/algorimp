@@ -2,9 +2,9 @@ from gui.lib import ViewModel, BindableProperty
 
 
 class KerasProgressbar(ViewModel):
-    """ This is intended to be a subclass of keras.callbacks.Callback, except that importing Keras takes a while.
+    """ This is intended to be a subclass of ``keras.callbacks.Callback``, except that importing Keras takes a while.
         To avoid that delay in opening the GUI, we make use of duck-typing here.
-        The same approach is taken to make it a limited drop-in replacement to keras.utils.Progbar """
+        The same approach is taken to make it a limited drop-in replacement to ``keras.utils.Progbar`` """
 
     value = BindableProperty(0)
     target = BindableProperty(100)
@@ -26,7 +26,7 @@ class KerasProgressbar(ViewModel):
         self.value = value
 
     def on_epoch_begin(self, epoch, logs=None):
-        pass
+        self.value = 0
 
     def on_epoch_end(self, epoch, logs=None):
         pass
@@ -35,7 +35,7 @@ class KerasProgressbar(ViewModel):
         pass
 
     def on_batch_end(self, batch, logs=None):
-        pass
+        self.add(logs['size'])
 
     def on_train_begin(self, logs=None):
         pass

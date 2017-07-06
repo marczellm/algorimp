@@ -17,7 +17,7 @@ class BindableProperty(property):
         def setter(this, val):
             setattr(this, self.private_membername, val)
             for binding in self.bindings:
-                if binding.to_view and binding.model is this:
+                if binding.to_view and binding.source is this:
                     binding.var.set(val)
 
         super().__init__(getter, setter)
