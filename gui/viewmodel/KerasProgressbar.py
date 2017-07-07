@@ -1,4 +1,4 @@
-from tkpf import ViewModel, BindableProperty
+from tkpf import ViewModel, AutoProperty, Bindable
 
 
 class KerasProgressbar(ViewModel):
@@ -6,8 +6,8 @@ class KerasProgressbar(ViewModel):
         To avoid that delay in opening the GUI, we make use of duck-typing here.
         The same approach is taken to make it a limited drop-in replacement to ``keras.utils.Progbar`` """
 
-    value = BindableProperty(0)
-    target = BindableProperty(100)
+    value = Bindable(AutoProperty(0))
+    target = Bindable(AutoProperty(100))
 
     def __init__(self):
         super().__init__()

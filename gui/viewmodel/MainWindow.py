@@ -1,18 +1,18 @@
 import os
 from main import Main
-from tkpf import BindableProperty, ViewModel
+from tkpf import AutoProperty, ViewModel, Bindable
 
 
 class MainWindow(ViewModel):
-    training_set_type = BindableProperty('single')
-    available_input_files = BindableProperty()
-    selected_input_file = BindableProperty('Eb_therewill')
-    selected_seed_file = BindableProperty()
-    available_models = BindableProperty()
-    selected_model = BindableProperty('Feedforward NN')
-    model_order = BindableProperty(5)
-    epochs = BindableProperty(20)
-    choruses = BindableProperty(3)
+    training_set_type = Bindable(AutoProperty('single'))
+    available_input_files = Bindable(AutoProperty())
+    selected_input_file = Bindable(AutoProperty('Eb_therewill'))
+    selected_seed_file = Bindable(AutoProperty())
+    available_models = Bindable(AutoProperty())
+    selected_model = Bindable(AutoProperty('Feedforward NN'))
+    model_order = Bindable(AutoProperty(5))
+    epochs = Bindable(AutoProperty(20))
+    choruses = Bindable(AutoProperty(3))
 
     def __init__(self):
         super().__init__()
