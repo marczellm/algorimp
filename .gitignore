@@ -1,0 +1,7 @@
+*.pyc
+*.gz
+virtualenv/*
+libtests/*
+output/*
+samples/*
+weimardb/midi_combined/*
