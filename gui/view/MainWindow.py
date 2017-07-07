@@ -1,12 +1,12 @@
 import threading
 from threading import Thread
-import gui.lib
+import tkpf
 from gui import viewmodel
 import tkinter as tk
 from tkinter import messagebox
 
 
-class MainWindow(gui.lib.BaseWindow):
+class MainWindow(tkpf.BaseWindow):
     model: viewmodel.MainWindow
 
     def __init__(self):

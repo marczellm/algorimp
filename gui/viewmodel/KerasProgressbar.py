@@ -1,4 +1,4 @@
-from gui.lib import ViewModel, BindableProperty
+from tkpf import ViewModel, BindableProperty
 
 
 class KerasProgressbar(ViewModel):

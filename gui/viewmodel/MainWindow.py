@@ -1,6 +1,6 @@
 import os
 from main import Main
-from gui.lib import BindableProperty, ViewModel
+from tkpf import BindableProperty, ViewModel
 
 
 class MainWindow(ViewModel):

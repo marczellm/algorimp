@@ -1,5 +1,5 @@
 from gui import viewmodel
-from gui.lib import BaseComponent
+from tkpf import BaseComponent
 
 
 class KerasProgressbar(BaseComponent):
