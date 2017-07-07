@@ -2,6 +2,6 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/inspiration/biaxial-rnn-music-composition" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tkpf" vcs="Git" />
   </component>
 </project>

@@ -8,9 +8,12 @@ You'll have to install two packages from GitHub, because the MIDI package publis
 and Lasagne has some blocking issues
 that prevent them from publishing v0.2.
  
-
     pip install https://github.com/marczellm/python-midi/archive/feature/python3.zip
     pip install https://github.com/Lasagne/Lasagne/archive/master.zip
+   
+The GUI also requires my own `tkpf` package:
+
+    pip install https://github.com/marczellm/tkpf/archive/master.zip
     
 ### Usage
     python main.py <task> <task parameters>

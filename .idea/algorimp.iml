@@ -3,7 +3,6 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/inspiration/biaxial-rnn-music-composition" />
-      <excludeFolder url="file://$MODULE_DIR$/libtests" />
       <excludeFolder url="file://$MODULE_DIR$/virtualenv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.6.1 virtualenv at D:\Marci\Programozás\algorimp\virtualenv" jdkType="Python SDK" />
