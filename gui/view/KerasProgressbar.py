@@ -7,5 +7,5 @@ class KerasProgressbar(BaseComponent):
     <Progressbar name="progressbar" variable="[value]" maximum="[target]"/>
     '''
 
-    def __init__(self, parent, model=None, **kwargs):
-        super().__init__(parent, model=model, **kwargs)
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
