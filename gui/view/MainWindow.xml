@@ -28,7 +28,8 @@
     </LabelFrame>
     <Frame pack-anchor="w" pack-fill="x">
         <Label            grid-row="0" grid-column="0" grid-sticky="w">Progress</Label>
-        <KerasProgressbar grid-row="0" grid-column="1" grid-sticky="ew" name="progressbar"/>
+        <KerasProgressbar grid-row="0" grid-column="1" grid-sticky="ew"
+                          name="progressbar" tkpf-model="[progressbar_model]"/>
         <Button           grid-row="1" grid-column="0" command="run_model">Train and run</Button>
         <Button           grid-row="1" grid-column="1" command="stop_thread">Stop</Button>
     </Frame>

@@ -1,4 +1,6 @@
 import os
+
+from gui import viewmodel
 from main import Main
 from tkpf import AutoProperty, ViewModel, Bindable
 
@@ -26,6 +28,7 @@ class MainWindow(ViewModel):
             'Stateful LSTM': 'lstm'
         }
         self.available_models = tuple(self.model_naming.keys())
+        self.progressbar_model = viewmodel.KerasProgressbar()
 
     def run_model_thread_body(self, callback=None):
         model = self.model_naming[self.selected_model]

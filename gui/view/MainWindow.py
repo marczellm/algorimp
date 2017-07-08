@@ -13,11 +13,12 @@ class MainWindow(tkpf.BaseWindow):
         super().__init__(viewmodel.MainWindow())
 
     def run_model(self):
-        Thread(target=self.model.run_model_thread_body, name='UI', daemon=True, args=[self.progressbar.model]).start()
+        Thread(target=self.model.run_model_thread_body, name='UI', daemon=True,
+               args=[self.model.progressbar_model]).start()
 
     def stop_thread(self):
-        if self.progressbar.model.model is not None:
-            self.progressbar.model.model.stop_training = True
+        if self.model.progressbar_model.model is not None:
+            self.model.progressbar_model.model.stop_training = True
         elif self.model.selected_model == 'Markov chain':
             tk.messagebox.showwarning('', "Stopping Markov simulation is not supported")
         elif any(t.name == 'UI' for t in threading.enumerate()):
