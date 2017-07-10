@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 
-class MainWindow(tkpf.BaseWindow):
+class MainWindow(tkpf.Window):
     template_path = 'gui/view/MainWindow.xml'
     model: viewmodel.MainWindow
 
