@@ -7,6 +7,7 @@ from tkinter import messagebox
 
 
 class MainWindow(tkpf.BaseWindow):
+    template_path = 'gui/view/MainWindow.xml'
     model: viewmodel.MainWindow
 
     def __init__(self):
