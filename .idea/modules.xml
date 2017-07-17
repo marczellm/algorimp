@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/algorimp.iml" filepath="$PROJECT_DIR$/.idea/algorimp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../tkpf/.idea/tkpf.iml" filepath="$PROJECT_DIR$/../tkpf/.idea/tkpf.iml" />
     </modules>
   </component>
 </project>
