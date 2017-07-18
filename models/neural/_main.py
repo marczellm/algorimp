@@ -6,6 +6,7 @@ from keras.activations import softmax, relu
 from keras.losses import categorical_crossentropy
 from keras.optimizers import adagrad, rmsprop
 
+import gui
 from helpers import nwise, nwise_disjoint, lsum
 from music import Note, Chord, ChordProgression
 from ._helpers import encode_chord, encode_int, encode_pitch, sampler, NUM_OCTAVES, weighted_nlargest
@@ -109,7 +110,11 @@ class LSTM(NeuralBase):
                 np.array(lsum(encode_chord(chord) for chord in chords), dtype=bool)]
 
     def _all_training_data(self, training_set: Iterable[Union[List[Note], ChordProgression]]):
-        print('Processing training data...')
+        msg_callback = self.progressbar.set_text \
+            if isinstance(self.progressbar, gui.viewmodel.KerasProgressbar) \
+            else print
+        msg_callback('Processing training data...')
+
         len_data = sum(len(notes) - self.order + 1 for notes in training_set[::2])
         if self.progressbar is None:
             self.progressbar = keras.utils.Progbar(len_data)
@@ -132,6 +137,7 @@ class LSTM(NeuralBase):
                 o.append(encode_int(v[-1].octave, NUM_OCTAVES))
                 b.append(encode_int(v[-1].beat - v[-2].beat, self.maxbeatdiff + 1))
         self.progressbar.update(self.progressbar.target, force=True)
+        msg_callback('Starting training...')
         return [np.array(xi, dtype=bool) for xi in x],\
                [np.array(arr, dtype=bool) for arr in [p, t, d, o, b]]
 

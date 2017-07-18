@@ -40,12 +40,12 @@ def notes_from_file(filename: str) -> List[Note]:
     return sorted(notes, key=lambda note: note.tick_abs)
 
 
-def notes_to_file(notes: List[Note], filename: str):
-    print("Writing file {}... ".format(filename), end='')
+def notes_to_file(notes: List[Note], filename: str, msg_callback=print):
+    msg_callback("Writing file {}... ".format(filename), end='')
     kf = midiutil.MidiFile.MIDIFile(adjust_origin=False)
     kf.addTrackName(0, 0, "Track 1")
     for n in notes:
         kf.addNote(0, 0, n.pitch, n.tick_abs / n.resolution, n.duration / n.resolution or 1, 100)
     with open(filename, 'wb') as f:
         kf.writeFile(f)
-    print("Done.")
+    msg_callback("Done.")

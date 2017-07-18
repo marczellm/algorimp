@@ -18,9 +18,9 @@ class MainWindow(ViewModel):
 
     def __init__(self):
         super().__init__()
-        midis = [os.path.splitext(x)[0] for x in os.listdir('input')]
-        changes = [os.path.splitext(x)[0] for x in os.listdir('changes')]
-        self.available_input_files = tuple(set(midis).intersection(set(changes)))
+        midis = {os.path.splitext(x)[0] for x in os.listdir('input')}
+        changes = {os.path.splitext(x)[0] for x in os.listdir('changes')}
+        self.available_input_files = tuple(midis.intersection(changes))
         self.model_naming = {
             'Markov chain': 'markov',
             'Feedforward NN': 'neural',
@@ -29,12 +29,27 @@ class MainWindow(ViewModel):
         }
         self.available_models = tuple(self.model_naming.keys())
         self.progressbar_model = viewmodel.KerasProgressbar()
+        self.progressbar_model.num_epochs = self.epochs
+
+        def observer(val, this):
+            if this is self:
+                self.progressbar_model.num_epochs = val
+
+        type(self).epochs.observers.append(observer)
 
     def run_model_thread_body(self, callback=None):
-        model = self.model_naming[self.selected_model]
-        if self.training_set_type == 'single':
-            Main.single(model, self.selected_input_file, self.choruses, self.model_order, self.epochs, callback)
-        elif self.training_set_type == 'weimar':
-            Main.weimar(model, self.selected_seed_file, self.choruses, self.model_order, self.epochs, callback)
+        import keras
 
+        model = self.model_naming[self.selected_model]
+        try:
+            if self.training_set_type == 'single':
+                Main.single(model, self.selected_input_file, self.choruses, self.model_order, self.epochs, callback)
+            elif self.training_set_type == 'weimar':
+                Main.weimar(model, self.selected_seed_file, self.choruses, self.model_order, self.epochs, callback)
+        except Exception as e:
+            if callback:
+                callback.error(str(e))
+        finally:
+            if keras.backend.backend() == 'tensorflow':
+                keras.backend.clear_session()
 

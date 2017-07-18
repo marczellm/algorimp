@@ -25,9 +25,10 @@ class Main:
         :param choruses: The number of choruses to generate
         :param order:
         :param epochs:
-        :param callback: a Keras callback to monitor training
+        :param callback: to monitor training
         """
         from models import neural
+        msg_callback = callback.set_text if callback else print
         # Read the chord changes from a text file
         changes = changes_from_file(song)
         # Read the training set from a MIDI file
@@ -48,13 +49,13 @@ class Main:
         if train(notes, changes, melody_generator, rhythm_generator, callback=callback, epochs=epochs):
             if model != 'markov':
                 melody_generator.add_past(*notes[:melody_generator.order])
-            print("Generating notes...")
+            msg_callback("Generating notes...")
             if rhythm_generator is None:
                 rhythm_generator = melody_generator
             melody = generate(notes[:max(melody_generator.order, rhythm_generator.order)],
                               changes, melody_generator, rhythm_generator, choruses * changes.measures())
             # Write output file
-            notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model))
+            notes_to_file(add_chords(melody, changes), 'output/{}.mid'.format(model), msg_callback)
 
     @staticmethod
     def weimar(model, song, choruses=3, order=5, epochs=None, callback=None):
@@ -62,7 +63,7 @@ class Main:
         Train a model on the Weimar database of transcriptions and then run it on the specified chord progression.
 
         :param epochs:
-        :param callback: a Keras callback to monitor training
+        :param callback: to monitor training
         :param model: The name of the model: 'twolayer' or 'lstm'.
         :param song: The name of the chord progression to use for generation.
             Both the midi file and the text file containing the changes must exist with this name.
@@ -71,6 +72,7 @@ class Main:
         :param order:
         """
         from models import neural
+        msg_callback = callback.set_text if callback else print
         changes = changes_from_file(song)
         model_name = model
         if model == 'neural':
@@ -84,10 +86,10 @@ class Main:
                                                song.changes)
                             for song in metadata)))
         if model.learn(*training_set, epochs=epochs, callback=callback):
-            print("Generating notes...")
+            msg_callback("Generating notes...")
             model.add_past(*seed)
             melody = generate(seed, changes, model, None, choruses * changes.measures())
-            notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model_name))
+            notes_to_file(add_chords(melody, changes), 'output/weimar_{}.mid'.format(model_name), msg_callback)
 
     @staticmethod
     def turing():
