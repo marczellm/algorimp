@@ -38,10 +38,10 @@ class MainWindow(ViewModel):
         type(self).epochs.observers.append(observer)
 
     def run_model_thread_body(self, callback=None):
-        import keras
-
+        keras = None
         model = self.model_naming[self.selected_model]
         try:
+            import keras
             if self.training_set_type == 'single':
                 Main.single(model, self.selected_input_file, self.choruses, self.model_order, self.epochs, callback)
             elif self.training_set_type == 'weimar':
@@ -50,6 +50,6 @@ class MainWindow(ViewModel):
             if callback:
                 callback.error(str(e))
         finally:
-            if keras.backend.backend() == 'tensorflow':
+            if keras and keras.backend.backend() == 'tensorflow':
                 keras.backend.clear_session()
 

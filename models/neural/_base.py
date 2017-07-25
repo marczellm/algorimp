@@ -102,7 +102,8 @@ class NeuralBase(UniversalGenerator, MelodyAndRhythmGenerator, metaclass=ABCMeta
         stateful = any(isinstance(layer, keras.layers.Recurrent) and layer.stateful for layer in self.model.layers)
         kwargs = {'batch_size': 1, 'shuffle': False} if stateful else {}
         if callback:
-            kwargs['callbacks'] = [callback]
+            kwargs.update({'callbacks': [callback], 'verbose': 0})
+
         self.model.fit(x, y, epochs=epochs or self.epochs, **kwargs)
         return not self.model.stop_training
 
