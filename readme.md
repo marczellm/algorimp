@@ -4,16 +4,16 @@ An algorithmic jazz improviser written in Python.
 ## Get started
 ### Installation
 Most dependencies will install from PyPI no problem. (NumPy and SciPy installation depends on your platform.)
-You'll have to install two packages from GitHub, because the MIDI package published on PyPI is Python 2 only,
-and Lasagne has some blocking issues
-that prevent them from publishing v0.2.
+You'll have to install one package from GitHub, because the MIDI package published on PyPI is Python 2 only.
  
     pip install https://github.com/marczellm/python-midi/archive/feature/python3.zip
-    pip install https://github.com/Lasagne/Lasagne/archive/master.zip
    
 The GUI also requires my own `tkpf` package:
 
     pip install https://github.com/marczellm/tkpf/archive/master.zip
+
+Lasagne and Theano are optional, because Theano is discontinued.
+Code using these libraries is retained only for educational purposes.
     
 ### Usage
     python main.py <task> <task parameters>

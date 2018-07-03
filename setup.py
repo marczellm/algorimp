@@ -9,6 +9,9 @@ setup(
     author='Márton Marczell',
     author_email='',
     description='',
-    install_requires=['bidict', 'numpy', 'midi', 'midiutil', 'theano', 'lasagne>=0.2.dev1', 'keras', 'fire'],
+    install_requires=['bidict', 'numpy', 'midi', 'midiutil', 'keras', 'tensorflow', 'fire'],
+    extras_require={'legacy': ['theano', 'lasagne>=0.2.dev1'],
+                    'gui': ['tkpf']
+                    },
     tests_require=['matplotlib']
 )
